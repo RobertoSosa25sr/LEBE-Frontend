@@ -1,0 +1,16 @@
+<button
+  class="button"
+  [class.primary]="type === 'primary'"
+  [class.secondary]="type === 'secondary'"
+  [class.outline]="type === 'outline'"
+  [class.small]="size === 'small'"
+  [class.medium]="size === 'medium'"
+  [class.large]="size === 'large'"
+  [class.full-width]="fullWidth"
+  [disabled]="disabled || loading"
+>
+  <span *ngIf="!loading" class="button-content">
+    <ng-content></ng-content>
+  </span>
+  <span *ngIf="loading" class="loading-spinner"></span>
+</button>
