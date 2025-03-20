@@ -1,0 +1,19 @@
+/* Breakpoint Variables */
+:root {
+  --xxs: 360px;      /* Extra small devices (phones) */
+  --xs: 576px;      /* Extra small devices (phones) */
+  --sm: 768px;  /* Small devices (phones) */
+  --md: 992px;  /* Medium devices (tablets) */
+  --lg: 1200px;  /* Large devices (desktops) */
+  --xl: 1400px; /* Extra large devices */
+  --xxl: 1600px; /* Extra extra large devices */
+}
+
+/* Media Query Mixins */
+@custom-media --xxs (max-width: 360px);
+@custom-media --xs (max-width: 576px);
+@custom-media --sm (max-width: 768px);
+@custom-media --md (max-width: 992px);
+@custom-media --lg (max-width: 1200px);
+@custom-media --xl (max-width: 1400px); 
+@custom-media --xxl (max-width: 1600px); 

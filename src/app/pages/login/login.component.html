@@ -1,53 +1,37 @@
-<div class="login-page">
+<div class="login-page page">
+
+  <div class="logo-wrapper">
+    <app-logo size="large"></app-logo>
+  </div>
+
   <app-form-container
-    title="Welcome Back"
-    subtitle="Please sign in to your account"
-    maxWidth="400px">
-    
-    <div class="logo-wrapper">
-      <app-logo size="large"></app-logo>
-    </div>
+    maxWidth="360px">
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <app-input-field
-        label="Email"
-        type="email"
-        placeholder="Enter your email"
-        [error]="getErrorMessage('email')"
-        [required]="true"
+        type="text"
+        placeholder="Cédula"
         formControlName="email">
       </app-input-field>
 
       <app-input-field
-        label="Password"
         type="password"
-        placeholder="Enter your password"
-        [error]="getErrorMessage('password')"
-        [required]="true"
+        placeholder="Contraseña"
         formControlName="password">
       </app-input-field>
 
-      <div class="form-actions">
-        <div class="remember-me">
-          <input type="checkbox" id="remember" class="checkbox">
-          <label for="remember">Remember me</label>
-        </div>
-        <a href="#" class="forgot-password">Forgot password?</a>
-      </div>
-
-      <div *ngIf="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </div>
+      <app-role-selector
+        [selectedRole]="selectedRole"
+        (roleChange)="onRoleChange($event)">
+      </app-role-selector>
 
       <app-button
         type="primary"
         [fullWidth]="true"
-        [loading]="isLoading">
-        Sign In
+        [loading]="isLoading"
+        size="large">
+        Iniciar Sesión
       </app-button>
-
-      <div class="signup-link">
-        Don't have an account? <a href="#">Sign up</a>
-      </div>
     </form>
-<p>login works!</p>
+
+

@@ -1,0 +1,58 @@
+:root {
+  /* Primary Colors */
+  --color-primary-dark: #583D72;
+  --color-primary-base: #BFABCB;
+  --color-primary-light: #DAC9DF;
+
+  /* Secondary Colors */
+  --color-secondary-dark: #35252B;
+  --color-secondary-base: #7B666C;
+  --color-secondary-light: #DDD0D3;
+
+  /* Background Colors */
+  --color-background-dark: #BCA582;
+  --color-background-light: #F7F0D7;
+
+  /* Accent Colors */
+  --color-accent-dark: #B68920;
+  --color-accent-light: #F6E87A;
+
+  /* Neutral Colors */
+  --color-neutral-white: #F5F5F5;
+  --color-neutral-gray-dark: #898898;
+  --color-neutral-gray-light: #B7BDC2;
+  --color-neutral-black: #000000;
+
+  /* Status Colors */
+  --color-status-danger: #BB2124;
+  --color-status-success: #22BB33;
+  --color-status-warning: #FOAD4D;
+  --color-status-info: #5BC0DE;
+
+  /* Semantic Colors */
+  --color-text-primary: var(--color-secondary-dark);
+  --color-text-secondary: var(--color-secondary-base);
+  --color-text-muted: var(--color-neutral-gray-dark);
+  --color-text-light: var(--color-neutral-white);
+  --color-text-dark: var(--color-neutral-black);
+  
+  --color-border: var(--color-primary-light);
+  --color-border-light: var(--color-neutral-gray-light);
+  --color-border-dark: var(--color-neutral-gray-dark);
+  
+  --color-hover: var(--color-primary-base);
+  --color-focus: var(--color-primary-dark);
+  
+  --color-background: var(--color-background-light);
+  --color-background-alt: var(--color-neutral-white);
+  
+  /* Status Semantic Colors */
+  --color-error: var(--color-status-danger);
+  --color-success: var(--color-status-success);
+  --color-warning: var(--color-status-warning);
+  --color-info: var(--color-status-info);
+  
+  /* Shadow Colors */
+  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-shadow-dark: rgba(0, 0, 0, 0.2);
+} 

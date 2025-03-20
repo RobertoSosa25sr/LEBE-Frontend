@@ -1,0 +1,16 @@
+<div class="role-selector">
+  <div class="role-dropdown" (click)="toggleDropdown()">
+    <span class="selected-text">{{ getSelectedLabel() }}</span>
+    <span class="dropdown-arrow">▼</span>
+  </div>
+  
+  <div class="options-container" *ngIf="isOpen">
+    <div 
+      class="option" 
+      *ngFor="let role of roles" 
+      (click)="selectRole(role.value)"
+      [class.selected]="role.value === selectedRole">
+      {{ role.label }}
+    </div>
+  </div>
+</div> 

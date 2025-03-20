@@ -9,7 +9,8 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./logo.component.css']
 })
 export class LogoComponent implements OnInit {
-  @Input() size: 'small' | 'medium' | 'large' = 'medium';
+  @Input() size: 'small' |'large' = 'small';
+  @Input() position: 'left' | 'right' = 'left';
   @Input() alt: string = 'Logo';
 
   ngOnInit() {
