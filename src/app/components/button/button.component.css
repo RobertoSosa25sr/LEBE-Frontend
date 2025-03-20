@@ -1,0 +1,42 @@
+.button {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.primary {
+  background-color: var(--color-primary-dark);
+  color: var(--color-neutral-white);
+  border: 2px solid var(--color-primary-dark);
+  border-radius: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.primary:hover {
+    border-color: var(--color-primary-base);
+    transition: all 0.2s ease;
+  }
+
+.large {
+  font-size: clamp(1.125rem, 1.0817rem + 0.1923vw, 1.25rem);
+  padding: 1rem 1.5rem;
+  font-weight: bold;
+}
+
+@media (max-width: 360px) {
+  .primary {
+    padding: 0.5rem 1.1rem;
+    font-size: 0.8rem;
+  }
+}
+
+
+
+
+
+
+
+
+

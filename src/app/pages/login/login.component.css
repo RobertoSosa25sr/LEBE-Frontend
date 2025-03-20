@@ -1,0 +1,29 @@
+.login-page {
+    background-color: var(--color-secondary-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+}
+
+.logo-wrapper {
+    position: absolute;
+    top: 1.75rem;
+    left: 1.75rem;
+}
+
+form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+form app-button {
+    width: 70%;
+    margin: 4rem auto 0;
+    display: block;
+    text-align: center;
+}

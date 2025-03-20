@@ -17,14 +17,11 @@ import { CommonModule } from '@angular/common';
   ]
 })
 export class InputFieldComponent implements ControlValueAccessor {
-  @Input() label: string = '';
-  @Input() type: string = 'text';
+
   @Input() placeholder: string = '';
-  @Input() error: string = '';
-  @Input() required: boolean = false;
+  @Input() type: string = 'text';
 
   value: string = '';
-  disabled: boolean = false;
   onChange: any = () => {};
   onTouch: any = () => {};
 
@@ -38,10 +35,6 @@ export class InputFieldComponent implements ControlValueAccessor {
 
   registerOnTouched(fn: any): void {
     this.onTouch = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
   }
 
   onInput(event: Event): void {
