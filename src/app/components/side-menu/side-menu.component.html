@@ -1,0 +1,37 @@
+<div class="side-menu" [class.collapsed]="isCollapsed">
+  <div class="menu-header">
+    <button class="toggle-button" (click)="toggleMenu()">
+      <span class="material-icons">{{ isCollapsed ? 'chevron_right' : 'chevron_left' }}</span>
+    </button>
+    <span class="menu-title" *ngIf="!isCollapsed">LEBE</span>
+  </div>
+
+  <nav class="menu-items">
+    <a 
+      *ngFor="let item of menuItems" 
+      [routerLink]="item.route"
+      routerLinkActive="active"
+      class="menu-item">
+      <span class="material-icons icon">{{ item.icon }}</span>
+      <span class="label" *ngIf="!isCollapsed">{{ item.label }}</span>
+    </a>
+  </nav>
+
+  <div class="user-profile">
+    <div class="user-icon">
+      <span class="material-icons">account_circle</span>
+    </div>
+    <span class="user-name" *ngIf="!isCollapsed">Administrator Name</span>
+  </div>
+
+  <div class="bottom-buttons">
+    <button class="bottom-button logout">
+      <span class="material-icons">logout</span>
+      <span class="label" *ngIf="!isCollapsed">Salir</span>
+    </button>
+    <button class="bottom-button settings">
+      <span class="material-icons">settings</span>
+      <span class="label" *ngIf="!isCollapsed">Configuración</span>
+    </button>
+  </div>
+</div> 

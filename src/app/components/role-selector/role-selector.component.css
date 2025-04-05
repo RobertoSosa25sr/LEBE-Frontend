@@ -21,6 +21,21 @@
   position: relative;
 }
 
+@media (max-width: 768px) {
+  .role-dropdown {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .role-dropdown {
+    padding: 0.25rem;
+  }
+}
+
+
+
+
 .role-dropdown:hover {
   background-color: var(--color-background-light);
   color: var(--color-accent-dark);

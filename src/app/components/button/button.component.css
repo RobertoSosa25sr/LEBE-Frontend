@@ -21,16 +21,24 @@
 
 .large {
   font-size: clamp(1.125rem, 1.0817rem + 0.1923vw, 1.25rem);
-  padding: 1rem 1.5rem;
+  padding: 1rem 0.8rem;
   font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .large {
+    padding: 0.8rem 0.6rem;
+  }
 }
 
 @media (max-width: 360px) {
   .primary {
-    padding: 0.5rem 1.1rem;
+    padding: 0.5rem 0.5rem;
     font-size: 0.8rem;
   }
 }
+
+
 
 
 
