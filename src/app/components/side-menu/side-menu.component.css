@@ -181,7 +181,7 @@
 
 .user-profile {
   display: flex;
-  margin-bottom: 3.5rem;
+  margin: 2rem 0;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
