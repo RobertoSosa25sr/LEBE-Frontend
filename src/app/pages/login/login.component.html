@@ -11,7 +11,7 @@
       <app-input-field
         type="text"
         placeholder="Cédula"
-        formControlName="email">
+        formControlName="idNumber">
       </app-input-field>
 
       <app-input-field
@@ -21,6 +21,10 @@
       </app-input-field>
 
       <app-role-selector
+        [roles]= "[
+          { value: 'Administrator', label: 'Administrador' },
+          { value: 'User', label: 'Usuario' }
+        ]"
         [selectedRole]="selectedRole"
         (roleChange)="onRoleChange($event)">
       </app-role-selector>
@@ -32,6 +36,12 @@
         size="large">
         Iniciar Sesión
       </app-button>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
     </form>
 
+  </app-form-container>
 
+</div>

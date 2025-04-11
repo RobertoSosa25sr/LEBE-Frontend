@@ -19,10 +19,31 @@
     transition: all 0.2s ease;
   }
 
+.primary:disabled {
+  background-color: var(--color-neutral-gray);
+  border-color: var(--color-neutral-gray);
+  cursor: not-allowed;
+}
+
 .large {
   font-size: clamp(1.125rem, 1.0817rem + 0.1923vw, 1.25rem);
   padding: 1rem 0.8rem;
   font-weight: bold;
+}
+
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-neutral-white);
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 768px) {

@@ -1,6 +1,11 @@
 import { Component, EventEmitter, Input, Output, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+interface Role {
+  value: string;
+  label: string;
+}
+
 @Component({
   selector: 'app-role-selector',
   standalone: true,
@@ -9,19 +14,17 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./role-selector.component.css']
 })
 export class RoleSelectorComponent implements OnInit {
-  @Input() selectedRole: string = 'admin';
+  @Input() roles: Role[] = [];
+  @Input() selectedRole: string = '';
   @Output() roleChange = new EventEmitter<string>();
 
   isOpen = false;
 
-  roles = [
-    { value: 'admin', label: 'Administrador' },
-    { value: 'user', label: 'Usuario' }
-  ];
-
   ngOnInit() {
-    // Ensure the initial value is emitted
-    this.roleChange.emit(this.selectedRole);
+    if (this.roles.length > 0 && !this.selectedRole) {
+      this.selectedRole = this.roles[0].value;
+      this.roleChange.emit(this.selectedRole);
+    }
   }
 
   @HostListener('document:click', ['$event'])
@@ -44,6 +47,6 @@ export class RoleSelectorComponent implements OnInit {
 
   getSelectedLabel(): string {
     const selectedRole = this.roles.find(role => role.value === this.selectedRole);
-    return selectedRole ? selectedRole.label : 'Administrador';
+    return selectedRole ? selectedRole.label : '';
   }
 } 
