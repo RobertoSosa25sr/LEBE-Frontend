@@ -37,10 +37,15 @@ export class AuthService {
   token$ = this.tokenSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    // Load token from localStorage on service initialization
+    // Load token and menu items from localStorage on service initialization
     const storedToken = localStorage.getItem('token');
+    const storedMenuItems = localStorage.getItem('menuItems');
+    
     if (storedToken) {
       this.tokenSubject.next(storedToken);
+    }
+    if (storedMenuItems) {
+      this.menuItemsSubject.next(JSON.parse(storedMenuItems));
     }
   }
 
@@ -55,6 +60,7 @@ export class AuthService {
         this.menuItemsSubject.next(response.menu_items);
         this.tokenSubject.next(response.token);
         localStorage.setItem('token', response.token);
+        localStorage.setItem('menuItems', JSON.stringify(response.menu_items));
       })
     );
   }
@@ -64,6 +70,7 @@ export class AuthService {
     this.menuItemsSubject.next([]);
     this.tokenSubject.next(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('menuItems');
   }
 
   getToken(): string | null {

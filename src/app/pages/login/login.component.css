@@ -22,7 +22,7 @@ form {
 
 form app-button {
     width: 57%;
-    margin: 4rem auto 0;
+    margin: 2rem auto 0;
     display: block;
     text-align: center;
 }
@@ -32,10 +32,12 @@ form app-input-field {
 }
 
 .error-message {
+    height: 2.5rem;
+    width: 15rem;
     color: var(--color-error);
     text-align: center;
-    margin-top: 1rem;
-    font-size: 0.9rem;
+    font-size: clamp(0.625rem, 0.5417rem + 0.3704vw, 0.875rem);
+    align-self: center;
 }
 
 @media (max-width: 768px) {

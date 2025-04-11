@@ -29,6 +29,10 @@
         (roleChange)="onRoleChange($event)">
       </app-role-selector>
 
+      <div class="error-message">
+        {{ errorMessage }}
+      </div>
+
       <app-button
         type="primary"
         [fullWidth]="true"
@@ -37,9 +41,6 @@
         Iniciar Sesión
       </app-button>
 
-      <div *ngIf="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </div>
     </form>
 
   </app-form-container>
