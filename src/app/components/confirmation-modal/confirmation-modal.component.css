@@ -13,15 +13,17 @@
 
 .modal-content {
   background-color: var(--color-neutral-white);
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 0.5rem;
   width: 90%;
   max-width: 400px;
   text-align: center;
+  box-shadow: 3px 3px 6px rgb(0, 0, 0, 0.3);
 }
 
 .modal-content h2 {
   margin-bottom: 1.5rem;
+  font-size: clamp(0.625rem, 0.5208rem + 0.463vw, 0.9375rem);
   color: var(--color-secondary-dark);
 }
 
@@ -32,28 +34,29 @@
 }
 
 .cancel-button, .confirm-button {
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
+  border-radius: 0.31rem;
   cursor: pointer;
-  font-weight: bold;
+  border: none;
+  font-size: clamp(0.5625rem, 0.4583rem + 0.463vw, 0.875rem);
+  color: var(--color-neutral-white);
+  height: 2rem;
+  width: 5.4rem;
 }
 
 .cancel-button {
-  background-color: var(--color-neutral-gray);
-  color: var(--color-neutral-white);
-  border: none;
+  background-color: var(--color-status-danger);
 }
 
 .confirm-button {
   background-color: var(--color-primary-dark);
-  color: var(--color-neutral-white);
-  border: none;
 }
 
 .cancel-button:hover {
-  background-color: var(--color-neutral-gray-dark);
+  font-size: clamp(0.625rem, 0.5208rem + 0.463vw, 0.9375rem);
+  transition: all 0.1s ease;
 }
 
 .confirm-button:hover {
-  background-color: var(--color-primary-base);
-} 
+  font-size: clamp(0.625rem, 0.5208rem + 0.463vw, 0.9375rem);
+  transition: all 0.1s ease;
+}
