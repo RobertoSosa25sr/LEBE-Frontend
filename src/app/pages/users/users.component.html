@@ -25,23 +25,22 @@
       <table class="users-table">
         <thead>
           <tr>
+            <th>Nombres</th>
             <th>Cédula</th>
-            <th>Roles</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let user of users">
-            <td>{{ user.id_number }}</td>
             <td>
-              <div class="roles-container">
-                <span *ngFor="let role of user.roles" class="role-badge">
-                  {{ role }}
-                </span>
+              <div class="user-info">
+                <img [src]="user.profile_photo_url" [alt]="user.name" class="user-avatar">
+                <span>{{ user.name }}</span>
               </div>
             </td>
+            <td>{{ user.id_number }}</td>
             <td class="actions">
-              <button class="action-button edit" [routerLink]="['/users', user.id, 'edit']">
+              <button class="action-button edit" [routerLink]="['/users', user.id_number, 'edit']">
                 <span class="material-icons">edit</span>
               </button>
               <button class="action-button delete" (click)="onDeleteClick(user)">
@@ -60,11 +59,11 @@
           <span class="material-icons">chevron_left</span>
         </button>
         <span class="page-info">
-          Página {{ currentPage }} de {{ Math.ceil(total / perPage) }}
+          Mostrando {{ from }} a {{ to }} de {{ total }} usuarios
         </span>
         <button 
           class="pagination-button"
-          [disabled]="currentPage === Math.ceil(total / perPage)"
+          [disabled]="currentPage === lastPage"
           (click)="onPageChange(currentPage + 1)">
           <span class="material-icons">chevron_right</span>
         </button>

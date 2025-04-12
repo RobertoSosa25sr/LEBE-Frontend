@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
-import { UserService, User } from '../../services/user.service';
+import { UserService, User, UserListResponse } from '../../services/user.service';
 
 @Component({
   selector: 'app-users',
@@ -20,6 +20,9 @@ export class UsersComponent implements OnInit {
   currentPage = 1;
   perPage = 10;
   total = 0;
+  lastPage = 1;
+  from = 0;
+  to = 0;
   searchTerm = '';
   Math = Math;
 
@@ -33,9 +36,13 @@ export class UsersComponent implements OnInit {
     this.isLoading = true;
     this.userService.getUsers(this.currentPage, this.perPage, this.searchTerm)
       .subscribe({
-        next: (response) => {
-          this.users = response.data;
-          this.total = response.total;
+        next: (response: UserListResponse) => {
+          this.users = response.users;
+          this.total = response.pagination.total;
+          this.currentPage = response.pagination.current_page;
+          this.lastPage = response.pagination.last_page;
+          this.from = response.pagination.from;
+          this.to = response.pagination.to;
           this.isLoading = false;
         },
         error: (error) => {

@@ -12,6 +12,13 @@
   align-items: center;
 }
 
+.users-header h1 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
 .header-actions {
   display: flex;
   gap: 1rem;
@@ -25,35 +32,38 @@
 }
 
 .search-input {
-  padding: 0.5rem 2rem 0.5rem 1rem;
-  border: 1px solid var(--color-neutral-gray);
-  border-radius: 0.25rem;
-  font-size: 1rem;
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
   width: 250px;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
 }
 
 .search-icon {
   position: absolute;
-  right: 0.5rem;
-  color: var(--color-neutral-gray);
-}
-
-.users-header h1 {
-  color: var(--color-secondary-dark);
-  margin: 0;
+  left: 0.75rem;
+  color: var(--color-text-secondary);
+  font-size: 1.25rem;
 }
 
 .users-content {
   flex: 1;
-  background-color: var(--color-neutral-white);
+  background-color: var(--color-background-light);
   border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
 .table-container {
-  width: 100%;
-  overflow-x: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .users-table {
@@ -65,43 +75,33 @@
 .users-table td {
   padding: 1rem;
   text-align: left;
-  border-bottom: 1px solid var(--color-neutral-gray-light);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .users-table th {
-  background-color: var(--color-neutral-gray-light);
-  color: var(--color-secondary-dark);
-  font-weight: bold;
+  background-color: var(--color-background);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
 }
 
 .users-table tbody tr:hover {
-  background-color: var(--color-neutral-gray-light);
+  background-color: var(--color-background-hover);
 }
 
-.roles-container {
+.user-info {
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.role-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.875rem;
-  background-color: var(--color-primary-light);
-  color: var(--color-primary-dark);
-}
-
-.status-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.875rem;
-  background-color: var(--color-neutral-gray);
-  color: var(--color-neutral-white);
-}
-
-.status-badge.active {
-  background-color: var(--color-success);
+.user-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .actions {
@@ -110,81 +110,84 @@
 }
 
 .action-button {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  border: none;
-  color: var(--color-neutral-white);
-}
-
-.action-button.edit {
-  background-color: var(--color-primary-dark);
-}
-
-.action-button.delete {
-  background-color: var(--color-error);
 }
 
 .action-button:hover {
-  opacity: 0.9;
+  background-color: var(--color-background-hover);
+}
+
+.action-button.edit {
+  color: var(--color-primary);
+}
+
+.action-button.delete {
+  color: var(--color-danger);
 }
 
 .pagination {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
   padding: 1rem;
-  border-top: 1px solid var(--color-neutral-gray-light);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-background);
 }
 
 .pagination-button {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
+  background: none;
+  border: 1px solid var(--color-border);
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  border: none;
-  background-color: var(--color-neutral-gray-light);
-  color: var(--color-secondary-dark);
 }
 
-.pagination-button:disabled {
+.pagination-button:hover:not([disabled]) {
+  background-color: var(--color-background-hover);
+  border-color: var(--color-primary);
+}
+
+.pagination-button[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.pagination-button:hover:not(:disabled) {
-  background-color: var(--color-neutral-gray);
-}
-
 .page-info {
-  color: var(--color-secondary-dark);
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
 }
 
 .loading-container {
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 2rem;
   gap: 1rem;
-  color: var(--color-secondary-dark);
 }
 
 .loading-icon {
   font-size: 2rem;
+  color: var(--color-primary);
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
   to {
     transform: rotate(360deg);
   }

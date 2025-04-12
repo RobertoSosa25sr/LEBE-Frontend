@@ -1,19 +1,25 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
 
 export interface User {
-  id: number;
   id_number: string;
-  roles: string[];
+  name: string;
+  profile_photo_url: string;
 }
 
 export interface UserListResponse {
-  data: User[];
-  current_page: number;
-  per_page: number;
-  total: number;
+  users: User[];
+  pagination: {
+    total: number;
+    per_page: number;
+    current_page: number;
+    last_page: number;
+    from: number;
+    to: number;
+  };
 }
 
 export interface CreateUserRequest {
@@ -36,7 +42,18 @@ export interface DeleteUserRequest {
 export class UserService {
   private apiUrl = `${environment.apiUrl}/users`;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
+
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
 
   getUsers(page: number = 1, perPage: number = 10, search?: string): Observable<UserListResponse> {
     let params = new HttpParams()
@@ -47,18 +64,35 @@ export class UserService {
       params = params.set('search', search);
     }
 
-    return this.http.get<UserListResponse>(this.apiUrl, { params });
+    return this.http.get<UserListResponse>(this.apiUrl, { 
+      params,
+      headers: this.getHeaders()
+    });
   }
 
   createUser(user: CreateUserRequest): Observable<{ message: string; user: User }> {
-    return this.http.post<{ message: string; user: User }>(this.apiUrl, user);
+    return this.http.post<{ message: string; user: User }>(
+      this.apiUrl, 
+      user,
+      { headers: this.getHeaders() }
+    );
   }
 
   updatePassword(user: UpdatePasswordRequest): Observable<{ message: string }> {
-    return this.http.put<{ message: string }>(this.apiUrl, user);
+    return this.http.put<{ message: string }>(
+      this.apiUrl, 
+      user,
+      { headers: this.getHeaders() }
+    );
   }
 
   deleteUser(user: DeleteUserRequest): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(this.apiUrl, { body: user });
+    return this.http.delete<{ message: string }>(
+      this.apiUrl, 
+      { 
+        body: user,
+        headers: this.getHeaders()
+      }
+    );
   }
 } 
