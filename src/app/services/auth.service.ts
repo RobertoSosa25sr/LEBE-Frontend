@@ -14,6 +14,7 @@ export interface MenuItem {
 export interface User {
   id: number;
   id_number: string;
+  name: string;
   roles: string[];
 }
 

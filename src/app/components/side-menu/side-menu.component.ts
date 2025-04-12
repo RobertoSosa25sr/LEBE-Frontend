@@ -24,6 +24,8 @@ export class SideMenuComponent implements OnInit {
   showLogoutModal = false;
   menuItems$: any;
   menuItems: MenuItem[] = [];
+  currentUser$: any;
+  currentUser: any;
 
   constructor(
     private authService: AuthService,
@@ -33,6 +35,8 @@ export class SideMenuComponent implements OnInit {
   ngOnInit(): void {
     this.menuItems$ = this.authService.menuItems$;
     this.menuItems = this.authService.getMenuItems();
+    this.currentUser$ = this.authService.currentUser$;
+    this.currentUser = this.authService.getCurrentUser();
   }
 
   toggleMenu() {
