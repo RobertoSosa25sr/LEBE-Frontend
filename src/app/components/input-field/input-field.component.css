@@ -3,7 +3,6 @@
   flex-direction: column;
   gap: 0.5rem;
   width: 100%;
-  margin-bottom: 1.5rem;
 }
 
 .input-field {
@@ -19,6 +18,18 @@
   transition: all 0.2s ease;
   position: relative;
 }
+@media (max-width: 768px) {
+  .input-field {
+    padding: 0.5rem;
+  }
+}
+@media (max-width: 480px) {
+  .input-field {
+    padding: 0.25rem;
+  }
+}
+
+
 .input-field::placeholder {
   color: var(--color-accent-dark);
 }

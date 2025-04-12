@@ -11,7 +11,7 @@
       <app-input-field
         type="text"
         placeholder="Cédula"
-        formControlName="email">
+        formControlName="idNumber">
       </app-input-field>
 
       <app-input-field
@@ -21,9 +21,17 @@
       </app-input-field>
 
       <app-role-selector
+        [roles]= "[
+          { value: 'Administrator', label: 'Administrador' },
+          { value: 'User', label: 'Usuario' }
+        ]"
         [selectedRole]="selectedRole"
         (roleChange)="onRoleChange($event)">
       </app-role-selector>
+
+      <div class="error-message">
+        {{ errorMessage }}
+      </div>
 
       <app-button
         type="primary"
@@ -32,6 +40,9 @@
         size="large">
         Iniciar Sesión
       </app-button>
+
     </form>
 
+  </app-form-container>
 
+</div>

@@ -6,6 +6,8 @@ import { ButtonComponent } from '../../components/button/button.component';
 import { FormContainerComponent } from '../../components/form-container/form-container.component';
 import { LogoComponent } from '../../components/logo/logo.component';
 import { RoleSelectorComponent } from '../../components/role-selector/role-selector.component';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -28,10 +30,14 @@ export class LoginComponent {
   errorMessage = '';
   selectedRole = '';
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      idNumber: ['', [Validators.required]],
+      password: ['', [Validators.required]],
       role: ['', Validators.required]
     });
   }
@@ -46,27 +52,26 @@ export class LoginComponent {
       this.isLoading = true;
       this.errorMessage = '';
       
-      // Here you would typically make an API call to authenticate
-      // For now, we'll simulate an API call
-      setTimeout(() => {
-        this.isLoading = false;
-        console.log('Form submitted:', this.loginForm.value);
-      }, 1500);
+      const { idNumber, password, role } = this.loginForm.value;
+      
+      this.authService.login(idNumber, password, role).subscribe({
+        next: () => {
+          this.router.navigate(['/home']);
+        },
+        error: (err) => {
+          this.isLoading = false;
+          this.errorMessage = err.error.message || 'Error al iniciar sesión';
+        }
+      });
     } else {
-      this.errorMessage = 'Please fill in all required fields correctly.';
+      this.errorMessage = 'Por favor complete todos los campos correctamente.';
     }
   }
 
   getErrorMessage(controlName: string): string {
     const control = this.loginForm.get(controlName);
     if (control?.hasError('required')) {
-      return 'This field is required';
-    }
-    if (control?.hasError('email')) {
-      return 'Please enter a valid email address';
-    }
-    if (control?.hasError('minlength')) {
-      return 'Password must be at least 6 characters long';
+      return 'Este campo es requerido';
     }
     return '';
   }

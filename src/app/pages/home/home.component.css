@@ -1,0 +1,19 @@
+.home-page {
+  min-height: 100vh;
+  background-color: var(--color-background-light);
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 2rem;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content h1 {
+  color: var(--color-accent-dark);
+  margin-bottom: 1rem;
+}
+
+.main-content p {
+  color: var(--color-text-dark);
+} 
