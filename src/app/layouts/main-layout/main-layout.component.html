@@ -1,0 +1,14 @@
+<div class="layout-container">
+  <app-side-menu (collapsed)="onMenuCollapsed($any($event))"></app-side-menu>
+  <div class="content-wrapper" [class.collapsed]="isMenuCollapsed">
+    <div class="title-bar">
+      <h1>{{ currentTitle }}</h1>
+      <div class="logo-wrapper">
+        <app-logo size="small" position="right"></app-logo>
+      </div>
+    </div>
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div> 

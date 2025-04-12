@@ -1,0 +1,90 @@
+<div class="users-container">
+  <div class="users-header">
+    <h1>Usuarios</h1>
+    <div class="header-actions">
+      <div class="search-container">
+        <input 
+          type="text" 
+          placeholder="Buscar usuarios..." 
+          (input)="onSearch($any($event.target).value)"
+          class="search-input">
+        <span class="material-icons search-icon">search</span>
+      </div>
+      <app-button 
+        type="primary" 
+        size="large"
+        [routerLink]="['/users/new']">
+        <span class="material-icons">add</span>
+        Nuevo Usuario
+      </app-button>
+    </div>
+  </div>
+
+  <div class="users-content">
+    <div class="table-container" *ngIf="!isLoading; else loading">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>Cédula</th>
+            <th>Roles</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{ user.id_number }}</td>
+            <td>
+              <div class="roles-container">
+                <span *ngFor="let role of user.roles" class="role-badge">
+                  {{ role }}
+                </span>
+              </div>
+            </td>
+            <td class="actions">
+              <button class="action-button edit" [routerLink]="['/users', user.id, 'edit']">
+                <span class="material-icons">edit</span>
+              </button>
+              <button class="action-button delete" (click)="onDeleteClick(user)">
+                <span class="material-icons">delete</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination" *ngIf="total > perPage">
+        <button 
+          class="pagination-button"
+          [disabled]="currentPage === 1"
+          (click)="onPageChange(currentPage - 1)">
+          <span class="material-icons">chevron_left</span>
+        </button>
+        <span class="page-info">
+          Página {{ currentPage }} de {{ Math.ceil(total / perPage) }}
+        </span>
+        <button 
+          class="pagination-button"
+          [disabled]="currentPage === Math.ceil(total / perPage)"
+          (click)="onPageChange(currentPage + 1)">
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <ng-template #loading>
+      <div class="loading-container">
+        <span class="material-icons loading-icon">refresh</span>
+        <p>Cargando usuarios...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<app-modal 
+  *ngIf="showDeleteModal"
+  title="¿Estás seguro de que deseas eliminar este usuario?"
+  confirmLabel="Eliminar"
+  cancelLabel="Cancelar"
+  (confirm)="onDeleteConfirm()"
+  (cancel)="onDeleteCancel()">
+</app-modal> 

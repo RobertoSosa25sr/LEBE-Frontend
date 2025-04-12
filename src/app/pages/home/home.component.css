@@ -1,19 +1,26 @@
 .home-page {
-  min-height: 100vh;
-  background-color: var(--color-background-light);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
-  margin-left: 250px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   padding: 2rem;
-  transition: margin-left 0.3s ease;
 }
 
-.main-content h1 {
-  color: var(--color-accent-dark);
+h1 {
+  color: var(--color-secondary-dark);
   margin-bottom: 1rem;
+  font-size: 2rem;
 }
 
-.main-content p {
-  color: var(--color-text-dark);
+p {
+  color: var(--color-neutral-gray-dark);
+  font-size: 1.2rem;
 } 

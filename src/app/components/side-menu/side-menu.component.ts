@@ -1,25 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { LogoComponent } from '../logo/logo.component';
 import { ModalComponent } from '../modal/modal.component';
 
 interface MenuItem {
-  label: string;
   icon: string;
+  label: string;
   route: string;
 }
 
 @Component({
   selector: 'app-side-menu',
   standalone: true,
-  imports: [CommonModule, RouterModule, ModalComponent],
+  imports: [CommonModule, RouterModule, ModalComponent, LogoComponent],
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.css']
 })
 export class SideMenuComponent implements OnInit {
+  @Output() collapsed = new EventEmitter<boolean>();
   isCollapsed = false;
   showLogoutModal = false;
+  menuItems$: any;
   menuItems: MenuItem[] = [];
 
   constructor(
@@ -28,11 +31,13 @@ export class SideMenuComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.menuItems = this.authService.getMenuItems();     
+    this.menuItems$ = this.authService.menuItems$;
+    this.menuItems = this.authService.getMenuItems();
   }
 
   toggleMenu() {
     this.isCollapsed = !this.isCollapsed;
+    this.collapsed.emit(this.isCollapsed);
   }
 
   onLogoutClick() {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { InputFieldComponent } from '../../components/input-field/input-field.component';
@@ -24,10 +24,10 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
+  errorMessage: string | null = null;
   isLoading = false;
-  errorMessage = '';
   selectedRole = '';
 
   constructor(
@@ -36,10 +36,17 @@ export class LoginComponent {
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      idNumber: ['', [Validators.required]],
+      id_number: ['', [Validators.required]],
       password: ['', [Validators.required]],
-      role: ['', Validators.required]
+      role: ['', [Validators.required]]
     });
+  }
+
+  ngOnInit(): void {
+    // Check if user is already logged in
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/home']);
+    }
   }
 
   onRoleChange(role: string) {
@@ -50,17 +57,17 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.valid) {
       this.isLoading = true;
-      this.errorMessage = '';
+      this.errorMessage = null;
       
-      const { idNumber, password, role } = this.loginForm.value;
+      const { id_number, password, role } = this.loginForm.value;
       
-      this.authService.login(idNumber, password, role).subscribe({
+      this.authService.login(id_number, password, role).subscribe({
         next: () => {
           this.router.navigate(['/home']);
         },
-        error: (err) => {
+        error: (error) => {
+          this.errorMessage = error.message || 'Error al iniciar sesión';
           this.isLoading = false;
-          this.errorMessage = err.error.message || 'Error al iniciar sesión';
         }
       });
     } else {

@@ -49,16 +49,20 @@ export class AuthService {
     }
   }
 
+  isAuthenticated(): boolean {
+    return !!this.getToken();
+  }
+
   login(idNumber: string, password: string, role: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, {
       id_number: idNumber,
-      password: password,
-      role: role
+      password,
+      role
     }).pipe(
       tap(response => {
+        this.tokenSubject.next(response.token);
         this.currentUserSubject.next(response.user);
         this.menuItemsSubject.next(response.menu_items);
-        this.tokenSubject.next(response.token);
         localStorage.setItem('token', response.token);
         localStorage.setItem('menuItems', JSON.stringify(response.menu_items));
       })
@@ -66,9 +70,9 @@ export class AuthService {
   }
 
   logout() {
+    this.tokenSubject.next(null);
     this.currentUserSubject.next(null);
     this.menuItemsSubject.next([]);
-    this.tokenSubject.next(null);
     localStorage.removeItem('token');
     localStorage.removeItem('menuItems');
   }
