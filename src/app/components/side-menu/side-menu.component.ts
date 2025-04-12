@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { ConfirmationModalComponent } from '../confirmation-modal/confirmation-modal.component';
+import { ModalComponent } from '../modal/modal.component';
 
 interface MenuItem {
   label: string;
@@ -13,7 +13,7 @@ interface MenuItem {
 @Component({
   selector: 'app-side-menu',
   standalone: true,
-  imports: [CommonModule, RouterModule, ConfirmationModalComponent],
+  imports: [CommonModule, RouterModule, ModalComponent],
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.css']
 })

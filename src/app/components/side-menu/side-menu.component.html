@@ -36,8 +36,11 @@
   </div>
 </div>
 
-<app-confirmation-modal 
+<app-modal 
   *ngIf="showLogoutModal"
+  title="¿Estás seguro de que deseas cerrar sesión?"
+  confirmLabel="Confirmar"
+  cancelLabel="Cancelar"
   (confirm)="onLogoutConfirm()"
   (cancel)="onLogoutCancel()">
-</app-confirmation-modal> 
+</app-modal> 
