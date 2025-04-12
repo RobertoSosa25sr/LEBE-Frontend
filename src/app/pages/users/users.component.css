@@ -69,6 +69,7 @@
 .users-table {
   width: 100%;
   border-collapse: collapse;
+  background-color: var(--color-neutral-white);
 }
 
 .users-table th,
@@ -79,7 +80,7 @@
 }
 
 .users-table th {
-  background-color: var(--color-background);
+  background-color: var(--color-primary-base);
   font-weight: 600;
   color: var(--color-text-secondary);
   text-transform: uppercase;
@@ -87,9 +88,14 @@
   letter-spacing: 0.05em;
 }
 
-.users-table tbody tr:hover {
-  background-color: var(--color-background-hover);
+.users-table tbody tr:nth-child(odd) {
+  background-color: var(--color-neutral-white);
 }
+
+.users-table tbody tr:nth-child(even) {
+  background-color: var(--color-primary-light);
+}
+
 
 .user-info {
   display: flex;
