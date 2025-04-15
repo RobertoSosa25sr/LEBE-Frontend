@@ -3,12 +3,21 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
+import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
+import { ActionButtonComponent, ActionButtonConfig } from '../../components/action-button/action-button.component';
 import { UserService, User, UserListResponse } from '../../services/user.service';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonComponent, ModalComponent],
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    ButtonComponent, 
+    ModalComponent,
+    DataTableComponent,
+    ActionButtonComponent
+  ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
@@ -24,7 +33,38 @@ export class UsersComponent implements OnInit {
   from = 0;
   to = 0;
   searchTerm = '';
-  Math = Math;
+
+  tableConfig: TableConfig<User> = {
+    columns: [
+      { 
+        key: 'name',
+        label: 'Nombres',
+        type: 'user' as const,
+        showPhoto: true,
+      },
+      { 
+        key: 'id_number',
+        label: 'Cédula',
+        type: 'text' as const
+      }
+    ],
+    showActions: true,
+    actionButtons: [
+      {
+        icon: 'edit',
+        routerLink: (user: User) => ['/users', user.id_number, 'edit'],
+        tooltip: 'Editar usuario'
+      },
+      {
+        icon: 'delete',
+        action: (user: User) => this.onDeleteClick(user),
+        tooltip: 'Eliminar usuario'
+      }
+    ],
+    currentPage: 1,
+    pageSize: 10,
+    totalItems: 0
+  };
 
   constructor(private userService: UserService) {}
 
@@ -43,6 +83,13 @@ export class UsersComponent implements OnInit {
           this.lastPage = response.pagination.last_page;
           this.from = response.pagination.from;
           this.to = response.pagination.to;
+          
+          this.tableConfig = {
+            ...this.tableConfig,
+            currentPage: this.currentPage,
+            totalItems: this.total
+          };
+          
           this.isLoading = false;
         },
         error: (error) => {

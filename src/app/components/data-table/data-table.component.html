@@ -1,0 +1,74 @@
+<div class="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <ng-container *ngFor="let column of config.columns">
+          <th 
+            [class]="'header-' + (column.headerAlign || 'left')"
+            [style.text-align]="column.headerAlign || 'left'">
+            {{ column.label }}
+          </th>
+        </ng-container>
+        <th class="actions-header" *ngIf="config.showActions">
+          <i class="fa-solid fa-bars"></i>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of data">
+        <ng-container *ngFor="let column of config.columns">
+          <td 
+            [class]="'cell-' + (column.cellAlign || 'left')"
+            [style.text-align]="column.cellAlign || 'left'">
+            <ng-container *ngIf="column.type === 'user'">
+              <div class="user-info">
+                <ng-container *ngIf="column.showPhoto">
+                  <img 
+                    *ngIf="getValue(item, column.key + '_photo_url')" 
+                    [src]="getValue(item, column.key + '_photo_url')" 
+                    [alt]="getValue(item, column.key)"
+                    class="user-avatar">
+                  <div *ngIf="!getValue(item, column.key + '_photo_url')" class="user-avatar initials">
+                    {{ getInitials(getValue(item, column.key)) }}
+                  </div>
+                </ng-container>
+                <span>{{ getValue(item, column.key) }}</span>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!column.type || column.type === 'text'">
+              {{ getValue(item, column.key) }}
+            </ng-container>
+          </td>
+        </ng-container>
+        <td class="actions-cell" *ngIf="config.showActions">
+          <div class="actions">
+            <app-action-button
+              *ngFor="let button of config.actionButtons"
+              [config]="button"
+              [item]="item"
+              (action)="onAction(button.icon, item)">
+            </app-action-button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination" *ngIf="config.totalItems && config.totalItems > (config.pageSize || 10)">
+    <button 
+      class="pagination-button"
+      [disabled]="!config.currentPage || config.currentPage === 1"
+      (click)="onPageChange((config.currentPage || 1) - 1)">
+      <span class="material-icons">chevron_left</span>
+    </button>
+    <span class="page-info">
+      Mostrando {{ paginationRange.from }} a {{ paginationRange.to }} de {{ config.totalItems }} registros
+    </span>
+    <button 
+      class="pagination-button"
+      [disabled]="!config.currentPage || config.currentPage === totalPages"
+      (click)="onPageChange((config.currentPage || 1) + 1)">
+      <span class="material-icons">chevron_right</span>
+    </button>
+  </div>
+</div> 
