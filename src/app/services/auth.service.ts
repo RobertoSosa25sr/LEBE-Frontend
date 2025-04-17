@@ -32,21 +32,27 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   private menuItemsSubject = new BehaviorSubject<MenuItem[]>([]);
   private tokenSubject = new BehaviorSubject<string | null>(null);
+  private selectedRoleSubject = new BehaviorSubject<string | null>(null);
 
   currentUser$ = this.currentUserSubject.asObservable();
   menuItems$ = this.menuItemsSubject.asObservable();
   token$ = this.tokenSubject.asObservable();
+  selectedRole$ = this.selectedRoleSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    // Load token and menu items from localStorage on service initialization
+    // Load token, menu items, and selected role from localStorage on service initialization
     const storedToken = localStorage.getItem('token');
     const storedMenuItems = localStorage.getItem('menuItems');
+    const storedRole = localStorage.getItem('selectedRole');
     
     if (storedToken) {
       this.tokenSubject.next(storedToken);
     }
     if (storedMenuItems) {
       this.menuItemsSubject.next(JSON.parse(storedMenuItems));
+    }
+    if (storedRole) {
+      this.selectedRoleSubject.next(storedRole);
     }
   }
 
@@ -64,8 +70,11 @@ export class AuthService {
         this.tokenSubject.next(response.token);
         this.currentUserSubject.next(response.user);
         this.menuItemsSubject.next(response.menu_items);
+        this.selectedRoleSubject.next(role);
+        
         localStorage.setItem('token', response.token);
         localStorage.setItem('menuItems', JSON.stringify(response.menu_items));
+        localStorage.setItem('selectedRole', role);
       })
     );
   }
@@ -74,8 +83,11 @@ export class AuthService {
     this.tokenSubject.next(null);
     this.currentUserSubject.next(null);
     this.menuItemsSubject.next([]);
+    this.selectedRoleSubject.next(null);
+    
     localStorage.removeItem('token');
     localStorage.removeItem('menuItems');
+    localStorage.removeItem('selectedRole');
   }
 
   getToken(): string | null {
@@ -88,5 +100,14 @@ export class AuthService {
 
   getMenuItems(): MenuItem[] {
     return this.menuItemsSubject.value;
+  }
+
+  getUserRole(): string {
+    return this.selectedRoleSubject.value || '';
+  }
+
+  hasRole(role: string): boolean {
+    const user = this.currentUserSubject.value;
+    return user?.roles.includes(role) || false;
   }
 }

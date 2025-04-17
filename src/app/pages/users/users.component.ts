@@ -4,8 +4,10 @@ import { RouterModule } from '@angular/router';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
-import { ActionButtonComponent, ActionButtonConfig } from '../../components/action-button/action-button.component';
+import { ActionButtonComponent } from '../../components/action-button/action-button.component';
 import { UserService, User, UserListResponse } from '../../services/user.service';
+import { ActionButtonService } from '../../services/action-button.service';
+import { ActionButtonConfig } from '../../interfaces/action-button-config.interface';
 
 @Component({
   selector: 'app-users',
@@ -33,6 +35,7 @@ export class UsersComponent implements OnInit {
   from = 0;
   to = 0;
   searchTerm = '';
+  actionButtons: ActionButtonConfig[] = [];
 
   tableConfig: TableConfig<User> = {
     columns: [
@@ -66,10 +69,14 @@ export class UsersComponent implements OnInit {
     totalItems: 0
   };
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private actionButtonService: ActionButtonService
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();
+    this.actionButtons = this.actionButtonService.getTableActions('user');
   }
 
   loadUsers() {
