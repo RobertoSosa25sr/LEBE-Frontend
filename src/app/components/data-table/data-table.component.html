@@ -15,28 +15,26 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of paginatedData">
+      <tr *ngFor="let item of data">
         <ng-container *ngFor="let column of config.columns">
           <td 
             [class]="'cell-' + (column.cellAlign || 'left')"
             [style.text-align]="column.cellAlign || 'left'">
             <ng-container *ngIf="column.type === 'user'">
-              <ng-container *ngIf="getUserInfo(getValue(item, column.key)) as userInfo">
-                <div class="user-info">
-                  <div class="user-avatar">
-                    <ng-container *ngIf="userInfo.photo_url; else initials">
-                      <img [src]="userInfo.photo_url" [alt]="userInfo.name">
-                    </ng-container>
-                    <ng-template #initials>
-                      {{ getInitials(userInfo.name) }}
-                    </ng-template>
-                  </div>
-                  <span>{{ userInfo.name }}</span>
+              <div class="user-info">
+                <div class="user-avatar">
+                  <ng-container *ngIf="item.profile_photo_url; else initials">
+                    <img [src]="item.profile_photo_url" [alt]="item.name">
+                  </ng-container>
+                  <ng-template #initials>
+                    <div class="initials">{{ getInitials(item.name) }}</div>
+                  </ng-template>
                 </div>
-              </ng-container>
+                <span class="user-name">{{ item.name }}</span>
+              </div>
             </ng-container>
-            <ng-container *ngIf="!column.type">
-              {{ getValue(item, column.key) }}
+            <ng-container *ngIf="column.type === 'text'">
+              {{ item[column.key] }}
             </ng-container>
           </td>
         </ng-container>

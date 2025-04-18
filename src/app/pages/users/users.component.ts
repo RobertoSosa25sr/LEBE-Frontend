@@ -42,13 +42,17 @@ export class UsersComponent implements OnInit {
       { 
         key: 'name',
         label: 'Nombres',
-        type: 'user' as const,
+        type: 'user',
         showPhoto: true,
+        headerAlign: 'left',
+        cellAlign: 'left'
       },
       { 
         key: 'id_number',
         label: 'Cédula',
-        type: 'text' as const
+        type: 'text',
+        headerAlign: 'left',
+        cellAlign: 'left'
       }
     ],
     showActions: true,
@@ -94,6 +98,7 @@ export class UsersComponent implements OnInit {
           this.tableConfig = {
             ...this.tableConfig,
             currentPage: this.currentPage,
+            pageSize: this.perPage,
             totalItems: this.total
           };
           

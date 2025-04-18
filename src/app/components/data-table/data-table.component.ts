@@ -36,6 +36,12 @@ export interface TableConfig<T> {
   totalItems?: number;
 }
 
+export interface UserData {
+  id_number: string;
+  name: string;
+  profile_photo_url: string;
+}
+
 @Component({
   selector: 'app-data-table',
   standalone: true,
@@ -43,7 +49,7 @@ export interface TableConfig<T> {
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.css']
 })
-export class DataTableComponent<T extends { id?: number; id_number?: string }> {
+export class DataTableComponent<T extends UserData> {
   @Input() data: T[] = [];
   @Input() config: TableConfig<T> = { columns: [] };
   @Input() actionButtons: ActionButtonConfig<T>[] = [];
@@ -88,8 +94,7 @@ export class DataTableComponent<T extends { id?: number; id_number?: string }> {
   }
 
   getInitials(name: string): string {
-    return name
-      .split(' ')
+    return name.split(' ')
       .map(part => part[0])
       .join('')
       .toUpperCase();
@@ -113,8 +118,12 @@ export class DataTableComponent<T extends { id?: number; id_number?: string }> {
     return this.isUserInfo(value) ? value : null;
   }
 
-  getItemId(item: T): number | string {
-    return item.id ?? item.id_number ?? '';
+  getItemId(item: T): string {
+    return item.id_number;
+  }
+
+  getPhotoUrl(item: T): string {
+    return item.profile_photo_url;
   }
 
   handleAction(button: ActionButtonConfig<T>, item: T): void {
