@@ -11,13 +11,25 @@
       <app-input-field
         type="text"
         placeholder="Cédula"
-        formControlName="id_number">
+        formControlName="id_number"
+        variant="primary">
       </app-input-field>
 
       <app-input-field
         type="password"
         placeholder="Contraseña"
-        formControlName="password">
+        formControlName="password"
+        variant="primary">
+      </app-input-field>
+
+      <app-input-field
+        type="dropdown"
+        placeholder="Rol"
+        formControlName="role"
+        variant="primary"
+        [options]="['Administrator', 'User']"
+        [selectedOption]="selectedRole"
+        (optionChange)="onRoleChange($event)">
       </app-input-field>
 
       <app-role-selector

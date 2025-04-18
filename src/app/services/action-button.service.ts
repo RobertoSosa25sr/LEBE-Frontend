@@ -18,7 +18,7 @@ export class ActionButtonService {
                     baseActions.push(
                         {
                             icon: 'edit',
-                            routerLink: ['/users', ':id', 'edit'],
+                            action: (user: any) => this.editUser(user),
                             tooltip: 'Editar usuario'
                         },
                         {
@@ -36,5 +36,9 @@ export class ActionButtonService {
 
     private deleteUser(user: any): void {
         console.log('Delete user:', user);
+    }
+
+    private editUser(user: any): void {
+        console.log('Edit user:', user);
     }
 } 

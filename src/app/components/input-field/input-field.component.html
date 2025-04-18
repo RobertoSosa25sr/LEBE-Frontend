@@ -1,10 +1,22 @@
-<div class="input-container">
-    <input
-      [value]="value"
-      [placeholder]="placeholder"
-      [type]="type"
-      (input)="onInput($event)"
-      (blur)="onTouch()"
-      class="input-field"
-    />
+<input *ngIf="type !== 'dropdown'" [value]="value" [placeholder]="placeholder" [type]="type" (input)="onInput($event)"
+  (blur)="onTouch()" class="input-field" [class.input-field-primary]="variant === 'primary'"
+  [class.input-field-secondary]="variant === 'secondary'" [class.input-field-tertiary]="variant === 'tertiary'"
+  [class.input-field-small]="size === 'small'" [class.input-field-medium]="size === 'medium'"
+  [class.input-field-large]="size === 'large'" />
+
+<div *ngIf="type === 'dropdown' && options" class="dropdown-selector" [class.input-field-primary]="variant === 'primary'"
+[class.input-field-secondary]="variant === 'secondary'" [class.input-field-tertiary]="variant === 'tertiary'"
+[class.input-field-small]="size === 'small'" [class.input-field-medium]="size === 'medium'"
+[class.input-field-large]="size === 'large'">
+  <div class="dropdown-button" (click)="toggleDropdown()">
+    <span class="selected-option">{{ getSelectedOption() }}</span>
+    <span class="dropdown-arrow">▼</span>
+  </div>
+
+  <div class="options-container" *ngIf="isDropdownOpen">
+    <div class="option" *ngFor="let option of options" (click)="onOptionChange(option)"
+      [class.selected]="option === selectedOption">
+      {{ option }}
+    </div>
+  </div>
 </div>

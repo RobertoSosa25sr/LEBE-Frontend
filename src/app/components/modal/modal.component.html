@@ -1,6 +1,13 @@
 <div class="modal-overlay">
   <div class="modal-content">
     <h2>{{ title }}</h2>
+    <app-form-container>
+      <form *ngIf="inputFields.length > 0" (ngSubmit)="onConfirm()">
+        <div *ngFor="let field of inputFields" class="form-group">
+          <app-input-field [type]="field.type" [value]="field.value"></app-input-field>
+        </div>
+      </form>
+    </app-form-container>
     <div class="modal-buttons">
       <button class="cancel-button" (click)="onCancel()">{{ cancelLabel }}</button>
       <button class="confirm-button" (click)="onConfirm()">{{ confirmLabel }}</button>

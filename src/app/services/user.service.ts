@@ -8,6 +8,7 @@ export interface User {
   id_number: string;
   name: string;
   profile_photo_url: string;
+  role?: string;
 }
 
 export interface UserListResponse {

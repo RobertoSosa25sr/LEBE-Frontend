@@ -47,3 +47,13 @@
   (confirm)="onDeleteConfirm()"
   (cancel)="onDeleteCancel()">
 </app-modal> 
+
+<app-modal 
+  *ngIf="showEditModal"
+  title="Editar usuario"
+  [inputFields]="inputFields"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  (confirm)="onEditConfirm()"
+  (cancel)="onEditCancel()">
+</app-modal>

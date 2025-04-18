@@ -8,7 +8,7 @@ import { ActionButtonComponent } from '../../components/action-button/action-but
 import { UserService, User, UserListResponse } from '../../services/user.service';
 import { ActionButtonService } from '../../services/action-button.service';
 import { ActionButtonConfig } from '../../interfaces/action-button-config.interface';
-
+import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -26,6 +26,7 @@ import { ActionButtonConfig } from '../../interfaces/action-button-config.interf
 export class UsersComponent implements OnInit {
   users: User[] = [];
   showDeleteModal = false;
+  showEditModal = false;
   selectedUser: User | null = null;
   isLoading = false;
   currentPage = 1;
@@ -36,6 +37,7 @@ export class UsersComponent implements OnInit {
   to = 0;
   searchTerm = '';
   actionButtons: ActionButtonConfig[] = [];
+  inputFields: InputFieldConfig[] = [];
 
   tableConfig: TableConfig<User> = {
     columns: [
@@ -73,6 +75,12 @@ export class UsersComponent implements OnInit {
         return {
           ...button,
           action: (user: User) => this.onDeleteClick(user)
+        };
+      }
+      if (button.icon === 'edit') {
+        return {
+          ...button,
+          action: (user: User) => this.onEditClick(user)
         };
       }
       return button;
@@ -123,6 +131,19 @@ export class UsersComponent implements OnInit {
     this.showDeleteModal = true;
   }
 
+  onEditClick(user: User) {
+    if (!user) return;
+    
+    this.selectedUser = user;
+    this.inputFields = [
+      { label: 'Nombres completos', type: 'text', value: user.name },
+      { label: 'Cédula', type: 'text', value: user.id_number },
+      { label: 'Rol', type: 'dropdown', options: ['Administrador', 'Usuario'], value: user.role },
+      { label: 'Contraseña', type: 'password' }
+    ];
+    this.showEditModal = true;
+  }
+
   onDeleteConfirm() {
     if (this.selectedUser) {
       this.isLoading = true;
@@ -143,8 +164,20 @@ export class UsersComponent implements OnInit {
     }
   }
 
+  onEditConfirm() {
+    if (this.selectedUser) {
+      this.isLoading = true;
+      // Aquí implementarías la lógica de edición
+      console.log('Editando usuario:', this.selectedUser); }}
+  
+
   onDeleteCancel() {
     this.showDeleteModal = false;
+    this.selectedUser = null;
+  }
+
+  onEditCancel() {
+    this.showEditModal = false;
     this.selectedUser = null;
   }
 } 
