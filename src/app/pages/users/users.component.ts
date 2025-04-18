@@ -56,18 +56,6 @@ export class UsersComponent implements OnInit {
       }
     ],
     showActions: true,
-    actionButtons: [
-      {
-        icon: 'edit',
-        routerLink: (user: User) => ['/users', user.id_number, 'edit'],
-        tooltip: 'Editar usuario'
-      },
-      {
-        icon: 'delete',
-        action: (user: User) => this.onDeleteClick(user),
-        tooltip: 'Eliminar usuario'
-      }
-    ],
     currentPage: 1,
     pageSize: 10,
     totalItems: 0
@@ -80,7 +68,15 @@ export class UsersComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUsers();
-    this.actionButtons = this.actionButtonService.getTableActions('user');
+    this.actionButtons = this.actionButtonService.getTableActions('user').map(button => {
+      if (button.icon === 'delete') {
+        return {
+          ...button,
+          action: (user: User) => this.onDeleteClick(user)
+        };
+      }
+      return button;
+    });
   }
 
   loadUsers() {

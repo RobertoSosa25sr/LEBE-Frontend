@@ -34,8 +34,7 @@ export class ActionButtonService {
         return baseActions;
     }
 
-    private deleteUser(id: number): void {
-        // This will be implemented when we handle the delete action
-        console.log('Delete user:', id);
+    private deleteUser(user: any): void {
+        console.log('Delete user:', user);
     }
 } 
