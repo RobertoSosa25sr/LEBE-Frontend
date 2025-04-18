@@ -100,10 +100,10 @@ export class DataTableComponent<T extends { id?: number; id_number?: string }> {
   }
 
   getButtonConfig(button: ActionButtonConfig<T>, itemId: number | string): ActionButtonConfig<T> {
-    if (button.routerLink) {
+    if (Array.isArray(button.routerLink)) {
       return {
         ...button,
-        routerLink: button.routerLink.map(link => link === ':id' ? itemId.toString() : link)
+        routerLink: button.routerLink.map((link: string) => link === ':id' ? itemId.toString() : link)
       };
     }
     return button;
@@ -119,7 +119,7 @@ export class DataTableComponent<T extends { id?: number; id_number?: string }> {
 
   handleAction(button: ActionButtonConfig<T>, item: T): void {
     if (button.action) {
-      button.action(this.getItemId(item));
+      button.action(item);
     }
   }
 } 

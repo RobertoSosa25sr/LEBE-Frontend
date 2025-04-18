@@ -40,19 +40,13 @@ export class AuthService {
   selectedRole$ = this.selectedRoleSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    // Load token, menu items, and selected role from localStorage on service initialization
-    const storedToken = localStorage.getItem('token');
-    const storedMenuItems = localStorage.getItem('menuItems');
-    const storedRole = localStorage.getItem('selectedRole');
-    
-    if (storedToken) {
-      this.tokenSubject.next(storedToken);
-    }
-    if (storedMenuItems) {
-      this.menuItemsSubject.next(JSON.parse(storedMenuItems));
-    }
-    if (storedRole) {
-      this.selectedRoleSubject.next(storedRole);
+    if (typeof window !== 'undefined') {
+      this.tokenSubject.next(localStorage.getItem('token'));
+      this.selectedRoleSubject.next(localStorage.getItem('selectedRole'));
+      const storedMenuItems = localStorage.getItem('menuItems');
+      if (storedMenuItems) {
+        this.menuItemsSubject.next(JSON.parse(storedMenuItems));
+      }
     }
   }
 

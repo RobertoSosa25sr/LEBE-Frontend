@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { InputFieldComponent } from '../../components/input-field/input-field.component';
@@ -24,7 +24,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
   loginForm: FormGroup;
   errorMessage: string | null = null;
   isLoading = false;
@@ -33,7 +33,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.loginForm = this.fb.group({
       id_number: ['', [Validators.required]],
@@ -49,9 +50,19 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  ngAfterViewInit() {
+    // Use setTimeout to defer the role change to the next tick
+    setTimeout(() => {
+      if (this.selectedRole) {
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
   onRoleChange(role: string) {
     this.selectedRole = role;
     this.loginForm.patchValue({ role });
+    this.cdr.detectChanges();
   }
 
   onSubmit() {
@@ -64,10 +75,12 @@ export class LoginComponent implements OnInit {
       this.authService.login(id_number, password, role).subscribe({
         next: () => {
           this.router.navigate(['/home']);
+          this.cdr.detectChanges();
         },
         error: (error) => {
-          this.errorMessage = error.message || 'Error al iniciar sesión';
+          this.errorMessage = error.error.message || 'Error al iniciar sesión';
           this.isLoading = false;
+          this.cdr.detectChanges();
         }
       });
     } else {
