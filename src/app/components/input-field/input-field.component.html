@@ -1,13 +1,19 @@
 <input *ngIf="type !== 'dropdown'" [value]="value" [placeholder]="placeholder" [type]="type" (input)="onInput($event)"
-  (blur)="onTouch()" class="input-field" [class.input-field-primary]="variant === 'primary'"
-  [class.input-field-secondary]="variant === 'secondary'" [class.input-field-tertiary]="variant === 'tertiary'"
-  [class.input-field-small]="size === 'small'" [class.input-field-medium]="size === 'medium'"
+  (blur)="onTouch()" class="input-field" 
+  [class.input-field-primary]="variant === 'primary'"
+  [class.input-field-secondary]="variant === 'secondary'" 
+  [class.input-field-tertiary]="variant === 'tertiary'"
+  [class.input-field-small]="size === 'small'" 
+  [class.input-field-medium]="size === 'medium'"
   [class.input-field-large]="size === 'large'" />
 
-<div *ngIf="type === 'dropdown' && options" class="dropdown-selector" [class.input-field-primary]="variant === 'primary'"
-[class.input-field-secondary]="variant === 'secondary'" [class.input-field-tertiary]="variant === 'tertiary'"
-[class.input-field-small]="size === 'small'" [class.input-field-medium]="size === 'medium'"
-[class.input-field-large]="size === 'large'">
+<div *ngIf="type === 'dropdown' && options" class="dropdown-selector"
+  [class.dropdown-selector-primary]="variant === 'primary'"
+  [class.dropdown-selector-secondary]="variant === 'secondary'"
+  [class.dropdown-selector-tertiary]="variant === 'tertiary'"
+  [class.dropdown-selector-small]="size === 'small'" 
+  [class.dropdown-selector-medium]="size === 'medium'"
+  [class.dropdown-selector-large]="size === 'large'">
   <div class="dropdown-button" (click)="toggleDropdown()">
     <span class="selected-option">{{ getSelectedOption() }}</span>
     <span class="dropdown-arrow">▼</span>

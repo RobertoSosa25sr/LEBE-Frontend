@@ -1,9 +1,7 @@
 .input-field {
   width: 100%;
-  padding: 0.75rem;
   outline: none;
   border-radius: 0.3rem;
-  font-size: clamp(1.125rem, 1.0817rem + 0.1923vw, 1.25rem);
   text-align: center;
   font-weight: bold;
   transition: all 0.2s ease;
@@ -37,18 +35,21 @@
   transition: all 0.2s ease;
 }
 
+.input-field-large{
+  padding: 0.75rem;
+  font-size: clamp(1.125rem, 1.0817rem + 0.1923vw, 1.25rem);
+}
 
 @media (max-width: 768px) {
-  .input-field {
+  .input-field-large {
     padding: 0.5rem;
   }
 }
 @media (max-width: 480px) {
-  .input-field {
+  .input-field-large {
     padding: 0.25rem;
   }
 }
-
 
 
 
@@ -60,76 +61,51 @@
   border-radius: 0.3rem;
 }
 
-.dropdown-button {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 0.3rem;
+.dropdown-selector-primary{
+  border: 2px solid var(--color-accent-light);
   background-color: var(--color-background-dark);
   color: var(--color-neutral-white);
-  font-size: clamp(1.125rem, 1.0817rem + 0.1923vw, 1.25rem);
-  text-align: center;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
 }
 
-@media (max-width: 768px) {
-  .dropdown-button {
-    padding: 0.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .dropdown-button {
-    padding: 0.25rem;
-  }
-}
-
-
-
-
-.dropdown-button:hover {
-  background-color: var(--color-background-light);
-  color: var(--color-accent-dark);
-  transition: transform 0.2s ease;
-}
-.dropdown-button:hover .dropdown-arrow {
-  color: var(--color-accent-dark);
-}
-
-.dropdown-arrow {
-  position: absolute;
-  right: 1rem;
-  font-size: clamp(0.875rem, 0.8317rem + 0.1923vw, 1rem);
-  color:var(--color-neutral-white);
-  transition: transform 0.2s ease;
-}
-
-@media (max-width: 360px) {
-  .dropdown-arrow {
-    display: none;
-  }
-}
-
-.options-container {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin-top: 0.5rem;
-  background-color: var(--color-background-light);
-  border: 1px solid var(--color-accent-light);
+.dropdown-selector-primary .dropdown-button{
+  background-color: var(--color-background-dark);
+  color: var(--color-neutral-white);
   border-radius: 0.3rem;
-  z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 100%;
 }
 
-.option {
+.dropdown-selector-primary .dropdown-button:hover{
+    background-color: var(--color-background-light);
+    color: var(--color-accent-dark);
+    transition: transform 0.2s ease;
+}
+
+.dropdown-selector-primary .dropdown-button:hover .dropdown-arrow{
+    color: var(--color-accent-dark);
+}
+
+.dropdown-selector-primary .dropdown-arrow{
+    position: absolute;
+    right: 1rem;
+    font-size: clamp(0.875rem, 0.8317rem + 0.1923vw, 1rem);
+    color:var(--color-neutral-white);
+    transition: transform 0.2s ease;
+}
+
+.dropdown-selector-primary .options-container{
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    background-color: var(--color-background-light);
+    border: 1px solid var(--color-accent-light);
+    border-radius: 0.3rem;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.dropdown-selector-primary .option {
   padding: 0.75rem;
   color: var(--color-accent-dark);
   cursor: pointer;
@@ -137,15 +113,51 @@
   text-align: left;
 }
 
-.option:hover {
+.dropdown-selector-primary .option:hover {
   background-color: var(--color-background-dark);
   color: var(--color-text-light);
 }
 
-.option.selected {
+.dropdown-selector-primary .option.selected {
   background-color: var(--color-background-dark);
   color: var(--color-text-light);
 }
+
+.dropdown-selector-primary .dropdown-button{
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dropdown-selector-large .dropdown-button{
+  padding: 0.75rem;
+  font-size: clamp(1.125rem, 1.0817rem + 0.1923vw, 1.25rem);
+}
+
+@media (max-width: 768px) {
+  .dropdown-selector-large .dropdown-button {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dropdown-selector-large .dropdown-button {
+    padding: 0.25rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .dropdown-selector-primary .dropdown-arrow {
+    display: none;
+  }
+}
+
+
+
+
 
 
 

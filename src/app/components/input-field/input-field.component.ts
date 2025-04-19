@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, EventEmitter, Output } from '@angular/core';
+import { Component, Input, forwardRef, EventEmitter, Output, HostListener } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -55,6 +55,7 @@ export class InputFieldComponent implements ControlValueAccessor {
   onOptionChange(option: string): void {
     this.selectedOption = option;
     this.optionChange.emit(option);
+    this.isDropdownOpen = false;
   }
 
   toggleDropdown(): void {
@@ -64,4 +65,13 @@ export class InputFieldComponent implements ControlValueAccessor {
   getSelectedOption(): string {
     return this.selectedOption || this.placeholder;
   }
+
+  @HostListener('document:click', ['$event'])
+  clickOutside(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown-selector')) {
+      this.isDropdownOpen = false;
+    }
+  }	
+
 }

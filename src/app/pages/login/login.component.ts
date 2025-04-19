@@ -5,7 +5,6 @@ import { InputFieldComponent } from '../../components/input-field/input-field.co
 import { ButtonComponent } from '../../components/button/button.component';
 import { FormContainerComponent } from '../../components/form-container/form-container.component';
 import { LogoComponent } from '../../components/logo/logo.component';
-import { RoleSelectorComponent } from '../../components/role-selector/role-selector.component';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
@@ -19,7 +18,6 @@ import { AuthService } from '../../services/auth.service';
     ButtonComponent,
     FormContainerComponent,
     LogoComponent,
-    RoleSelectorComponent
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
@@ -28,7 +26,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   loginForm: FormGroup;
   errorMessage: string | null = null;
   isLoading = false;
-  selectedRole = '';
+  selectedRole = 'Administrator';
 
   constructor(
     private fb: FormBuilder,
@@ -44,14 +42,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // Check if user is already logged in
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/home']);
     }
   }
 
   ngAfterViewInit() {
-    // Use setTimeout to defer the role change to the next tick
     setTimeout(() => {
       if (this.selectedRole) {
         this.cdr.detectChanges();
