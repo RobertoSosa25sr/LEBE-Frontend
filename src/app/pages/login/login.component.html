@@ -26,6 +26,7 @@
 
       <app-input-field
         type="dropdown"
+        placeholder="Seleccionar modo"
         formControlName="role"
         variant="primary"
         size="large"
@@ -42,6 +43,9 @@
         type="primary"
         [fullWidth]="true"
         [loading]="isLoading"
+        [style.background-color]="'var(--color-primary-dark)'"
+        [style.border-radius]="'0.9rem'"
+        [style.border-color]="'var(--color-neutral-white)'"
         size="large">
         Iniciar Sesión
       </app-button>

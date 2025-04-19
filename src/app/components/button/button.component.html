@@ -2,12 +2,15 @@
   class="button"
   [class.primary]="type === 'primary'"
   [class.secondary]="type === 'secondary'"
-  [class.outline]="type === 'outline'"
+  [class.purple]="backgroundColor === 'purple'"
+  [class.green]="backgroundColor === 'green'"
+  [class.red]="backgroundColor === 'red'"
   [class.small]="size === 'small'"
   [class.medium]="size === 'medium'"
   [class.large]="size === 'large'"
   [class.full-width]="fullWidth"
   [disabled]="disabled || loading"
+  
 >
   <span *ngIf="!loading" class="button-content">
     <ng-content></ng-content>

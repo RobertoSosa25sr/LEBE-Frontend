@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   loginForm: FormGroup;
   errorMessage: string | null = null;
   isLoading = false;
-  selectedRole = 'Administrator';
+  selectedRole = '';
 
   constructor(
     private fb: FormBuilder,

@@ -36,30 +36,3 @@
   gap: 1rem;
 }
 
-.cancel-button, .confirm-button {
-  border-radius: 0.31rem;
-  cursor: pointer;
-  border: none;
-  font-size: clamp(0.5625rem, 0.4583rem + 0.463vw, 0.875rem);
-  color: var(--color-neutral-white);
-  height: 2rem;
-  width: 5.4rem;
-}
-
-.cancel-button {
-  background-color: var(--color-status-danger);
-}
-
-.confirm-button {
-  background-color: var(--color-primary-dark);
-}
-
-.cancel-button:hover {
-  font-size: clamp(0.625rem, 0.5208rem + 0.463vw, 0.9375rem);
-  transition: all 0.1s ease;
-}
-
-.confirm-button:hover {
-  font-size: clamp(0.625rem, 0.5208rem + 0.463vw, 0.9375rem);
-  transition: all 0.1s ease;
-}

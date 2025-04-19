@@ -14,4 +14,5 @@ export class ButtonComponent {
   @Input() disabled: boolean = false;
   @Input() fullWidth: boolean = false;
   @Input() loading: boolean = false;
+  @Input() backgroundColor: 'purple' | 'green' | 'red' = 'purple';
 }
