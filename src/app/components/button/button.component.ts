@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { ButtonConfig } from '../../interfaces/button-config.interface';
 @Component({
   selector: 'app-button',
   standalone: true,
@@ -9,10 +9,16 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./button.component.css']
 })
 export class ButtonComponent {
-  @Input() type: 'primary' | 'secondary' | 'outline' = 'primary';
-  @Input() size: 'small' | 'medium' | 'large' = 'medium';
-  @Input() disabled: boolean = false;
-  @Input() fullWidth: boolean = false;
-  @Input() loading: boolean = false;
-  @Input() backgroundColor: 'purple' | 'green' | 'red' = 'purple';
+  @Input() buttonConfig: ButtonConfig = {
+    type: 'primary',
+    backgroundColor: 'purple',
+    label: '',
+    size: 'medium',
+    fullWidth: false,
+    loading: false,
+    disabled: false,
+    icon: '',
+    routerLink: [],
+    action: () => {}
+  };
 }

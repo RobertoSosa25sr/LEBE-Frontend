@@ -9,6 +9,7 @@ import { UserService, User, UserListResponse } from '../../services/user.service
 import { ActionButtonService } from '../../services/action-button.service';
 import { ActionButtonConfig } from '../../interfaces/action-button-config.interface';
 import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
+import { ButtonConfig } from '../../interfaces/button-config.interface';
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -17,8 +18,7 @@ import { InputFieldConfig } from '../../interfaces/Input-field-config.interface'
     RouterModule, 
     ButtonComponent, 
     ModalComponent,
-    DataTableComponent,
-    ActionButtonComponent
+    DataTableComponent
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
@@ -38,6 +38,12 @@ export class UsersComponent implements OnInit {
   searchTerm = '';
   actionButtons: ActionButtonConfig[] = [];
   inputFields: InputFieldConfig[] = [];
+  buttonNewUserConfig: ButtonConfig = {
+    label: 'Nuevo',
+    size: 'medium',
+    backgroundColor: 'green',
+    type: 'secondary'
+  };
 
   tableConfig: TableConfig<User> = {
     columns: [
@@ -178,5 +184,9 @@ export class UsersComponent implements OnInit {
   onEditCancel() {
     this.showEditModal = false;
     this.selectedUser = null;
+  }
+
+  onNewUser() {
+    console.log('Nuevo usuario');
   }
 } 

@@ -1,19 +1,19 @@
 <button
   class="button"
-  [class.primary]="type === 'primary'"
-  [class.secondary]="type === 'secondary'"
-  [class.purple]="backgroundColor === 'purple'"
-  [class.green]="backgroundColor === 'green'"
-  [class.red]="backgroundColor === 'red'"
-  [class.small]="size === 'small'"
-  [class.medium]="size === 'medium'"
-  [class.large]="size === 'large'"
-  [class.full-width]="fullWidth"
-  [disabled]="disabled || loading"
+  [class.primary]="buttonConfig.type === 'primary'"
+  [class.secondary]="buttonConfig.type === 'secondary'"
+  [class.purple]="buttonConfig.backgroundColor === 'purple'"
+  [class.green]="buttonConfig.backgroundColor === 'green'"
+  [class.red]="buttonConfig.backgroundColor === 'red'"
+  [class.small]="buttonConfig.size === 'small'"
+  [class.medium]="buttonConfig.size === 'medium'"
+  [class.large]="buttonConfig.size === 'large'"
+  [class.full-width]="buttonConfig.fullWidth"
+  [disabled]="buttonConfig.disabled || buttonConfig.loading"
   
 >
-  <span *ngIf="!loading" class="button-content">
-    <ng-content></ng-content>
+  <span *ngIf="!buttonConfig.loading" class="button-content">
+    {{ buttonConfig.label }}
   </span>
-  <span *ngIf="loading" class="loading-spinner"></span>
+  <span *ngIf="buttonConfig.loading" class="loading-spinner"></span>
 </button>

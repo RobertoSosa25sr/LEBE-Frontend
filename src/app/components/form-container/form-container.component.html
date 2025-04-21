@@ -1,3 +1,32 @@
 <div class="form-container" [style.max-width]="maxWidth">
-    <ng-content></ng-content>
+  <h2>{{ title }}</h2>
+  <form [formGroup]="form">
+    <div class="form-fields">
+      <app-input-field
+        *ngFor="let field of inputFields"
+        [type]="field.type"
+        [placeholder]="field.placeholder"
+        [label]="field.label"
+        [formControlName]="getFieldValue(field)"
+        [variant]="field.variant"
+        [size]="field.size"
+        [options]="field.options"
+        [selectedOption]="field.selectedOption"
+        [readonly]="getFieldReadonly(field)"
+      ></app-input-field>
+    </div>
+    <div class="form-actions">
+      <app-button
+        [buttonConfig]="submitButtonConfig"
+        (click)="handleSubmit()"
+      ></app-button>
+      <app-button
+        [buttonConfig]="cancelButtonConfig"
+        (click)="handleCancel()"
+      ></app-button>
+    </div>
+  </form>
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
 </div>

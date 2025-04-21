@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
 })
 export class InputFieldComponent implements ControlValueAccessor {
 
-  @Input() placeholder: string = '';
+  @Input() placeholder?: string = '';
   @Input() type: string = 'text';
   @Input() value?: string;
   @Input() options?: string[];
@@ -30,7 +30,7 @@ export class InputFieldComponent implements ControlValueAccessor {
   @Input() size?: 'small' | 'medium' | 'large';
   @Input() width?: 'full' | '50%';
   @Input() selectedOption?: string;
-  @Input() formControlName?: string;
+  @Input() formControlName: string = '';
   @Output() optionChange = new EventEmitter<string>();
   onChange: any = () => {};
   onTouch: any = () => {};
@@ -38,6 +38,7 @@ export class InputFieldComponent implements ControlValueAccessor {
 
   writeValue(value: any): void {
     this.value = value;
+    this.selectedOption = value;
   }
 
   registerOnChange(fn: any): void {
@@ -56,6 +57,8 @@ export class InputFieldComponent implements ControlValueAccessor {
 
   onOptionChange(option: string): void {
     this.selectedOption = option;
+    this.value = option;
+    this.onChange(option);
     this.optionChange.emit(option);
     this.isDropdownOpen = false;
   }
@@ -65,7 +68,7 @@ export class InputFieldComponent implements ControlValueAccessor {
   }
 
   getSelectedOption(): string {
-    return this.selectedOption || this.placeholder;
+    return this.selectedOption || this.placeholder || '';
   }
 
   @HostListener('document:click', ['$event'])

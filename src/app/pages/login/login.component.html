@@ -3,55 +3,10 @@
   <div class="logo-wrapper">
     <app-logo size="large"></app-logo>
   </div>
-
   <app-form-container
-    maxWidth="360px">
-
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <app-input-field
-        type="text"
-        placeholder="Cédula"
-        formControlName="id_number"
-        variant="primary"
-        size="large">
-      </app-input-field>
-
-      <app-input-field
-        type="password"
-        placeholder="Contraseña"
-        formControlName="password"
-        variant="primary"
-        size="large">
-      </app-input-field>
-
-      <app-input-field
-        type="dropdown"
-        placeholder="Seleccionar modo"
-        formControlName="role"
-        variant="primary"
-        size="large"
-        [options]="['Administrator', 'User']"
-        [selectedOption]="selectedRole"
-        (optionChange)="onRoleChange($event)">
-      </app-input-field>
-
-      <div class="error-message">
-        {{ errorMessage }}
-      </div>
-
-      <app-button
-        type="primary"
-        [fullWidth]="true"
-        [loading]="isLoading"
-        [style.background-color]="'var(--color-primary-dark)'"
-        [style.border-radius]="'0.9rem'"
-        [style.border-color]="'var(--color-neutral-white)'"
-        size="large">
-        Iniciar Sesión
-      </app-button>
-
-    </form>
-
-  </app-form-container>
-
+    [form]="loginForm"
+    [inputFields]="inputFields"
+    [submitButtonConfig]="submitButtonConfig"
+    (onSubmit)="handleSubmit()"
+  ></app-form-container>
 </div>

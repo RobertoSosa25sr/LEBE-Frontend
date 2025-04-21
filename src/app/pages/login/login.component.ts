@@ -1,12 +1,12 @@
-import { Component, OnInit, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { InputFieldComponent } from '../../components/input-field/input-field.component';
-import { ButtonComponent } from '../../components/button/button.component';
 import { FormContainerComponent } from '../../components/form-container/form-container.component';
 import { LogoComponent } from '../../components/logo/logo.component';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
+import { ButtonConfig } from '../../interfaces/button-config.interface';
 
 @Component({
   selector: 'app-login',
@@ -14,25 +14,45 @@ import { AuthService } from '../../services/auth.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    InputFieldComponent,
-    ButtonComponent,
     FormContainerComponent,
     LogoComponent,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit, AfterViewInit {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  errorMessage: string | null = null;
   isLoading = false;
   selectedRole = '';
+
+  inputFields: InputFieldConfig[] = [
+    { label: 'Cédula', type: 'text', placeholder: 'Cédula', formControlName: 'id_number', required: true, variant: 'primary', size: 'large'},
+    { label: 'Contraseña', type: 'password' , placeholder: 'Contraseña', formControlName: 'password', required: true, variant: 'primary', size: 'large'},
+    { label: 'Rol', type: 'dropdown', placeholder: 'Seleccionar rol', formControlName: 'role', required: true, options: ['Administrator', 'User'], variant: 'primary', size: 'large'}
+  ];
+
+  submitButtonConfig: ButtonConfig = {
+    label: 'Iniciar Sesión',
+    size: 'large',
+    fullWidth: true,
+    loading: false,
+    disabled: false,
+    icon: 'login',
+    backgroundColor: 'purple',
+    type: 'primary'
+  };
+
+  cancelButtonConfig: ButtonConfig = {
+    label: 'Cancelar',
+    size: 'large',
+    fullWidth: true,
+    type: 'secondary'
+  };
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router,
-    private cdr: ChangeDetectorRef
+    private router: Router
   ) {
     this.loginForm = this.fb.group({
       id_number: ['', [Validators.required]],
@@ -41,54 +61,31 @@ export class LoginComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit(): void {
-    if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/home']);
-    }
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      if (this.selectedRole) {
-        this.cdr.detectChanges();
-      }
+  ngOnInit() {
+    this.loginForm.get('role')?.valueChanges.subscribe(role => {
+      this.selectedRole = role;
     });
   }
 
-  onRoleChange(role: string) {
-    this.selectedRole = role;
-    this.loginForm.patchValue({ role });
-    this.cdr.detectChanges();
-  }
-
-  onSubmit() {
+  handleSubmit() {
+    console.log(this.loginForm.value);
     if (this.loginForm.valid) {
       this.isLoading = true;
-      this.errorMessage = null;
       
       const { id_number, password, role } = this.loginForm.value;
       
       this.authService.login(id_number, password, role).subscribe({
         next: () => {
           this.router.navigate(['/home']);
-          this.cdr.detectChanges();
         },
         error: (error) => {
-          this.errorMessage = error.error.message || 'Error al iniciar sesión';
           this.isLoading = false;
-          this.cdr.detectChanges();
         }
       });
-    } else {
-      this.errorMessage = 'Por favor complete todos los campos correctamente.';
     }
   }
 
-  getErrorMessage(controlName: string): string {
-    const control = this.loginForm.get(controlName);
-    if (control?.hasError('required')) {
-      return 'Este campo es requerido';
-    }
-    return '';
+  handleCancel() {
+    this.router.navigate(['/']);
   }
 }

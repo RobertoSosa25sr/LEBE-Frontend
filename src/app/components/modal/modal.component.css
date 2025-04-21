@@ -24,12 +24,6 @@
   box-shadow: 3px 3px 6px rgb(0, 0, 0, 0.3);
 }
 
-.modal-content h2 {
-  margin-bottom: 1.5rem;
-  font-size: clamp(0.625rem, 0.5208rem + 0.463vw, 0.9375rem);
-  color: var(--color-secondary-dark);
-}
-
 .modal-buttons {
   display: flex;
   justify-content: center;

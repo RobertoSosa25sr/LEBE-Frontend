@@ -1,30 +1,13 @@
 <div class="modal-overlay">
   <div class="modal-content">
-    <h2>{{ title }}</h2>
-    <app-form-container *ngIf="inputFields.length > 0">
-      <form (ngSubmit)="onConfirm()">
-        <div *ngFor="let field of inputFields" class="form-group">
-          <app-input-field 
-          [type]="field.type" 
-          [value]="field.value"
-          [options]="field.options"
-          [variant]="field.variant || 'secondary'"
-          [size]="field.size || 'medium'">
-        </app-input-field>
-        </div>
-      </form>
-    </app-form-container>
-    <div class="modal-buttons">
-      <app-button 
-        type="secondary" 
-        size="small" 
-        backgroundColor="red" 
-        (click)="onCancel()">{{ cancelLabel }}</app-button>
-      <app-button 
-        type="secondary" 
-        size="small" 
-        backgroundColor="purple" 
-        (click)="onConfirm()">{{ confirmLabel }}</app-button>
-    </div>
+    <app-form-container
+      [title]="title"
+      [form]="form"
+      [inputFields]="inputFields"
+      [submitButtonConfig]="submitButtonConfig"
+      [cancelButtonConfig]="cancelButtonConfig"
+      (onSubmit)="handleSubmit()"
+      (onCancel)="handleCancel()"
+    ></app-form-container>
   </div>
 </div> 
