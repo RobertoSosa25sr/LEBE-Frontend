@@ -28,7 +28,9 @@ export class InputFieldComponent implements ControlValueAccessor {
   @Input() pattern: string = '';
   @Input() variant?: 'primary' | 'secondary' | 'tertiary';
   @Input() size?: 'small' | 'medium' | 'large';
+  @Input() width?: 'full' | '50%';
   @Input() selectedOption?: string;
+  @Input() formControlName?: string;
   @Output() optionChange = new EventEmitter<string>();
   onChange: any = () => {};
   onTouch: any = () => {};

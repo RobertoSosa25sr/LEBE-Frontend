@@ -136,10 +136,9 @@ export class UsersComponent implements OnInit {
     
     this.selectedUser = user;
     this.inputFields = [
-      { label: 'Nombres completos', type: 'text', value: user.name },
-      { label: 'Cédula', type: 'text', value: user.id_number },
-      { label: 'Rol', type: 'dropdown', options: ['Administrador', 'Usuario'], value: user.role },
-      { label: 'Contraseña', type: 'password' }
+      { label: 'Nombres completos', type: 'text', value: user.name , formControlName: 'name', readonly: true,},
+      { label: 'Cédula', type: 'text', value: user.id_number , formControlName: 'id_number', readonly: true},
+      { label: 'Contraseña', type: 'password' , formControlName: 'password'}
     ];
     this.showEditModal = true;
   }

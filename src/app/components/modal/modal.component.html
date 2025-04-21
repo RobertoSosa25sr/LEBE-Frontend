@@ -4,7 +4,13 @@
     <app-form-container *ngIf="inputFields.length > 0">
       <form (ngSubmit)="onConfirm()">
         <div *ngFor="let field of inputFields" class="form-group">
-          <app-input-field [type]="field.type" [value]="field.value"></app-input-field>
+          <app-input-field 
+          [type]="field.type" 
+          [value]="field.value"
+          [options]="field.options"
+          [variant]="field.variant || 'secondary'"
+          [size]="field.size || 'medium'">
+        </app-input-field>
         </div>
       </form>
     </app-form-container>

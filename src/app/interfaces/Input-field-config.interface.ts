@@ -4,4 +4,11 @@ export interface InputFieldConfig {
     placeholder?: string;
     value?: string;
     options?: string[];
+    formControlName?: string;
+    variant?: 'primary' | 'secondary' | 'tertiary';
+    size?: 'small' | 'medium' | 'large';
+    required?: boolean;
+    readonly?: boolean;
+    pattern?: string;
+    selectedOption?: string;
   } 
