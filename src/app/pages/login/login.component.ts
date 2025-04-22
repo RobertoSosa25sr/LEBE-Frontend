@@ -71,6 +71,11 @@ export class LoginComponent implements OnInit {
     console.log(this.loginForm.value);
     if (this.loginForm.valid) {
       this.isLoading = true;
+      this.submitButtonConfig = {
+        ...this.submitButtonConfig,
+        loading: true,
+        disabled: true
+      };
       
       const { id_number, password, role } = this.loginForm.value;
       
@@ -80,6 +85,11 @@ export class LoginComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
+          this.submitButtonConfig = {
+            ...this.submitButtonConfig,
+            loading: false,
+            disabled: false
+          };
         }
       });
     }

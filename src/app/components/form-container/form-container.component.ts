@@ -26,6 +26,7 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   @Output() onCancel = new EventEmitter<void>();
   errorMessage: string | null = null;
   isLoading = false;
+  isErrorVisible = false;
 
   constructor(private cdr: ChangeDetectorRef, private fb: FormBuilder) {}
 
@@ -52,10 +53,19 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   handleSubmit() {
     if (this.form.valid) {
       this.isLoading = true;
+      this.isErrorVisible = false;
       this.errorMessage = null;
       this.onSubmit.emit();
     } else {
       this.errorMessage = 'Por favor complete todos los campos correctamente.';
+      this.isErrorVisible = true;
+      setTimeout(() => {
+        this.isErrorVisible = false;
+        setTimeout(() => {
+          this.errorMessage = null;
+          this.cdr.detectChanges();
+        }, 300);
+      }, 3000);
     }
   }
 

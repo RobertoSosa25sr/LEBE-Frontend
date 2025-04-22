@@ -15,6 +15,9 @@
         [readonly]="getFieldReadonly(field)"
       ></app-input-field>
     </div>
+    <div class="error-message" [class.show]="isErrorVisible" [class.hide]="!isErrorVisible && errorMessage">
+      {{ errorMessage }}
+    </div>
     <div class="form-actions">
       <app-button 
         [buttonConfig]="submitButtonConfig"
@@ -27,7 +30,4 @@
       ></app-button>
     </div>
   </form>
-  <div *ngIf="errorMessage" class="error-message">
-    {{ errorMessage }}
-  </div>
 </div>
