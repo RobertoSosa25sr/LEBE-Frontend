@@ -144,8 +144,8 @@ export class UsersComponent implements OnInit {
     this.inputFields = [
       { label: 'Nombres completos', type: 'text', value: user.name , formControlName: 'name', readonly: true,},
       { label: 'Cédula', type: 'text', value: user.id_number , formControlName: 'id_number', readonly: true},
-      { label: 'Contraseña', type: 'password' , formControlName: 'password'},
-      { label: 'Rol', type: 'dropdown-select', value: user.role , formControlName: 'role', options: ['Administrator', 'User']}
+      { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password'},
+      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: user.roles.join(', ') , formControlName: 'role', options: ['Administrator', 'User']}
     ];
     this.showEditModal = true;
   }
