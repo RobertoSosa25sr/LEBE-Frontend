@@ -20,7 +20,7 @@ export class InputFieldComponent implements ControlValueAccessor {
 
   @Input() placeholder?: string = '';
   @Input() type: string = 'text';
-  @Input() value?: string;
+  @Input() value?: string | string[];
   @Input() options?: string[];
   @Input() label?: string;
   @Input() required: boolean = false;
@@ -29,16 +29,16 @@ export class InputFieldComponent implements ControlValueAccessor {
   @Input() variant?: 'primary' | 'secondary' | 'tertiary';
   @Input() size?: 'small' | 'medium' | 'large';
   @Input() width?: 'full' | '50%';
-  @Input() selectedOption?: string;
+  @Input() selectedOption?: string | string[] = [];
   @Input() formControlName: string = '';
-  @Output() optionChange = new EventEmitter<string>();
+  @Output() optionChange = new EventEmitter<string | string[]>();
   onChange: any = () => {};
   onTouch: any = () => {};
   isDropdownOpen: boolean = false;
 
   writeValue(value: any): void {
     this.value = value;
-    this.selectedOption = value;
+    this.selectedOption = Array.isArray(value) ? value : [value].filter(Boolean);
   }
 
   registerOnChange(fn: any): void {
@@ -56,11 +56,27 @@ export class InputFieldComponent implements ControlValueAccessor {
   }
 
   onOptionChange(option: string): void {
-    this.selectedOption = option;
-    this.value = option;
-    this.onChange(option);
-    this.optionChange.emit(option);
-    this.isDropdownOpen = false;
+    if (this.type === 'dropdown-select') {
+      let currentSelection = Array.isArray(this.selectedOption) ? this.selectedOption : [];
+      const index = currentSelection.indexOf(option);
+      
+      if (index === -1) {
+        currentSelection.push(option);
+      } else {
+        currentSelection.splice(index, 1);
+      }
+      
+      this.selectedOption = currentSelection;
+      this.value = currentSelection;
+      this.onChange(currentSelection);
+      this.optionChange.emit(currentSelection);
+    } else {
+      this.selectedOption = option;
+      this.value = option;
+      this.onChange(option);
+      this.optionChange.emit(option);
+      this.isDropdownOpen = false;
+    }
   }
 
   toggleDropdown(): void {
@@ -68,7 +84,17 @@ export class InputFieldComponent implements ControlValueAccessor {
   }
 
   getSelectedOption(): string {
-    return this.selectedOption || this.placeholder || '';
+    if (this.type === 'dropdown-select' && Array.isArray(this.selectedOption)) {
+      return this.selectedOption.length > 0 ? this.selectedOption.join(', ') : this.placeholder || '';
+    }
+    return this.selectedOption as string || this.placeholder || '';
+  }
+
+  isOptionSelected(option: string): boolean {
+    if (this.type === 'dropdown-select' && Array.isArray(this.selectedOption)) {
+      return this.selectedOption.includes(option);
+    }
+    return option === this.selectedOption;
   }
 
   @HostListener('document:click', ['$event'])

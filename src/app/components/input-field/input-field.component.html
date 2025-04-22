@@ -1,4 +1,4 @@
-<input *ngIf="type !== 'dropdown'"  [value]="value" [placeholder]="placeholder" [type]="type" (input)="onInput($event)"
+<input *ngIf="type !== 'dropdown' && type !== 'dropdown-select'"  [value]="value" [placeholder]="placeholder" [type]="type" (input)="onInput($event)"
   (blur)="onTouch()" class="input-field" 
   [class.input-field-primary]="variant === 'primary'"
   [class.input-field-secondary]="variant === 'secondary'" 
@@ -9,7 +9,7 @@
   [class.input-field-full]="width === 'full'"
   [class.input-field-50]="width === '50%'" />
 
-<div *ngIf="type === 'dropdown' && options" class="dropdown-selector"
+<div *ngIf="(type === 'dropdown' || type === 'dropdown-select') && options" class="dropdown-selector"
   [class.dropdown-selector-primary]="variant === 'primary'"
   [class.dropdown-selector-secondary]="variant === 'secondary'"
   [class.dropdown-selector-tertiary]="variant === 'tertiary'"
@@ -23,8 +23,9 @@
 
   <div class="options-container" *ngIf="isDropdownOpen">
     <div class="option" *ngFor="let option of options" (click)="onOptionChange(option)"
-      [class.selected]="option === selectedOption">
+      [class.selected]="isOptionSelected(option)">
       {{ option }}
+      <input type="checkbox" *ngIf="type === 'dropdown-select'" [checked]="isOptionSelected(option)">
     </div>
   </div>
 </div>
