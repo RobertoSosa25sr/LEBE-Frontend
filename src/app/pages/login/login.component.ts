@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
 import { ButtonConfig } from '../../interfaces/button-config.interface';
-
+import { ROLES } from '../../shared/constants/roles.constants';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
   inputFields: InputFieldConfig[] = [
     { label: 'Cédula', type: 'text', placeholder: 'Cédula', formControlName: 'id_number', required: true, variant: 'primary', size: 'large'},
     { label: 'Contraseña', type: 'password' , placeholder: 'Contraseña', formControlName: 'password', required: true, variant: 'primary', size: 'large'},
-    { label: 'Rol', type: 'dropdown', placeholder: 'Seleccionar rol', formControlName: 'role', required: true, options: ['Administrator', 'User'], variant: 'primary', size: 'large'}
+    { label: 'Rol', type: 'dropdown', placeholder: 'Seleccionar rol', formControlName: 'role', required: true, options: Object.values(ROLES), variant: 'primary', size: 'large'}
   ];
 
   submitButtonConfig: ButtonConfig = {

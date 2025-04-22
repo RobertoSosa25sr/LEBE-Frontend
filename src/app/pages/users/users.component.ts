@@ -10,6 +10,7 @@ import { ActionButtonService } from '../../services/action-button.service';
 import { ActionButtonConfig } from '../../interfaces/action-button-config.interface';
 import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
 import { ButtonConfig } from '../../interfaces/button-config.interface';
+import { ROLES } from '../../shared/constants/roles.constants';
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -145,7 +146,7 @@ export class UsersComponent implements OnInit {
       { label: 'Nombres completos', type: 'text', value: user.name , formControlName: 'name', readonly: true,},
       { label: 'Cédula', type: 'text', value: user.id_number , formControlName: 'id_number', readonly: true},
       { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password'},
-      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: user.roles.join(', ') , formControlName: 'role', options: ['Administrator', 'User']}
+      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: user.roles.join(', ') , formControlName: 'role', options: Object.values(ROLES)}
     ];
     this.showEditModal = true;
   }

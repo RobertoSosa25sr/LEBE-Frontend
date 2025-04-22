@@ -29,7 +29,7 @@ export class InputFieldComponent implements ControlValueAccessor {
   @Input() variant?: 'primary' | 'secondary' | 'tertiary';
   @Input() size?: 'small' | 'medium' | 'large';
   @Input() width?: 'full' | '50%';
-  @Input() selectedOption?: string | string[] = [];
+  @Input() selectedOption?: string | string[] = '';
   @Input() formControlName: string = '';
   @Output() optionChange = new EventEmitter<string | string[]>();
   onChange: any = () => {};
@@ -38,7 +38,11 @@ export class InputFieldComponent implements ControlValueAccessor {
 
   writeValue(value: any): void {
     this.value = value;
-    this.selectedOption = Array.isArray(value) ? value : [value].filter(Boolean);
+    if (this.type === 'dropdown-select') {
+      this.selectedOption = Array.isArray(value) ? value : [value].filter(Boolean);
+    } else {
+      this.selectedOption = value || '';
+    }
   }
 
   registerOnChange(fn: any): void {
@@ -85,9 +89,9 @@ export class InputFieldComponent implements ControlValueAccessor {
 
   getSelectedOption(): string {
     if (this.type === 'dropdown-select' && Array.isArray(this.selectedOption)) {
-      return this.selectedOption.length > 0 ? this.selectedOption.join(', ') : this.placeholder || '';
+      return this.selectedOption.length > 0 ? this.selectedOption.join(', ') : (this.placeholder || 'Select an option');
     }
-    return this.selectedOption as string || this.placeholder || '';
+    return (this.selectedOption as string) || (this.placeholder || 'Select an option');
   }
 
   isOptionSelected(option: string): boolean {

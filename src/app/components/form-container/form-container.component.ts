@@ -21,7 +21,7 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   @Input() cancelButtonText: string = 'Cancel';
   @Input() inputFields: InputFieldConfig[] = [];
   @Input() submitButtonConfig: ButtonConfig = {label: 'Submit'};
-  @Input() cancelButtonConfig: ButtonConfig = {label: 'Cancel'};
+  @Input() cancelButtonConfig: ButtonConfig = {label: ''};
   @Output() onSubmit = new EventEmitter<void>();
   @Output() onCancel = new EventEmitter<void>();
   errorMessage: string | null = null;

@@ -16,11 +16,12 @@
       ></app-input-field>
     </div>
     <div class="form-actions">
-      <app-button
+      <app-button 
         [buttonConfig]="submitButtonConfig"
         (click)="handleSubmit()"
       ></app-button>
-      <app-button
+      <app-button 
+        *ngIf="cancelButtonConfig.label !== ''"
         [buttonConfig]="cancelButtonConfig"
         (click)="handleCancel()"
       ></app-button>
