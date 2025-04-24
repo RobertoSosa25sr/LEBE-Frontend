@@ -1,4 +1,4 @@
-<input *ngIf="type !== 'dropdown' && type !== 'dropdown-select'"  [value]="value" [placeholder]="placeholder" [type]="type" (input)="onInput($event)"
+<input *ngIf="type !== 'dropdown' && type !== 'dropdown-select'" [disabled]="readonly" [value]="value" [placeholder]="placeholder" [type]="type" (input)="onInput($event)"
   (blur)="onTouch()" class="input-field" 
   [class.input-field-primary]="variant === 'primary'"
   [class.input-field-secondary]="variant === 'secondary'" 

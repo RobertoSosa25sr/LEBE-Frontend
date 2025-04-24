@@ -31,6 +31,7 @@ export class InputFieldComponent implements ControlValueAccessor {
   @Input() width?: 'full' | '50%';
   @Input() selectedOption?: string | string[] = '';
   @Input() formControlName: string = '';
+  @Input() nullable: boolean = false;
   @Output() optionChange = new EventEmitter<string | string[]>();
   onChange: any = () => {};
   onTouch: any = () => {};

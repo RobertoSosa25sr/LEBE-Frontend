@@ -11,4 +11,5 @@ export interface InputFieldConfig {
     readonly?: boolean;
     pattern?: string;
     selectedOption?: string;
+    nullable?: boolean;
   } 

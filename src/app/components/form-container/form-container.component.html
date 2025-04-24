@@ -1,7 +1,7 @@
 <div class="form-container" [style.max-width]="maxWidth">
   <h2>{{ title }}</h2>
   <form [formGroup]="form">
-    <div class="form-fields">
+    <div *ngIf="inputFields.length > 0" class="form-fields">
       <app-input-field
         *ngFor="let field of inputFields"
         [type]="field.type"
@@ -15,7 +15,7 @@
         [readonly]="getFieldReadonly(field)"
       ></app-input-field>
     </div>
-    <div class="error-message" [class.show]="isErrorVisible" [class.hide]="!isErrorVisible && errorMessage">
+    <div *ngIf="inputFields.length > 0" class="error-message" [class.show]="isErrorVisible" [class.hide]="!isErrorVisible && errorMessage">
       {{ errorMessage }}
     </div>
     <div class="form-actions">

@@ -22,7 +22,7 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   @Input() inputFields: InputFieldConfig[] = [];
   @Input() submitButtonConfig: ButtonConfig = {label: 'Submit'};
   @Input() cancelButtonConfig: ButtonConfig = {label: ''};
-  @Output() onSubmit = new EventEmitter<void>();
+  @Output() onSubmit = new EventEmitter<any>();
   @Output() onCancel = new EventEmitter<void>();
   errorMessage: string | null = null;
   isLoading = false;
@@ -35,15 +35,13 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
       const formControls: { [key: string]: FormControl } = {};
       this.inputFields.forEach(field => {
         if (field.formControlName) {
-          formControls[field.formControlName] = new FormControl('', Validators.required);
+          const validators = field.required ? [Validators.required] : [];
+          const initialValue = field.value || '';
+          formControls[field.formControlName] = new FormControl(initialValue, validators);
         }
       });
       this.form = this.fb.group(formControls);
     }
-
-    this.form.valueChanges.subscribe(values => {
-      console.log('Form values changed:', values);
-    });
   }
 
   ngAfterViewInit() {
@@ -51,13 +49,32 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   }
 
   handleSubmit() {
-    if (this.form.valid) {
+    const invalidFields = this.inputFields.filter(field => {
+      if (!field.required || !field.formControlName) return false;
+      const control = this.form.get(field.formControlName);
+      return control?.invalid;
+    });
+
+    if (invalidFields.length === 0) {
       this.isLoading = true;
       this.isErrorVisible = false;
       this.errorMessage = null;
-      this.onSubmit.emit();
+
+      // Clean the form data before emitting
+      const formData = { ...this.form.value };
+      Object.keys(formData).forEach(key => {
+        const field = this.inputFields.find(f => f.formControlName === key);
+        if (field?.nullable === false && (!formData[key] || formData[key] === '')) {
+          delete formData[key];
+        }
+      });
+
+      console.log('Form data to emit:', formData);
+
+      this.onSubmit.emit(formData);
     } else {
-      this.errorMessage = 'Por favor complete todos los campos correctamente.';
+      const fieldLabels = invalidFields.map(field => field.label || field.formControlName).join(', ');
+      this.errorMessage = `Los siguientes campos son requeridos: ${fieldLabels}`;
       this.isErrorVisible = true;
       setTimeout(() => {
         this.isErrorVisible = false;

@@ -143,10 +143,10 @@ export class UsersComponent implements OnInit {
     
     this.selectedUser = user;
     this.inputFields = [
-      { label: 'Nombres completos', type: 'text', value: user.name , formControlName: 'name', readonly: true,},
-      { label: 'Cédula', type: 'text', value: user.id_number , formControlName: 'id_number', readonly: true},
-      { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password'},
-      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: user.roles.join(', ') , formControlName: 'role', options: Object.values(ROLES)}
+      { label: 'Nombres completos', type: 'text', placeholder: user.name , formControlName: 'name', readonly: true, nullable: false},
+      { label: 'Cédula', type: 'text', value: user.id_number , formControlName: 'id_number', readonly: true, nullable: false},
+      { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: false, nullable: false},
+      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: user.roles.join(', ') , formControlName: 'role', options: Object.values(ROLES), required: false, nullable: true}
     ];
     this.showEditModal = true;
   }
@@ -162,7 +162,6 @@ export class UsersComponent implements OnInit {
             this.selectedUser = null;
           },
           error: (error) => {
-            console.error('Error deleting user:', error);
             this.isLoading = false;
             this.showDeleteModal = false;
             this.selectedUser = null;
@@ -173,9 +172,12 @@ export class UsersComponent implements OnInit {
 
   onEditConfirm() {
     if (this.selectedUser) {
-      this.isLoading = true;
-      // Aquí implementarías la lógica de edición
-      console.log('Editando usuario:', this.selectedUser); }}
+      //TODO: Implementar la lógica de edición
+      this.loadUsers();
+      this.showEditModal = false;
+      this.selectedUser = null;
+    }
+  }
   
 
   onDeleteCancel() {
@@ -189,6 +191,6 @@ export class UsersComponent implements OnInit {
   }
 
   onNewUser() {
-    console.log('Nuevo usuario');
+    //TODO: Implementar la lógica de nuevo usuario
   }
 } 

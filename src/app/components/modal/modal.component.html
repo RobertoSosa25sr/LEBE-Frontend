@@ -2,11 +2,10 @@
   <div class="modal-content">
     <app-form-container
       [title]="title"
-      [form]="form"
       [inputFields]="inputFields"
       [submitButtonConfig]="submitButtonConfig"
       [cancelButtonConfig]="cancelButtonConfig"
-      (onSubmit)="handleSubmit()"
+      (onSubmit)="handleSubmit($event)"
       (onCancel)="handleCancel()"
     ></app-form-container>
   </div>
