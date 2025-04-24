@@ -1,31 +1,30 @@
-<input *ngIf="type !== 'dropdown' && type !== 'dropdown-select'" [disabled]="readonly" [value]="value" [placeholder]="placeholder" [type]="type" (input)="onInput($event)"
-  (blur)="onTouch()" class="input-field" 
-  [class.input-field-primary]="variant === 'primary'"
-  [class.input-field-secondary]="variant === 'secondary'" 
-  [class.input-field-tertiary]="variant === 'tertiary'"
-  [class.input-field-small]="size === 'small'" 
-  [class.input-field-medium]="size === 'medium'"
-  [class.input-field-large]="size === 'large'"
-  [class.input-field-full]="width === 'full'"
-  [class.input-field-50]="width === '50%'" />
+<div class="input-field-container">
+  <label *ngIf="label" [for]="formControlName" class="input-field-label" [class.input-field-label-disabled]="readonly">
+    <span class="label-text">{{ label }}</span>
+    <span *ngIf="required" class="required-indicator">*</span>
+  </label>
+  <input *ngIf="type !== 'dropdown' && type !== 'dropdown-select'" [disabled]="readonly" [value]="value"
+    [placeholder]="placeholder" [type]="type" (input)="onInput($event)" (blur)="onTouch()" class="input-field"
+    [class.input-field-primary]="variant === 'primary'" [class.input-field-secondary]="variant === 'secondary'"
+    [class.input-field-tertiary]="variant === 'tertiary'" [class.input-field-small]="size === 'small'"
+    [class.input-field-medium]="size === 'medium'" [class.input-field-large]="size === 'large'"
+    [class.input-field-full]="width === 'full'" [class.input-field-50]="width === '50%'" />
 
-<div *ngIf="(type === 'dropdown' || type === 'dropdown-select') && options" class="dropdown-selector"
-  [class.dropdown-selector-primary]="variant === 'primary'"
-  [class.dropdown-selector-secondary]="variant === 'secondary'"
-  [class.dropdown-selector-tertiary]="variant === 'tertiary'"
-  [class.dropdown-selector-small]="size === 'small'" 
-  [class.dropdown-selector-medium]="size === 'medium'"
-  [class.dropdown-selector-large]="size === 'large'">
-  <div class="dropdown-button" (click)="toggleDropdown()">
-    <span class="selected-option">{{ getSelectedOption() }}</span>
-    <span class="dropdown-arrow">▼</span>
-  </div>
+  <div *ngIf="(type === 'dropdown' || type === 'dropdown-select') && options" class="dropdown-selector"
+    [class.dropdown-selector-primary]="variant === 'primary'"
+    [class.dropdown-selector-secondary]="variant === 'secondary'"
+    [class.dropdown-selector-tertiary]="variant === 'tertiary'" [class.dropdown-selector-small]="size === 'small'"
+    [class.dropdown-selector-medium]="size === 'medium'" [class.dropdown-selector-large]="size === 'large'">
+    <div class="dropdown-button" (click)="toggleDropdown()" [class.dropdown-button-open]="isDropdownOpen">
+      <span class="selected-option">{{ getSelectedOption() }}</span>
+      <span class="dropdown-arrow">▼</span>
+    </div>
 
-  <div class="options-container" *ngIf="isDropdownOpen">
-    <div class="option" *ngFor="let option of options" (click)="onOptionChange(option)"
-      [class.selected]="isOptionSelected(option)">
-      {{ option }}
-      <input type="checkbox" *ngIf="type === 'dropdown-select'" [checked]="isOptionSelected(option)">
+    <div class="options-container" *ngIf="isDropdownOpen" (mouseleave)="isDropdownOpen = false">
+      <div class="option" *ngFor="let option of options" (click)="onOptionChange(option)"
+        [class.selected]="isOptionSelected(option)">
+        {{ option }}
+        <input type="checkbox" *ngIf="type === 'dropdown-select'" [checked]="isOptionSelected(option)">
+      </div>
     </div>
   </div>
-</div>

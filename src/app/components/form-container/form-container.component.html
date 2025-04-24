@@ -13,6 +13,8 @@
         [options]="field.options"
         [selectedOption]="field.selectedOption"
         [readonly]="getFieldReadonly(field)"
+        [required]="getFieldRequired(field)"
+        [nullable]="getFieldNullable(field)"
       ></app-input-field>
     </div>
     <div *ngIf="inputFields.length > 0" class="error-message" [class.show]="isErrorVisible" [class.hide]="!isErrorVisible && errorMessage">

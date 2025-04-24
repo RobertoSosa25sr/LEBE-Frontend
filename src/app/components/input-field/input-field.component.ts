@@ -105,9 +105,23 @@ export class InputFieldComponent implements ControlValueAccessor {
   @HostListener('document:click', ['$event'])
   clickOutside(event: Event) {
     const target = event.target as HTMLElement;
-    if (!target.closest('.dropdown-selector')) {
+    const dropdownElement = target.closest('.dropdown-selector');
+    
+    // Only close if clicking outside the dropdown button
+    if (!dropdownElement) {
       this.isDropdownOpen = false;
     }
-  }	
+  }
+
+  @HostListener('mouseleave', ['$event'])
+  onMouseLeave(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const optionsContainer = target.closest('.options-container');
+    
+    // Close dropdown when mouse leaves the options container
+    if (optionsContainer) {
+      this.isDropdownOpen = false;
+    }
+  }
 
 }

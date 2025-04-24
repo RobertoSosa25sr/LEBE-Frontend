@@ -105,4 +105,12 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   getFieldReadonly(field: InputFieldConfig): boolean {
     return field.readonly || false;
   }
+
+  getFieldRequired(field: InputFieldConfig): boolean {
+    return field.required || false;
+  }
+
+  getFieldNullable(field: InputFieldConfig): boolean {
+    return field.nullable || false;
+  }
 }
