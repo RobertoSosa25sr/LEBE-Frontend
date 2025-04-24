@@ -26,9 +26,9 @@ export class LoginComponent implements OnInit {
   selectedRole = '';
 
   inputFields: InputFieldConfig[] = [
-    { label: 'Cédula', type: 'text', placeholder: 'Cédula', formControlName: 'id_number', required: true, variant: 'primary', size: 'large'},
-    { label: 'Contraseña', type: 'password' , placeholder: 'Contraseña', formControlName: 'password', required: true, variant: 'primary', size: 'large'},
-    { label: 'Rol', type: 'dropdown', placeholder: 'Seleccionar rol', formControlName: 'role', required: true, options: Object.values(ROLES), variant: 'primary', size: 'large'}
+    { type: 'text', placeholder: 'Cédula', formControlName: 'id_number', required: true, variant: 'primary', size: 'large'},
+    { type: 'password' , placeholder: 'Contraseña', formControlName: 'password', required: true, variant: 'primary', size: 'large'},
+    { type: 'dropdown', placeholder: 'Seleccionar rol', formControlName: 'role', required: true, options: Object.values(ROLES), variant: 'primary', size: 'large'}
   ];
 
   submitButtonConfig: ButtonConfig = {

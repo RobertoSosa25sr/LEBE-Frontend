@@ -1,5 +1,5 @@
 export interface InputFieldConfig {
-    label: string;
+    label?: string;
     type: 'text' | 'password' | 'email' | 'number' | 'dropdown' | 'dropdown-select';
     placeholder?: string;
     value?: string;
