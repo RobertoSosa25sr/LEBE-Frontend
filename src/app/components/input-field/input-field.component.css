@@ -95,6 +95,9 @@
   .input-field-large {
     padding: 0.25rem;
   }
+  .input-field-medium{
+    padding: 0.1rem;
+  }
 }
 
 
@@ -319,10 +322,10 @@
 
 @media (max-width: 480px) {
   .dropdown-selector-medium .dropdown-button {
-    padding: 0.1rem;
+    padding: 0rem;
   }
   .dropdown-selector-medium .option{
-    padding: 0rem;
+    padding: 0.5rem;
   }
 }
 

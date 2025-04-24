@@ -15,7 +15,7 @@ import { ButtonConfig } from '../../interfaces/button-config.interface';
 })
 export class FormContainerComponent implements AfterViewInit, OnInit {
   @Input() title: string = '';
-  @Input() maxWidth: string = '400px';
+  @Input() maxWidth: string = 'fit-content';
   @Input() form: FormGroup = new FormGroup({});
   @Input() submitButtonText: string = 'Submit';
   @Input() cancelButtonText: string = 'Cancel';
@@ -27,6 +27,8 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   errorMessage: string | null = null;
   isLoading = false;
   isErrorVisible = false;
+
+  groupedInputFields: { row: number; columns: InputFieldConfig[] }[] = [];
 
   constructor(private cdr: ChangeDetectorRef, private fb: FormBuilder) {}
 
@@ -42,6 +44,37 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
       });
       this.form = this.fb.group(formControls);
     }
+    this.groupInputFields();
+  }
+
+  private groupInputFields() {
+    this.groupedInputFields = [];
+    let currentRow = 1;
+    let currentColumns: InputFieldConfig[] = [];
+
+    this.inputFields.forEach((field, index) => {
+      const width = field.width || 'full';
+      
+      if (width === 'full') {
+        // If we have a pending 50% field, add it to the current row
+        if (currentColumns.length > 0) {
+          this.groupedInputFields.push({ row: currentRow, columns: [...currentColumns] });
+          currentColumns = [];
+          currentRow++;
+        }
+        // Add the full width field to its own row
+        this.groupedInputFields.push({ row: currentRow, columns: [field] });
+        currentRow++;
+      } else if (width === '50%') {
+        currentColumns.push(field);
+        // If we have two 50% fields or it's the last field
+        if (currentColumns.length === 2 || index === this.inputFields.length - 1) {
+          this.groupedInputFields.push({ row: currentRow, columns: [...currentColumns] });
+          currentColumns = [];
+          currentRow++;
+        }
+      }
+    });
   }
 
   ngAfterViewInit() {

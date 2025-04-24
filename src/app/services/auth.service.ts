@@ -47,6 +47,10 @@ export class AuthService {
       if (storedMenuItems) {
         this.menuItemsSubject.next(JSON.parse(storedMenuItems));
       }
+      const storedUser = localStorage.getItem('currentUser');
+      if (storedUser) {
+        this.currentUserSubject.next(JSON.parse(storedUser));
+      }
     }
   }
 
@@ -69,6 +73,7 @@ export class AuthService {
         localStorage.setItem('token', response.token);
         localStorage.setItem('menuItems', JSON.stringify(response.menu_items));
         localStorage.setItem('selectedRole', role);
+        localStorage.setItem('currentUser', JSON.stringify(response.user));
       })
     );
   }
@@ -82,6 +87,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('menuItems');
     localStorage.removeItem('selectedRole');
+    localStorage.removeItem('currentUser');
   }
 
   getToken(): string | null {

@@ -12,4 +12,5 @@ export interface InputFieldConfig {
     pattern?: string;
     selectedOption?: string;
     nullable?: boolean;
+    width?: 'full' | '50%';
   } 
