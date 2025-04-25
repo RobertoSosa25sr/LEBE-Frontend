@@ -25,7 +25,9 @@ export interface UserListResponse {
 
 export interface CreateUserRequest {
   id_number: string;
+  name: string;
   password: string;
+  roles: string[];
 }
 
 export interface UpdatePasswordRequest {

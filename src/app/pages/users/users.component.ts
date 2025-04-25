@@ -11,6 +11,8 @@ import { ActionButtonConfig } from '../../interfaces/action-button-config.interf
 import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
 import { ButtonConfig } from '../../interfaces/button-config.interface';
 import { ROLES } from '../../shared/constants/roles.constants';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -28,6 +30,7 @@ export class UsersComponent implements OnInit {
   users: User[] = [];
   showDeleteModal = false;
   showEditModal = false;
+  showNewUserModal = false;
   selectedUser: User | null = null;
   isLoading = false;
   currentPage = 1;
@@ -38,7 +41,10 @@ export class UsersComponent implements OnInit {
   to = 0;
   searchTerm = '';
   actionButtons: ActionButtonConfig[] = [];
-  inputFields: InputFieldConfig[] = [];
+  inputEditFields: InputFieldConfig[] = [];
+  inputNewUserFields: InputFieldConfig[] = [];
+  form: FormGroup;
+
   buttonNewUserConfig: ButtonConfig = {
     label: 'Nuevo',
     size: 'medium',
@@ -72,8 +78,16 @@ export class UsersComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private actionButtonService: ActionButtonService
-  ) {}
+    private actionButtonService: ActionButtonService,
+    private fb: FormBuilder
+  ) {
+    this.form = this.fb.group({
+      id_number: ['', Validators.required],
+      name: ['', Validators.required],
+      password: ['', Validators.required],
+      roles: [[]]
+    });
+  }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -142,11 +156,11 @@ export class UsersComponent implements OnInit {
     if (!user) return;
     
     this.selectedUser = user;
-    this.inputFields = [
+    this.inputEditFields = [
       { label: 'Nombres completos', type: 'text', placeholder: user.name , formControlName: 'name', readonly: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
       { label: 'Cédula', type: 'text', value: user.id_number , formControlName: 'id_number', readonly: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: user.roles.join(', ') , formControlName: 'role', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
+      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: user.roles , formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
     ];
     this.showEditModal = true;
   }
@@ -190,7 +204,61 @@ export class UsersComponent implements OnInit {
     this.selectedUser = null;
   }
 
-  onNewUser() {
-    //TODO: Implementar la lógica de nuevo usuario
+  onNewUserClick() {
+    this.inputNewUserFields = [
+      { label: 'Nombres completos', type: 'text', placeholder: '', formControlName: 'name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id_number', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
+    ];
+    this.showNewUserModal = true;
+  }
+
+  onNewUserCancel() {
+    this.showNewUserModal = false;
+  }
+
+  onNewUserConfirm() {
+    this.isLoading = true;
+    interface FormData {
+      id_number: string;
+      name: string;
+      password: string;
+      roles: string | string[];
+    }
+
+    const formData: FormData = {
+      id_number: this.form.get('id_number')?.value || '',
+      name: this.form.get('name')?.value || '',
+      password: this.form.get('password')?.value || '',
+      roles: this.form.get('roles')?.value || []
+    };
+
+    const newUser = {
+      id_number: formData.id_number,
+      name: formData.name,
+      password: formData.password,
+      roles: Array.isArray(formData.roles) ? formData.roles : formData.roles ? [formData.roles] : []
+    };
+
+    this.userService.createUser(newUser)
+      .subscribe({
+        next: (response) => {
+          this.loadUsers();
+          this.showNewUserModal = false;
+          this.isLoading = false;
+          this.form.reset();
+
+          this.inputNewUserFields = [
+            { label: 'Nombres completos', type: 'text', placeholder: '', formControlName: 'name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+            { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id_number', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+            { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+            { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
+          ];
+        },
+        error: (error) => {
+          this.isLoading = false;
+        }
+      });
   }
 } 

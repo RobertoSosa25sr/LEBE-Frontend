@@ -11,7 +11,7 @@
       </div>
       <app-button 
         [buttonConfig]="buttonNewUserConfig"
-        (click)="onNewUser()">
+        (click)="onNewUserClick()">
       </app-button>
     </div>
   </div>
@@ -48,9 +48,20 @@
 <app-modal 
   *ngIf="showEditModal"
   title="Editar usuario"
-  [inputFields]="inputFields"
+  [inputFields]="inputEditFields"
   confirmLabel="Guardar"
   cancelLabel="Cancelar"
   (confirm)="onEditConfirm()"
   (cancel)="onEditCancel()">
+</app-modal>
+
+<app-modal 
+  *ngIf="showNewUserModal"
+  title="Nuevo usuario"
+  [inputFields]="inputNewUserFields"
+  [form]="form"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  (confirm)="onNewUserConfirm()"
+  (cancel)="onNewUserCancel()">
 </app-modal>

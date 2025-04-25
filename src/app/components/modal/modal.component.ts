@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
 import { FormContainerComponent } from '../form-container/form-container.component';
 import { ButtonConfig } from '../../interfaces/button-config.interface';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-modal',
@@ -17,6 +18,7 @@ export class ModalComponent {
   @Input() confirmLabel: string = 'Confirmar';
   @Input() cancelLabel: string = 'Cancelar';
   @Input() initialValues: any = {};
+  @Input() form: FormGroup = new FormGroup({});
   @Output() confirm = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
 
