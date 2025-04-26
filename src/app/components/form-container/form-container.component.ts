@@ -25,7 +25,6 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   @Output() onSubmit = new EventEmitter<any>();
   @Output() onCancel = new EventEmitter<void>();
   errorMessage: string | null = null;
-  isLoading = false;
   isErrorVisible = false;
 
   groupedInputFields: { row: number; columns: InputFieldConfig[] }[] = [];
@@ -56,18 +55,15 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
       const width = field.width || 'full';
       
       if (width === 'full') {
-        // If we have a pending 50% field, add it to the current row
         if (currentColumns.length > 0) {
           this.groupedInputFields.push({ row: currentRow, columns: [...currentColumns] });
           currentColumns = [];
           currentRow++;
         }
-        // Add the full width field to its own row
         this.groupedInputFields.push({ row: currentRow, columns: [field] });
         currentRow++;
       } else if (width === '50%') {
         currentColumns.push(field);
-        // If we have two 50% fields or it's the last field
         if (currentColumns.length === 2 || index === this.inputFields.length - 1) {
           this.groupedInputFields.push({ row: currentRow, columns: [...currentColumns] });
           currentColumns = [];
@@ -82,6 +78,16 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   }
 
   handleSubmit() {
+    this.submitButtonConfig = {
+      ...this.submitButtonConfig,
+      disabled: true,
+      loading: true
+    };
+    this.cancelButtonConfig = {
+      ...this.cancelButtonConfig,
+      disabled: true
+    };
+
     const invalidFields = this.inputFields.filter(field => {
       if (!field.required || !field.formControlName) return false;
       const control = this.form.get(field.formControlName);
@@ -89,11 +95,13 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
     });
 
     if (invalidFields.length === 0) {
-      this.isLoading = true;
       this.isErrorVisible = false;
       this.errorMessage = null;
 
-      // Clean the form data before emitting
+      for (const field of this.inputFields) {
+        field.readonly = true;
+      }
+
       const formData = { ...this.form.value };
       Object.keys(formData).forEach(key => {
         const field = this.inputFields.find(f => f.formControlName === key);
@@ -102,10 +110,18 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
         }
       });
 
-      console.log('Form data to emit:', formData);
-
       this.onSubmit.emit(formData);
     } else {
+      this.submitButtonConfig = {
+        ...this.submitButtonConfig,
+        disabled: false,
+        loading: false
+      };
+      this.cancelButtonConfig = {
+        ...this.cancelButtonConfig,
+        disabled: false
+      };
+
       const fieldLabels = invalidFields.map(field => field.label || field.formControlName).join(', ');
       this.errorMessage = `Los siguientes campos son requeridos: ${fieldLabels}`;
       this.isErrorVisible = true;

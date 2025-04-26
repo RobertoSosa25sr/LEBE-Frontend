@@ -9,7 +9,7 @@
   [class.medium]="buttonConfig.size === 'medium'"
   [class.large]="buttonConfig.size === 'large'"
   [class.full-width]="buttonConfig.fullWidth"
-  [disabled]="buttonConfig.disabled || buttonConfig.loading"
+  [disabled]="buttonConfig.disabled"
   
 >
   <span *ngIf="!buttonConfig.loading" class="button-content">

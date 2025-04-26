@@ -365,6 +365,16 @@
   transition: transform 0.2s ease;
 }
 
+.dropdown-selector-disabled .dropdown-button, .dropdown-selector-disabled .dropdown-button:hover{
+  cursor: not-allowed;
+  background-color: var(--color-neutral-white);
+  color: var(--color-neutral-gray-light);
+  border-color: var(--color-neutral-gray-light);
+}
+
+.dropdown-selector-disabled .dropdown-button:hover .dropdown-arrow, .dropdown-selector-disabled .dropdown-button .dropdown-arrow{
+  color: var(--color-neutral-gray-light);
+}
 
 
 
