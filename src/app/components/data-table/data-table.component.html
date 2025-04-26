@@ -15,6 +15,14 @@
       </tr>
     </thead>
     <tbody>
+      <tr *ngIf="data.length === 0" class="no-data-row">
+        <td [attr.colspan]="config.columns.length + (config.showActions ? 1 : 0)">
+          <div class="no-data-message">
+            <i class="fa-solid fa-database"></i>
+            <span>No se encontraron registros</span>
+          </div>
+        </td>
+      </tr>
       <tr *ngFor="let item of data">
         <ng-container *ngFor="let column of config.columns">
           <td 

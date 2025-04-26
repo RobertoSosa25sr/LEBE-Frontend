@@ -57,7 +57,7 @@
   background-color: var(--color-background-light);
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+overflow:visible;
 }
 
 .table-container {
@@ -210,7 +210,7 @@
 
 .pagination-button[disabled] {
   opacity: 0.5;
-  cursor: not-allowed;
+  cursor: default;
 }
 
 .page-info {

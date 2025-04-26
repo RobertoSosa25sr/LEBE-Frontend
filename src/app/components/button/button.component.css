@@ -12,7 +12,7 @@
   background-color: var(--color-neutral-gray-dark);
   border-color: var(--color-neutral-gray-dark);
   color: var(--color-neutral-white);
-  cursor: not-allowed;
+  cursor: default;
 }
 
 .primary {

@@ -67,21 +67,24 @@ export class DataTableComponent<T extends UserData> {
   }
 
   get totalPages(): number {
-    return Math.ceil(this.data.length / this.itemsPerPage);
+    return Math.ceil((this.config.totalItems || this.data.length) / (this.config.pageSize || this.itemsPerPage));
   }
 
   get paginationRange(): { from: number; to: number } {
-    const pageSize = this.config.pageSize || 10;
-    const currentPage = this.config.currentPage || 1;
+    const pageSize = this.config.pageSize || this.itemsPerPage;
+    const currentPage = this.config.currentPage || this.currentPage;
+    const totalItems = this.config.totalItems || this.data.length;
     return {
       from: (currentPage - 1) * pageSize + 1,
-      to: Math.min(currentPage * pageSize, this.config.totalItems || 0)
+      to: Math.min(currentPage * pageSize, totalItems)
     };
   }
 
   onPageChange(page: number): void {
-    this.currentPage = page;
-    this.pageChange.emit(page);
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.pageChange.emit(page);
+    }
   }
 
   onSearch(term: string): void {

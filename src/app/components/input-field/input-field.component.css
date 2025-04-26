@@ -69,7 +69,7 @@
   border-color: var(--color-neutral-gray-light);
   background-color: var(--color-neutral-white);
   color: var(--color-neutral-gray-light);
-  cursor: not-allowed;
+  cursor: default;
 }
 
 .input-field-secondary:disabled::placeholder {
@@ -366,7 +366,7 @@
 }
 
 .dropdown-selector-disabled .dropdown-button, .dropdown-selector-disabled .dropdown-button:hover{
-  cursor: not-allowed;
+  cursor: default;
   background-color: var(--color-neutral-white);
   color: var(--color-neutral-gray-light);
   border-color: var(--color-neutral-gray-light);

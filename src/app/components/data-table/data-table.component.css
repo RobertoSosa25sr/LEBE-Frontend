@@ -22,9 +22,9 @@
 }
 
 .data-table th {
-  background-color: var(--color-primary-base);
+  background-color: var(--color-primary-dark);
   font-weight: bold;
-  color: var(--color-neutral-black);
+  color: var(--color-neutral-white);
   text-transform: uppercase;
   font-size: clamp(0.625rem, 0.4583rem + 0.7407vw, 1.125rem);
   letter-spacing: 0.05em;
@@ -123,13 +123,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  border-top: 1px solid var(--color-border);
-  background-color: var(--color-background);
+  background-color: var(--color-primary-base);
 }
 
 .pagination-button {
   background: none;
   border: 1px solid var(--color-border);
+  color: var(--color-neutral-white);
   padding: 0.5rem;
   border-radius: 0.375rem;
   cursor: pointer;
@@ -140,13 +140,12 @@
 }
 
 .pagination-button:hover:not([disabled]) {
-  background-color: var(--color-background-hover);
-  border-color: var(--color-primary);
+  transform: scale(1.1);
 }
 
 .pagination-button[disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
+  opacity: 0.25;
+  cursor: default;
 }
 
 .page-info {
@@ -196,5 +195,24 @@
   .user-avatar.initials {
     display: none;
   }
+}
+
+.no-data-row {
+  height: 13rem;
+}
+
+.no-data-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--color-text-secondary);
+  font-size: clamp(0.5rem, 0.4167rem + 0.3704vw, 0.75rem);
+}
+
+.no-data-message i {
+  font-size: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);
+  color: var(--color-primary-light);
 } 
 
