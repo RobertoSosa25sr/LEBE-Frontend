@@ -30,6 +30,13 @@ export interface CreateUserRequest {
   roles: string[];
 }
 
+export interface UpdateUserRequest {
+  id_number: string;
+  name?: string;
+  password?: string;
+  roles?: string[];
+}
+
 export interface UpdatePasswordRequest {
   id_number: string;
   password: string;
@@ -81,7 +88,7 @@ export class UserService {
     );
   }
 
-  updatePassword(user: UpdatePasswordRequest): Observable<{ message: string }> {
+  updateUser(user: UpdateUserRequest): Observable<{ message: string }> {
     return this.http.put<{ message: string }>(
       this.apiUrl, 
       user,
