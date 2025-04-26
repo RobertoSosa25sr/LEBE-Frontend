@@ -1,14 +1,10 @@
 <div class="users-container">
   <div class="users-header">
     <div class="header-actions">
-      <div class="search-container">
-        <input 
-          type="text" 
-          placeholder="Buscar usuarios..." 
-          (input)="onSearch($any($event.target).value)"
-          class="search-input">
-        <span class="material-icons search-icon">search</span>
-      </div>
+      <app-search-bar 
+        placeholder="Buscar usuarios..."
+        (search)="onSearch($event)">
+      </app-search-bar>
       <app-button 
         [buttonConfig]="buttonNewUserConfig"
         (click)="onNewUserClick()">
@@ -22,8 +18,7 @@
         [data]="users"
         [config]="tableConfig"
         [actionButtons]="actionButtons"
-        (pageChange)="onPageChange($event)"
-        (search)="onSearch($event)">
+        (pageChange)="onPageChange($event)">
       </app-data-table>
     </div>
 

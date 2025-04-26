@@ -1,0 +1,9 @@
+<div class="search-container">
+  <input 
+    type="text" 
+    [placeholder]="placeholder" 
+    (input)="onSearch($event)"
+    class="search-input"
+    [value]="searchTerm">
+  <span class="material-icons search-icon">search</span>
+</div> 

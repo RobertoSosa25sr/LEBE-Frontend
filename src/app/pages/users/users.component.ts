@@ -5,6 +5,7 @@ import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
 import { ActionButtonComponent } from '../../components/action-button/action-button.component';
+import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
 import { UserService, User, UserListResponse } from '../../services/user.service';
 import { ActionButtonService } from '../../services/action-button.service';
 import { ActionButtonConfig } from '../../interfaces/action-button-config.interface';
@@ -21,7 +22,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
     RouterModule, 
     ButtonComponent, 
     ModalComponent,
-    DataTableComponent
+    DataTableComponent,
+    SearchBarComponent
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
