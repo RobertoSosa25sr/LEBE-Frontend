@@ -186,10 +186,16 @@ export class UsersComponent implements OnInit {
 
   onEditConfirm() {
     if (this.selectedUser) {
-      //TODO: Implementar la lógica de edición
-      this.loadUsers();
-      this.showEditModal = false;
-      this.selectedUser = null;
+      this.isLoading = true;
+      this.userService.updateUser(this.selectedUser)
+        .subscribe({
+          next: () => {
+            this.loadUsers();
+            this.showEditModal = false;
+            this.selectedUser = null;
+            this.isLoading = false;
+          }
+        });
     }
   }
   
