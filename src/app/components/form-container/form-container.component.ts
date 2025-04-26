@@ -105,11 +105,11 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
       const formData = { ...this.form.value };
       Object.keys(formData).forEach(key => {
         const field = this.inputFields.find(f => f.formControlName === key);
-        if (field?.nullable === false && (!formData[key] || formData[key] === '')) {
+        if (field?.nullable === false && field?.required === false && (!formData[key] || formData[key] === '')) {
           delete formData[key];
         }
       });
-
+      console.log('formData', formData);
       this.onSubmit.emit(formData);
     } else {
       this.submitButtonConfig = {

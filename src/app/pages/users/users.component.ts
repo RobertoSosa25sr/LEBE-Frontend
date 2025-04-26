@@ -157,9 +157,9 @@ export class UsersComponent implements OnInit {
     
     this.selectedUser = user;
     this.inputEditFields = [
-      { label: 'Nombres completos', type: 'text', placeholder: user.name , formControlName: 'name', readonly: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Cédula', type: 'text', value: user.id_number , formControlName: 'id_number', readonly: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Nombres completos', type: 'text', placeholder: user.name , formControlName: 'name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Cédula', type: 'text', value: user.id_number , formControlName: 'id_number', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: user.roles , formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
     ];
     this.showEditModal = true;
