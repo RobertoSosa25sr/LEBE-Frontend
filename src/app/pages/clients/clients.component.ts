@@ -50,7 +50,7 @@ export class ClientsComponent implements OnInit {
     size: 'medium',
     backgroundColor: 'green',
     type: 'secondary',
-    icon: ActionType.CREATE
+    //icon: ActionType.CREATE
   };
 
   tableConfig: TableConfig<Client> = {

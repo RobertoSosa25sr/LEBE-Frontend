@@ -9,6 +9,7 @@ export interface MenuItem {
   icon: string;
   route: string;
   order: number;
+  actions: string[];
 }
 
 export interface User {
