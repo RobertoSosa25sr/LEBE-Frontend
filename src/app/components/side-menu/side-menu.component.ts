@@ -2,7 +2,6 @@ import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { LogoComponent } from '../logo/logo.component';
 import { ModalComponent } from '../modal/modal.component';
 
 interface MenuItem {
@@ -14,7 +13,7 @@ interface MenuItem {
 @Component({
   selector: 'app-side-menu',
   standalone: true,
-  imports: [CommonModule, RouterModule, ModalComponent, LogoComponent],
+  imports: [CommonModule, RouterModule, ModalComponent],
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.css']
 })
