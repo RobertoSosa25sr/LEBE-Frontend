@@ -2,44 +2,31 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ActionButtonComponent, ActionButtonConfig } from '../action-button/action-button.component';
-import { ActionButtonConfig as NewActionButtonConfig } from '../../interfaces/action-button-config.interface';
 
 export type TextAlignment = 'left' | 'center' | 'right';
+export type RowStyle = 'default' | 'disabled' | 'emphasis' | 'warning' | 'success';
+export type CellStyle = 'default' | 'disabled' | 'emphasis' | 'warning' | 'success';
 
-interface UserInfo {
-  name: string;
-  photo_url?: string;
-}
-
-export interface ColumnConfig {
-  key: string;
+export interface ColumnConfig<T> {
+  key: keyof T;
   label: string;
-  type?: 'text' | 'user';
   headerAlign?: TextAlignment;
   cellAlign?: TextAlignment;
   showPhoto?: boolean;
+  photoField?: keyof T;
+  cellStyle?: (item: T) => CellStyle;
+  headerClass?: string;
 }
 
 export interface TableConfig<T> {
-  columns: {
-    key: keyof T;
-    label: string;
-    headerAlign?: 'left' | 'center' | 'right';
-    cellAlign?: 'left' | 'center' | 'right';
-    type?: 'text' | 'user';
-    showPhoto?: boolean;
-  }[];
+  columns: ColumnConfig<T>[];
   showActions?: boolean;
   actionButtons?: ActionButtonConfig<T>[];
   pageSize?: number;
   currentPage?: number;
   totalItems?: number;
-}
-
-export interface UserData {
-  id_number: string;
-  name: string;
-  profile_photo_url: string;
+  keyField: keyof T;
+  rowStyle?: (item: T) => RowStyle;
 }
 
 @Component({
@@ -49,9 +36,9 @@ export interface UserData {
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.css']
 })
-export class DataTableComponent<T extends UserData> {
+export class DataTableComponent<T> {
   @Input() data: T[] = [];
-  @Input() config: TableConfig<T> = { columns: [] };
+  @Input() config: TableConfig<T> = { columns: [], keyField: 'id' as keyof T };
   @Input() actionButtons: ActionButtonConfig<T>[] = [];
   @Output() pageChange = new EventEmitter<number>();
   @Output() search = new EventEmitter<string>();
@@ -96,42 +83,38 @@ export class DataTableComponent<T extends UserData> {
     return item[key];
   }
 
-  getInitials(name: string): string {
-    return name.split(' ')
-      .map(part => part[0])
-      .join('')
-      .toUpperCase();
+  getItemId(item: T): string {
+    return String(this.getValue(item, this.config.keyField));
   }
 
-  isUserInfo(value: unknown): value is UserInfo {
-    return typeof value === 'object' && value !== null && 'name' in value;
-  }
-
-  getButtonConfig(button: ActionButtonConfig<T>, itemId: number | string): ActionButtonConfig<T> {
+  getButtonConfig(button: ActionButtonConfig<T>, itemId: string): ActionButtonConfig<T> {
     if (Array.isArray(button.routerLink)) {
       return {
         ...button,
-        routerLink: button.routerLink.map((link: string) => link === ':id' ? itemId.toString() : link)
+        routerLink: button.routerLink.map((link: string) => link === ':id' ? itemId : link)
       };
     }
     return button;
-  }
-
-  getUserInfo(value: unknown): UserInfo | null {
-    return this.isUserInfo(value) ? value : null;
-  }
-
-  getItemId(item: T): string {
-    return item.id_number;
-  }
-
-  getPhotoUrl(item: T): string {
-    return item.profile_photo_url;
   }
 
   handleAction(button: ActionButtonConfig<T>, item: T): void {
     if (button.action) {
       button.action(item);
     }
+  }
+
+  getRowStyle(item: T): RowStyle {
+    return this.config.rowStyle ? this.config.rowStyle(item) : 'default';
+  }
+
+  getCellStyle(item: T, column: ColumnConfig<T>): CellStyle {
+    return column.cellStyle ? column.cellStyle(item) : 'default';
+  }
+
+  getInitials(name: string): string {
+    return name.split(' ')
+      .map(part => part[0])
+      .join('')
+      .toUpperCase();
   }
 } 

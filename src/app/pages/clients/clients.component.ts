@@ -6,7 +6,7 @@ import { ModalComponent } from '../../components/modal/modal.component';
 import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
 import { ActionButtonComponent } from '../../components/action-button/action-button.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
-import { UserService, User, UserListResponse } from '../../services/user.service';
+import { UserService, User, UserListResponse, Client } from '../../services/user.service';
 import { ActionButtonService } from '../../services/action-button.service';
 import { ActionButtonConfig } from '../../interfaces/action-button-config.interface';
 import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
@@ -15,7 +15,7 @@ import { ROLES } from '../../shared/constants/roles.constants';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-users',
+  selector: 'app-clients',
   standalone: true,
   imports: [
     CommonModule, 
@@ -25,14 +25,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
     DataTableComponent,
     SearchBarComponent
   ],
-  templateUrl: './users.component.html',
-  styleUrls: ['./users.component.css']
+  templateUrl: './clients.component.html',
+  styleUrls: ['./clients.component.css']
 })
-export class UsersComponent implements OnInit {
-  users: User[] = [];
+export class ClientsComponent implements OnInit {
+  clients: Client[] = [];
   showDeleteModal = false;
   showEditModal = false;
-  showNewUserModal = false;
+  showNewClientModal = false;
   selectedUser: User | null = null;
   isLoading = false;
   currentPage = 1;
@@ -44,17 +44,17 @@ export class UsersComponent implements OnInit {
   searchTerm = '';
   actionButtons: ActionButtonConfig[] = [];
   inputEditFields: InputFieldConfig[] = [];
-  inputNewUserFields: InputFieldConfig[] = [];
+  inputNewClientFields: InputFieldConfig[] = [];
   form: FormGroup;
 
-  buttonNewUserConfig: ButtonConfig = {
+  buttonNewClientConfig: ButtonConfig = {
     label: 'Nuevo',
     size: 'medium',
     backgroundColor: 'green',
     type: 'secondary'
   };
 
-  tableConfig: TableConfig<User> = {
+  tableConfig: TableConfig<Client> = {
     keyField: 'id_number',
     columns: [
       { 
@@ -72,18 +72,18 @@ export class UsersComponent implements OnInit {
         cellAlign: 'left'
       },
       { 
-        key: 'roles',
-        label: 'Roles',
+        key: 'email',
+        label: 'Correo',
         headerAlign: 'left',
         cellAlign: 'left',
-        cellStyle: (item) => item.roles.includes('admin') ? 'emphasis' : 'default'
+        cellStyle: (item: Client) => item.email.includes('@') ? 'success' : 'warning'
       }
     ],
     showActions: true,
     currentPage: 1,
     pageSize: 10,
     totalItems: 0,
-    rowStyle: (item) => item.roles.includes('admin') ? 'emphasis' : 'default'
+    rowStyle: (item: Client) => item.roles.includes('admin') ? 'emphasis' : 'default'
   };
 
   constructor(
@@ -94,13 +94,13 @@ export class UsersComponent implements OnInit {
     this.form = this.fb.group({
       id_number: ['', Validators.required],
       name: ['', Validators.required],
-      password: ['', Validators.required],
-      roles: [[]]
+      email: ['', Validators.required],
+      password: ['', Validators.required]
     });
   }
 
   ngOnInit(): void {
-    this.loadUsers();
+    this.loadClients();
     this.actionButtons = this.actionButtonService.getTableActions('user').map(button => {
       if (button.icon === 'delete') {
         return {
@@ -118,12 +118,12 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  loadUsers() {
+  loadClients() {
     this.isLoading = true;
-    this.userService.getUsers(this.currentPage, this.perPage, this.searchTerm)
+    this.userService.getClients(this.currentPage, this.perPage, this.searchTerm)
       .subscribe({
-        next: (response: UserListResponse) => {
-          this.users = response.users;
+        next: (response) => {
+          this.clients = response.clients;
           this.total = response.pagination.total;
           this.currentPage = response.pagination.current_page;
           this.lastPage = response.pagination.last_page;
@@ -140,7 +140,7 @@ export class UsersComponent implements OnInit {
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('Error loading users:', error);
+          console.error('Error loading clients:', error);
           this.isLoading = false;
         }
       });
@@ -149,12 +149,12 @@ export class UsersComponent implements OnInit {
   onSearch(searchTerm: string) {
     this.searchTerm = searchTerm;
     this.currentPage = 1;
-    this.loadUsers();
+    this.loadClients();
   }
 
   onPageChange(page: number) {
     this.currentPage = page;
-    this.loadUsers();
+    this.loadClients();
   }
 
   onDeleteClick(user: User) {
@@ -181,7 +181,7 @@ export class UsersComponent implements OnInit {
       this.userService.deleteUser({ id_number: this.selectedUser.id_number })
         .subscribe({
           next: () => {
-            this.loadUsers();
+            this.loadClients();
             this.showDeleteModal = false;
             this.selectedUser = null;
           },
@@ -200,7 +200,7 @@ export class UsersComponent implements OnInit {
       this.userService.updateUser(this.selectedUser)
         .subscribe({
           next: () => {
-            this.loadUsers();
+            this.loadClients();
             this.showEditModal = false;
             this.selectedUser = null;
             this.isLoading = false;
@@ -220,21 +220,20 @@ export class UsersComponent implements OnInit {
     this.selectedUser = null;
   }
 
-  onNewUserClick() {
-    this.inputNewUserFields = [
+  onNewClientClick() {
+    this.inputNewClientFields = [
       { label: 'Nombres completos', type: 'text', placeholder: '', formControlName: 'name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
       { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id_number', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
+      { label: 'Correo', placeholder: 'Correo', type: 'email' , formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
     ];
-    this.showNewUserModal = true;
+    this.showNewClientModal = true;
   }
 
-  onNewUserCancel() {
-    this.showNewUserModal = false;
+  onNewClientCancel() {
+    this.showNewClientModal = false;
   }
 
-  onNewUserConfirm() {
+  onNewClientConfirm() {
     this.isLoading = true;
     interface FormData {
       id_number: string;
@@ -260,16 +259,15 @@ export class UsersComponent implements OnInit {
     this.userService.createUser(newUser)
       .subscribe({
         next: (response) => {
-          this.loadUsers();
-          this.showNewUserModal = false;
+          this.loadClients();
+          this.showNewClientModal = false;
           this.isLoading = false;
           this.form.reset();
 
-          this.inputNewUserFields = [
+          this.inputNewClientFields = [
             { label: 'Nombres completos', type: 'text', placeholder: '', formControlName: 'name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
             { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id_number', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-            { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-            { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
+            { label: 'Correo', placeholder: 'Correo', type: 'email' , formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
           ];
         },
         error: (error) => {

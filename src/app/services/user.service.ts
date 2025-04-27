@@ -11,6 +11,14 @@ export interface User {
   roles: string[];
 }
 
+export interface Client {
+  id_number: string;
+  name: string;
+  email: string;
+  profile_photo_url: string;
+  roles: string[];
+}
+
 export interface UserListResponse {
   users: User[];
   pagination: {
@@ -46,11 +54,24 @@ export interface DeleteUserRequest {
   id_number: string;
 }
 
+export interface ClientListResponse {
+  clients: Client[];
+  pagination: {
+    total: number;
+    per_page: number;
+    current_page: number;
+    last_page: number;
+    from: number;
+    to: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private apiUrl = `${environment.apiUrl}/users`;
+  private clientsApiUrl = `${environment.apiUrl}/clients`;
 
   constructor(
     private http: HttpClient,
@@ -104,5 +125,20 @@ export class UserService {
         headers: this.getHeaders()
       }
     );
+  }
+
+  getClients(page: number = 1, perPage: number = 10, search?: string): Observable<ClientListResponse> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString());
+
+    if (search) {
+      params = params.set('search', search);
+    }
+
+    return this.http.get<ClientListResponse>(this.clientsApiUrl, { 
+      params,
+      headers: this.getHeaders()
+    });
   }
 } 

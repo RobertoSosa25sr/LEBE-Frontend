@@ -4,7 +4,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { UsersComponent } from './pages/users/users.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { authGuard } from './guards/auth.guard';
-
+import { ClientsComponent } from './pages/clients/clients.component';
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
@@ -14,6 +14,7 @@ export const routes: Routes = [
     children: [
       { path: 'home', component: HomeComponent },
       { path: 'users', component: UsersComponent },
+      { path: 'clients', component: ClientsComponent },
       { path: '', redirectTo: '/home', pathMatch: 'full' }
     ]
   },

@@ -1,0 +1,62 @@
+<div class="users-container">
+  <div class="users-header">
+    <div class="header-actions">
+      <app-search-bar 
+        placeholder="Buscar usuarios..."
+        (search)="onSearch($event)">
+      </app-search-bar>
+      <app-button 
+        [buttonConfig]="buttonNewClientConfig"
+        (click)="onNewClientClick()">
+      </app-button>
+    </div>
+  </div>
+
+  <div class="users-content">
+    <div *ngIf="!isLoading; else loading">
+      <app-data-table
+        [data]="clients"
+        [config]="tableConfig"
+        [actionButtons]="actionButtons"
+        (pageChange)="onPageChange($event)">
+      </app-data-table>
+    </div>
+
+    <ng-template #loading>
+      <div class="loading-container">
+        <span class="material-icons loading-icon">refresh</span>
+        <p>Cargando usuarios...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<app-modal 
+  *ngIf="showDeleteModal"
+  title="¿Estás seguro de que deseas eliminar este cliente?"
+  confirmLabel="Eliminar"
+  cancelLabel="Cancelar"
+  (confirm)="onDeleteConfirm()"
+  (cancel)="onDeleteCancel()">
+</app-modal> 
+
+<app-modal 
+  *ngIf="showEditModal"
+  title="Editar cliente"
+  [inputFields]="inputEditFields"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  (confirm)="onEditConfirm()"
+  (cancel)="onEditCancel()">
+</app-modal>
+
+<app-modal 
+  *ngIf="showNewClientModal"
+  title="Nuevo cliente"
+  [inputFields]="inputNewClientFields"
+  [form]="form"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  (confirm)="onNewClientConfirm()"
+  (cancel)="onNewClientCancel()">
+</app-modal>

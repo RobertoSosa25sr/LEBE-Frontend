@@ -4,7 +4,7 @@
       <tr>
         <ng-container *ngFor="let column of config.columns">
           <th 
-            [class]="'header-' + (column.headerAlign || 'left')"
+            [class]="'header-' + (column.headerAlign || 'left') + ' ' + (column.headerClass || '')"
             [style.text-align]="column.headerAlign || 'left'">
             {{ column.label }}
           </th>
@@ -23,26 +23,26 @@
           </div>
         </td>
       </tr>
-      <tr *ngFor="let item of data">
+      <tr *ngFor="let item of data" [class]="'row-' + getRowStyle(item)">
         <ng-container *ngFor="let column of config.columns">
           <td 
-            [class]="'cell-' + (column.cellAlign || 'left')"
+            [class]="'cell-' + (column.cellAlign || 'left') + ' cell-' + getCellStyle(item, column)"
             [style.text-align]="column.cellAlign || 'left'">
-            <ng-container *ngIf="column.type === 'user'">
+            <ng-container *ngIf="column.showPhoto">
               <div class="user-info">
                 <div class="user-avatar">
-                  <ng-container *ngIf="item.profile_photo_url; else initials">
-                    <img [src]="item.profile_photo_url" [alt]="item.name">
+                  <ng-container *ngIf="getValue(item, column.photoField || column.key); else initials">
+                    <img [src]="getValue(item, column.photoField || column.key)" [alt]="getValue(item, column.key)">
                   </ng-container>
                   <ng-template #initials>
-                    <div class="initials">{{ getInitials(item.name) }}</div>
+                    <div class="initials">{{ getInitials(getValue(item, column.key)?.toString() || '') }}</div>
                   </ng-template>
                 </div>
-                <span class="user-name">{{ item.name }}</span>
+                <span class="user-name">{{ getValue(item, column.key) }}</span>
               </div>
             </ng-container>
-            <ng-container *ngIf="column.type === 'text'">
-              {{ item[column.key] }}
+            <ng-container *ngIf="!column.showPhoto">
+              {{ getValue(item, column.key) }}
             </ng-container>
           </td>
         </ng-container>
