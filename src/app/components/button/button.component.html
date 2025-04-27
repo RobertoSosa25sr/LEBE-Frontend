@@ -2,6 +2,7 @@
   class="button"
   [class.primary]="buttonConfig.type === 'primary'"
   [class.secondary]="buttonConfig.type === 'secondary'"
+  [class.outline]="buttonConfig.type === 'outline'"
   [class.purple]="buttonConfig.backgroundColor === 'purple'"
   [class.green]="buttonConfig.backgroundColor === 'green'"
   [class.red]="buttonConfig.backgroundColor === 'red'"
@@ -10,10 +11,12 @@
   [class.large]="buttonConfig.size === 'large'"
   [class.full-width]="buttonConfig.fullWidth"
   [disabled]="buttonConfig.disabled"
-  
+  (click)="onClick()"
+  [title]="buttonConfig.tooltip"
 >
   <span *ngIf="!buttonConfig.loading" class="button-content">
-    {{ buttonConfig.label }}
+    <i *ngIf="buttonConfig.icon" [class]="getIconClass() + ' ' + getColorClass()"></i>
+    <span *ngIf="buttonConfig.label">{{ buttonConfig.label }}</span>
   </span>
   <span *ngIf="buttonConfig.loading" class="loading-spinner"></span>
 </button>

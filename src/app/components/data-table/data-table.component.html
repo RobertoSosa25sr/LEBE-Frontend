@@ -48,11 +48,11 @@
         </ng-container>
         <td class="actions-cell" *ngIf="config.showActions">
           <div class="actions">
-            <app-action-button
+            <app-button
               *ngFor="let button of actionButtons"
-              [config]="getButtonConfig(button, getItemId(item))"
+              [buttonConfig]="getButtonConfig(button, getItemId(item))"
               (action)="handleAction(button, item)"
-            ></app-action-button>
+            ></app-button>
           </div>
         </td>
       </tr>

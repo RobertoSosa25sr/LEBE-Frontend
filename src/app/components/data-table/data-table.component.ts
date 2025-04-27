@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ActionButtonComponent, ActionButtonConfig } from '../action-button/action-button.component';
-
+import { ButtonConfig } from '../../interfaces/button-config.interface';
+import { ButtonComponent } from '../button/button.component';
 export type TextAlignment = 'left' | 'center' | 'right';
 export type RowStyle = 'default' | 'disabled' | 'emphasis' | 'warning' | 'success';
 export type CellStyle = 'default' | 'disabled' | 'emphasis' | 'warning' | 'success';
@@ -21,7 +21,7 @@ export interface ColumnConfig<T> {
 export interface TableConfig<T> {
   columns: ColumnConfig<T>[];
   showActions?: boolean;
-  actionButtons?: ActionButtonConfig<T>[];
+  actionButtons?: ButtonConfig[];
   pageSize?: number;
   currentPage?: number;
   totalItems?: number;
@@ -32,16 +32,16 @@ export interface TableConfig<T> {
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CommonModule, RouterModule, ActionButtonComponent],
+  imports: [CommonModule, RouterModule, ButtonComponent],
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.css']
 })
 export class DataTableComponent<T> {
   @Input() data: T[] = [];
   @Input() config: TableConfig<T> = { columns: [], keyField: 'id' as keyof T };
-  @Input() actionButtons: ActionButtonConfig<T>[] = [];
+  @Input() actionButtons: ButtonConfig[] = [];
   @Output() pageChange = new EventEmitter<number>();
-  @Output() search = new EventEmitter<string>();
+  @Output() search = new EventEmitter<string>(); 
 
   currentPage = 1;
   itemsPerPage = 10;
@@ -87,7 +87,7 @@ export class DataTableComponent<T> {
     return String(this.getValue(item, this.config.keyField));
   }
 
-  getButtonConfig(button: ActionButtonConfig<T>, itemId: string): ActionButtonConfig<T> {
+  getButtonConfig(button: ButtonConfig, itemId: string): ButtonConfig {
     if (Array.isArray(button.routerLink)) {
       return {
         ...button,
@@ -97,7 +97,7 @@ export class DataTableComponent<T> {
     return button;
   }
 
-  handleAction(button: ActionButtonConfig<T>, item: T): void {
+  handleAction(button: ButtonConfig, item: T): void {
     if (button.action) {
       button.action(item);
     }

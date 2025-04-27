@@ -4,14 +4,12 @@ import { RouterModule } from '@angular/router';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
-import { ActionButtonComponent } from '../../components/action-button/action-button.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
-import { UserService, User, UserListResponse, Client } from '../../services/user.service';
+import { UserService, Client } from '../../services/user.service';
 import { ActionButtonService } from '../../services/action-button.service';
-import { ActionButtonConfig } from '../../interfaces/action-button-config.interface';
 import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
 import { ButtonConfig } from '../../interfaces/button-config.interface';
-import { ROLES } from '../../shared/constants/roles.constants';
+import { ActionType } from '../../shared/constants/action-types.constants';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -42,7 +40,7 @@ export class ClientsComponent implements OnInit {
   from = 0;
   to = 0;
   searchTerm = '';
-  actionButtons: ActionButtonConfig[] = [];
+  actionButtons: ButtonConfig[] = [];
   inputEditFields: InputFieldConfig[] = [];
   inputNewClientFields: InputFieldConfig[] = [];
   form: FormGroup;
@@ -51,7 +49,8 @@ export class ClientsComponent implements OnInit {
     label: 'Nuevo',
     size: 'medium',
     backgroundColor: 'green',
-    type: 'secondary'
+    type: 'secondary',
+    icon: ActionType.CREATE
   };
 
   tableConfig: TableConfig<Client> = {
@@ -102,13 +101,13 @@ export class ClientsComponent implements OnInit {
   ngOnInit(): void {
     this.loadClients();
     this.actionButtons = this.actionButtonService.getTableActions('client').map(button => {
-      if (button.icon === 'delete') {
+      if (button.icon === ActionType.DELETE) {
         return {
           ...button,
           action: (client: Client) => this.onDeleteClick(client)
         };
       }
-      if (button.icon === 'edit') {
+      if (button.icon === ActionType.UPDATE) {
         return {
           ...button,
           action: (client: Client) => this.onEditClick(client)

@@ -4,11 +4,9 @@ import { RouterModule } from '@angular/router';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
-import { ActionButtonComponent } from '../../components/action-button/action-button.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
 import { UserService, User, UserListResponse } from '../../services/user.service';
 import { ActionButtonService } from '../../services/action-button.service';
-import { ActionButtonConfig } from '../../interfaces/action-button-config.interface';
 import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
 import { ButtonConfig } from '../../interfaces/button-config.interface';
 import { ROLES } from '../../shared/constants/roles.constants';
@@ -42,7 +40,7 @@ export class UsersComponent implements OnInit {
   from = 0;
   to = 0;
   searchTerm = '';
-  actionButtons: ActionButtonConfig[] = [];
+  actionButtons: ButtonConfig[] = [];
   inputEditFields: InputFieldConfig[] = [];
   inputNewUserFields: InputFieldConfig[] = [];
   form: FormGroup;
@@ -108,7 +106,7 @@ export class UsersComponent implements OnInit {
           action: (user: User) => this.onDeleteClick(user)
         };
       }
-      if (button.icon === 'edit') {
+      if (button.icon === 'update') {
         return {
           ...button,
           action: (user: User) => this.onEditClick(user)
@@ -166,11 +164,17 @@ export class UsersComponent implements OnInit {
     if (!user) return;
     
     this.selectedUser = user;
+    this.form.patchValue({
+      id_number: user.id_number,
+      name: user.name,
+      roles: user.roles
+    });
+
     this.inputEditFields = [
-      { label: 'Nombres completos', type: 'text', placeholder: user.name , formControlName: 'name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Cédula', type: 'text', value: user.id_number , formControlName: 'id_number', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: user.roles , formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
+      { label: 'Nombres completos', type: 'text', placeholder: user.name, formControlName: 'name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Cédula', type: 'text', value: user.id_number, formControlName: 'id_number', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Contraseña', placeholder: 'Contraseña', type: 'password', formControlName: 'password', required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: user.roles, formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
     ];
     this.showEditModal = true;
   }
@@ -197,12 +201,28 @@ export class UsersComponent implements OnInit {
   onEditConfirm() {
     if (this.selectedUser) {
       this.isLoading = true;
-      this.userService.updateUser(this.selectedUser)
+      const currentRoles = this.form.get('roles')?.value || [];
+      
+      // Ensure roles is always an array
+      const roles = Array.isArray(currentRoles) ? currentRoles : [currentRoles];
+      
+      const formData = {
+        id_number: this.selectedUser.id_number,
+        name: this.selectedUser.name,
+        roles: roles
+      };
+
+      this.userService.updateUser(formData)
         .subscribe({
           next: () => {
             this.loadUsers();
             this.showEditModal = false;
             this.selectedUser = null;
+            this.isLoading = false;
+            // Don't reset the form here to prevent double updates
+          },
+          error: (error) => {
+            console.error('Error updating user:', error);
             this.isLoading = false;
           }
         });
