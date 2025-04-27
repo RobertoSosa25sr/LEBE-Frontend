@@ -33,7 +33,7 @@ export class ClientsComponent implements OnInit {
   showDeleteModal = false;
   showEditModal = false;
   showNewClientModal = false;
-  selectedUser: User | null = null;
+  selectedUser: Client | null = null;
   isLoading = false;
   currentPage = 1;
   perPage = 10;
@@ -101,17 +101,17 @@ export class ClientsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadClients();
-    this.actionButtons = this.actionButtonService.getTableActions('user').map(button => {
+    this.actionButtons = this.actionButtonService.getTableActions('client').map(button => {
       if (button.icon === 'delete') {
         return {
           ...button,
-          action: (user: User) => this.onDeleteClick(user)
+          action: (client: Client) => this.onDeleteClick(client)
         };
       }
       if (button.icon === 'edit') {
         return {
           ...button,
-          action: (user: User) => this.onEditClick(user)
+          action: (client: Client) => this.onEditClick(client)
         };
       }
       return button;
@@ -157,20 +157,19 @@ export class ClientsComponent implements OnInit {
     this.loadClients();
   }
 
-  onDeleteClick(user: User) {
+  onDeleteClick(user: Client) {
     this.selectedUser = user;
     this.showDeleteModal = true;
   }
 
-  onEditClick(user: User) {
-    if (!user) return;
+  onEditClick(client: Client) {
+    if (!client) return;
     
-    this.selectedUser = user;
+    this.selectedUser = client;
     this.inputEditFields = [
-      { label: 'Nombres completos', type: 'text', placeholder: user.name , formControlName: 'name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Cédula', type: 'text', value: user.id_number , formControlName: 'id_number', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: user.roles , formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
+      { label: 'Nombres completos', type: 'text', value: client.name, formControlName: 'name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Cédula', type: 'text', value: client.id_number, formControlName: 'id_number', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Correo', placeholder: 'Correo', type: 'email', value: client.email, formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
     ];
     this.showEditModal = true;
   }
@@ -178,7 +177,7 @@ export class ClientsComponent implements OnInit {
   onDeleteConfirm() {
     if (this.selectedUser) {
       this.isLoading = true;
-      this.userService.deleteUser({ id_number: this.selectedUser.id_number })
+      this.userService.deleteClient(this.selectedUser.id_number)
         .subscribe({
           next: () => {
             this.loadClients();
@@ -197,12 +196,17 @@ export class ClientsComponent implements OnInit {
   onEditConfirm() {
     if (this.selectedUser) {
       this.isLoading = true;
-      this.userService.updateUser(this.selectedUser)
+      const newEmail = this.form.get('email')?.value;
+      
+      this.userService.updateClientEmail(this.selectedUser.id_number, newEmail)
         .subscribe({
           next: () => {
             this.loadClients();
             this.showEditModal = false;
             this.selectedUser = null;
+            this.isLoading = false;
+          },
+          error: (error) => {
             this.isLoading = false;
           }
         });
@@ -235,28 +239,13 @@ export class ClientsComponent implements OnInit {
 
   onNewClientConfirm() {
     this.isLoading = true;
-    interface FormData {
-      id_number: string;
-      name: string;
-      password: string;
-      roles: string | string[];
-    }
-
-    const formData: FormData = {
+    const formData = {
       id_number: this.form.get('id_number')?.value || '',
       name: this.form.get('name')?.value || '',
-      password: this.form.get('password')?.value || '',
-      roles: this.form.get('roles')?.value || []
+      email: this.form.get('email')?.value || ''
     };
 
-    const newUser = {
-      id_number: formData.id_number,
-      name: formData.name,
-      password: formData.password,
-      roles: Array.isArray(formData.roles) ? formData.roles : formData.roles ? [formData.roles] : []
-    };
-
-    this.userService.createUser(newUser)
+    this.userService.createClient(formData)
       .subscribe({
         next: (response) => {
           this.loadClients();

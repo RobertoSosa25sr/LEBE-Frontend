@@ -141,4 +141,30 @@ export class UserService {
       headers: this.getHeaders()
     });
   }
+
+  createClient(client: { id_number: string; name: string; email: string }): Observable<{ message: string; client: Client }> {
+    return this.http.post<{ message: string; client: Client }>(
+      this.clientsApiUrl,
+      client,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  deleteClient(id_number: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(
+      this.clientsApiUrl,
+      { 
+        body: { id_number },
+        headers: this.getHeaders()
+      }
+    );
+  }
+
+  updateClientEmail(id_number: string, email: string): Observable<{ message: string; client: Client }> {
+    return this.http.put<{ message: string; client: Client }>(
+      this.clientsApiUrl,
+      { id_number, email },
+      { headers: this.getHeaders() }
+    );
+  }
 } 
