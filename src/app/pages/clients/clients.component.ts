@@ -174,6 +174,15 @@ export class ClientsComponent implements OnInit {
     if (!client) return;
     
     this.selectedUser = client;
+    this.form.reset();
+    this.form.patchValue({
+      id: client.id,
+      first_name: client.first_name,
+      last_name: client.last_name,
+      email: client.email,
+      phone: client.phone
+    });
+
     this.inputEditFields = [
       { label: 'Nombres', type: 'text', value: client.first_name, formControlName: 'first_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
       { label: 'Apellidos', type: 'text', value: client.last_name, formControlName: 'last_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
@@ -208,10 +217,10 @@ export class ClientsComponent implements OnInit {
   onEditConfirm() {
     if (this.selectedUser) {
       this.isLoading = true;
-      const newEmail = this.form.get('email')?.value;
-      const newPhone = this.form.get('phone')?.value;
+      const formData = this.form.getRawValue();
+      console.log("Form data:", formData);
       
-      this.userService.updateClient(this.selectedUser.id, newEmail, newPhone)
+      this.userService.updateClient(this.selectedUser.id, formData.email, formData.phone)
         .subscribe({
           next: () => {
             this.loadClients();

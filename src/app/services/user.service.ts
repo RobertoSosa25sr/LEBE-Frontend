@@ -3,15 +3,9 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
-
-export interface User {
-  id: string;
-  first_name: string;
-  last_name: string;
-  full_name: string;
-  profile_photo_url: string;
-  roles: string[];
-}
+import { User, UserResponse, CreateUserRequest, UpdateUserRequest } from '../models/user.model';
+import { ApiResponse, PaginatedResponse } from '../models/api-response.model';
+import { map } from 'rxjs/operators';
 
 export interface Client {
   id: string;
@@ -34,31 +28,6 @@ export interface UserListResponse {
     from: number;
     to: number;
   };
-}
-
-export interface CreateUserRequest {
-  id: string;
-  first_name: string;
-  last_name: string;
-  password: string;
-  roles: string[];
-}
-
-export interface UpdateUserRequest {
-  id: string;
-  first_name?: string;
-  last_name?: string;
-  password?: string;
-  roles?: string[];
-}
-
-export interface UpdatePasswordRequest {
-  id: string;
-  password: string;
-}
-
-export interface DeleteUserRequest {
-  id: string;
 }
 
 export interface ClientListResponse {
@@ -93,45 +62,49 @@ export class UserService {
     });
   }
 
-  getUsers(page: number = 1, perPage: number = 10, search?: string): Observable<UserListResponse> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('per_page', perPage.toString());
-
+  getUsers(page: number = 1, limit: number = 10, search?: string): Observable<ApiResponse<PaginatedResponse<UserResponse>>> {
+    let url = `${this.apiUrl}?page=${page}&per_page=${limit}`;
     if (search) {
-      params = params.set('search', search);
+      url += `&search=${search}`;
     }
+    return this.http.get<{ users: UserResponse[], pagination: any }>(url, { headers: this.getHeaders() })
+      .pipe(
+        map(response => ({
+          success: true,
+          data: {
+            data: response.users,
+            total: response.pagination.total,
+            page: response.pagination.current_page,
+            limit: response.pagination.per_page,
+            totalPages: response.pagination.last_page,
+            last_page: response.pagination.last_page,
+            from: response.pagination.from,
+            to: response.pagination.to
+          }
+        }))
+      );
+  }
 
-    return this.http.get<UserListResponse>(this.apiUrl, { 
-      params,
-      headers: this.getHeaders()
+  getUser(id: number): Observable<ApiResponse<UserResponse>> {
+    return this.http.get<ApiResponse<UserResponse>>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+  }
+
+  createUser(user: CreateUserRequest): Observable<ApiResponse<UserResponse>> {
+    return this.http.post<ApiResponse<UserResponse>>(this.apiUrl, user, { headers: this.getHeaders() });
+  }
+
+  updateUser(id: string, user: UpdateUserRequest): Observable<ApiResponse<UserResponse>> {
+    return this.http.put<ApiResponse<UserResponse>>(this.apiUrl, { 
+      id,
+      ...user 
+    }, { headers: this.getHeaders() });
+  }
+
+  deleteUser(id: string): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(this.apiUrl, { 
+      body: { id },
+      headers: this.getHeaders() 
     });
-  }
-
-  createUser(user: CreateUserRequest): Observable<{ message: string; user: User }> {
-    return this.http.post<{ message: string; user: User }>(
-      this.apiUrl, 
-      user,
-      { headers: this.getHeaders() }
-    );
-  }
-
-  updateUser(user: UpdateUserRequest): Observable<{ message: string }> {
-    return this.http.put<{ message: string }>(
-      this.apiUrl, 
-      user,
-      { headers: this.getHeaders() }
-    );
-  }
-
-  deleteUser(user: DeleteUserRequest): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(
-      this.apiUrl, 
-      { 
-        body: user,
-        headers: this.getHeaders()
-      }
-    );
   }
 
   getClients(page: number = 1, perPage: number = 10, search?: string): Observable<ClientListResponse> {

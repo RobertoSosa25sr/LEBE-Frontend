@@ -5,13 +5,16 @@ import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
-import { UserService, User, UserListResponse } from '../../services/user.service';
+import { UserService } from '../../services/user.service';
+import { User, UserResponse } from '../../models/user.model';
 import { ActionButtonService } from '../../services/action-button.service';
 import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
 import { ButtonConfig } from '../../interfaces/button-config.interface';
 import { ROLES } from '../../shared/constants/roles.constants';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NotificationService } from '../../services/notification.service';
+import { ApiResponse, PaginatedResponse } from '../../models/api-response.model';
+import { CreateUserRequest } from '../../models/user.model';
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -122,13 +125,13 @@ export class UsersComponent implements OnInit {
     this.isLoading = true;
     this.userService.getUsers(this.currentPage, this.perPage, this.searchTerm)
       .subscribe({
-        next: (response: UserListResponse) => {
-          this.users = response.users;
-          this.total = response.pagination.total;
-          this.currentPage = response.pagination.current_page;
-          this.lastPage = response.pagination.last_page;
-          this.from = response.pagination.from;
-          this.to = response.pagination.to;
+        next: (response: ApiResponse<PaginatedResponse<UserResponse>>) => {
+          this.users = response.data?.data || [];
+          this.total = response.data?.total || 0;
+          this.currentPage = response.data?.page || 1;
+          this.lastPage = response.data?.last_page || 1;
+          this.from = response.data?.from || 0;
+          this.to = response.data?.to || 0;
           
           this.tableConfig = {
             ...this.tableConfig,
@@ -176,7 +179,7 @@ export class UsersComponent implements OnInit {
     this.inputEditFields = [
       { label: 'Nombres', type: 'text', placeholder: user.first_name, formControlName: 'first_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
       { label: 'Apellidos', type: 'text', placeholder: user.last_name, formControlName: 'last_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Cédula', type: 'text', value: user.id, formControlName: 'id', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Cédula', type: 'text', value: user.id.toString(), formControlName: 'id', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Contraseña', placeholder: 'Contraseña', type: 'password', formControlName: 'password', required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: user.roles, formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
     ];
@@ -186,7 +189,7 @@ export class UsersComponent implements OnInit {
   onDeleteConfirm() {
     if (this.selectedUser) {
       this.isLoading = true;
-      this.userService.deleteUser({ id: this.selectedUser.id })
+      this.userService.deleteUser(this.selectedUser.id)
         .subscribe({
           next: () => {
             this.loadUsers();
@@ -219,7 +222,7 @@ export class UsersComponent implements OnInit {
         roles: roles
       };
 
-      this.userService.updateUser(formData)
+      this.userService.updateUser(this.selectedUser.id, formData)
         .subscribe({
           next: () => {
             this.loadUsers();
@@ -280,12 +283,13 @@ export class UsersComponent implements OnInit {
       roles: this.form.get('roles')?.value || []
     };
 
-    const newUser = {
+    const newUser: CreateUserRequest = {
       id: formData.id,
       first_name: formData.first_name,
       last_name: formData.last_name,
+      email: `${formData.first_name.toLowerCase()}.${formData.last_name.toLowerCase()}@example.com`,
       password: formData.password,
-      roles: Array.isArray(formData.roles) ? formData.roles : formData.roles ? [formData.roles] : []
+      roles: Array.isArray(formData.roles) ? formData.roles : [formData.roles]
     };
 
     this.userService.createUser(newUser)
@@ -295,22 +299,13 @@ export class UsersComponent implements OnInit {
           this.showNewUserModal = false;
           this.isLoading = false;
           this.form.reset();
-
-          this.inputNewUserFields = [
-            { label: 'Nombres', type: 'text', placeholder: '', formControlName: 'first_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-            { label: 'Apellidos', type: 'text', placeholder: '', formControlName: 'last_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-            { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-            { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-            { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
-          ];
           this.notificationService.success('Usuario creado correctamente');
         },
         error: (error) => {
           this.isLoading = false;
           this.form.reset();
-          this.inputNewUserFields = [];
           this.showNewUserModal = false;
-          this.notificationService.error('Error al crear el usuario ' + error.error.message);
+          this.notificationService.error('Error al crear el usuario: ' + error.error.message);
         }
       });
   }
