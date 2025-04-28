@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
   selectedRole = '';
 
   inputFields: InputFieldConfig[] = [
-    { type: 'text', placeholder: 'Cédula', formControlName: 'id_number', required: true, variant: 'primary', size: 'large'},
+    { type: 'text', placeholder: 'Cédula', formControlName: 'id', required: true, variant: 'primary', size: 'large'},
     { type: 'password' , placeholder: 'Contraseña', formControlName: 'password', required: true, variant: 'primary', size: 'large'},
     { type: 'dropdown', placeholder: 'Seleccionar rol', formControlName: 'role', required: true, options: Object.values(ROLES), variant: 'primary', size: 'large'}
   ];
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      id_number: ['', [Validators.required]],
+      id: ['', [Validators.required]],
       password: ['', [Validators.required]],
       role: ['', [Validators.required]]
     });
@@ -76,9 +76,9 @@ export class LoginComponent implements OnInit {
         disabled: true
       };
       
-      const { id_number, password, role } = this.loginForm.value;
+      const { id, password, role } = this.loginForm.value;
       
-      this.authService.login(id_number, password, role).subscribe({
+      this.authService.login(id, password, role).subscribe({
         next: () => {
           this.router.navigate(['/home']);
         },

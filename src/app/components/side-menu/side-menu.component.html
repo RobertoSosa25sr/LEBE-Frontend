@@ -21,7 +21,7 @@
     <div class="user-icon">
       <span class="material-icons"><i class="fa-thin fa-user"></i></span>
     </div>
-    <span class="user-name" *ngIf="!isCollapsed">{{ currentUser?.name || 'Usuario' }}</span>
+    <span class="user-name" *ngIf="!isCollapsed">{{ currentUser?.full_name || 'Usuario' }}</span>
   </div>
 
   <div class="bottom-buttons">

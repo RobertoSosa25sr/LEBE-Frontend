@@ -54,10 +54,10 @@ export class ClientsComponent implements OnInit {
   };
 
   tableConfig: TableConfig<Client> = {
-    keyField: 'id_number',
+    keyField: 'id',
     columns: [
       { 
-        key: 'name',
+        key: 'full_name',
         label: 'Nombres',
         showPhoto: true,
         photoField: 'profile_photo_url',
@@ -65,7 +65,7 @@ export class ClientsComponent implements OnInit {
         cellAlign: 'left'
       },
       { 
-        key: 'id_number',
+        key: 'id',
         label: 'Cédula',
         headerAlign: 'left',
         cellAlign: 'left'
@@ -98,8 +98,9 @@ export class ClientsComponent implements OnInit {
     private notificationService: NotificationService
   ) {
     this.form = this.fb.group({
-      id_number: ['', Validators.required],
-      name: ['', Validators.required],
+      id: ['', Validators.required],
+      first_name: ['', Validators.required],
+      last_name: ['', Validators.required],
       email: ['', Validators.required],
       phone: ['', Validators.required],
       password: ['', Validators.required]
@@ -174,8 +175,9 @@ export class ClientsComponent implements OnInit {
     
     this.selectedUser = client;
     this.inputEditFields = [
-      { label: 'Nombres completos', type: 'text', value: client.name, formControlName: 'name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Cédula', type: 'text', value: client.id_number, formControlName: 'id_number', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Nombres', type: 'text', value: client.first_name, formControlName: 'first_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Apellidos', type: 'text', value: client.last_name, formControlName: 'last_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Cédula', type: 'text', value: client.id, formControlName: 'id', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Teléfono', placeholder: 'Teléfono', type: 'text', value: client.phone, formControlName: 'phone', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Correo', placeholder: 'Correo', type: 'email', value: client.email, formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
     ];
@@ -185,7 +187,7 @@ export class ClientsComponent implements OnInit {
   onDeleteConfirm() {
     if (this.selectedUser) {
       this.isLoading = true;
-      this.userService.deleteClient(this.selectedUser.id_number)
+      this.userService.deleteClient(this.selectedUser.id)
         .subscribe({
           next: () => {
             this.loadClients();
@@ -209,7 +211,7 @@ export class ClientsComponent implements OnInit {
       const newEmail = this.form.get('email')?.value;
       const newPhone = this.form.get('phone')?.value;
       
-      this.userService.updateClient(this.selectedUser.id_number, newEmail, newPhone)
+      this.userService.updateClient(this.selectedUser.id, newEmail, newPhone)
         .subscribe({
           next: () => {
             this.loadClients();
@@ -239,8 +241,9 @@ export class ClientsComponent implements OnInit {
 
   onNewClientClick() {
     this.inputNewClientFields = [
-      { label: 'Nombres completos', type: 'text', placeholder: '', formControlName: 'name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id_number', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Nombres', type: 'text', placeholder: '', formControlName: 'first_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Apellidos', type: 'text', placeholder: '', formControlName: 'last_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Teléfono', type: 'text', placeholder: '', formControlName: 'phone', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Correo', placeholder: 'Correo', type: 'email' , formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
     ];
@@ -254,8 +257,9 @@ export class ClientsComponent implements OnInit {
   onNewClientConfirm() {
     this.isLoading = true;
     const formData = {
-      id_number: this.form.get('id_number')?.value || '',
-      name: this.form.get('name')?.value || '',
+      id: this.form.get('id')?.value || '',
+      first_name: this.form.get('first_name')?.value || '',
+      last_name: this.form.get('last_name')?.value || '',
       email: this.form.get('email')?.value || '',
       phone: this.form.get('phone')?.value || ''
     };
@@ -269,8 +273,9 @@ export class ClientsComponent implements OnInit {
           this.form.reset();
 
           this.inputNewClientFields = [
-            { label: 'Nombres completos', type: 'text', placeholder: '', formControlName: 'name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-            { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id_number', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+            { label: 'Nombres', type: 'text', placeholder: '', formControlName: 'first_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+            { label: 'Apellidos', type: 'text', placeholder: '', formControlName: 'last_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+            { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
             { label: 'Teléfono', type: 'text', placeholder: '', formControlName: 'phone', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
             { label: 'Correo', placeholder: 'Correo', type: 'email' , formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
           ];

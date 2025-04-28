@@ -53,10 +53,10 @@ export class UsersComponent implements OnInit {
   };
 
   tableConfig: TableConfig<User> = {
-    keyField: 'id_number',
+    keyField: 'id',
     columns: [
       { 
-        key: 'name',
+        key: 'full_name',
         label: 'Nombres',
         showPhoto: true,
         photoField: 'profile_photo_url',
@@ -64,7 +64,7 @@ export class UsersComponent implements OnInit {
         cellAlign: 'left'
       },
       { 
-        key: 'id_number',
+        key: 'id',
         label: 'Cédula',
         headerAlign: 'left',
         cellAlign: 'left'
@@ -91,8 +91,9 @@ export class UsersComponent implements OnInit {
     private notificationService: NotificationService
   ) {
     this.form = this.fb.group({
-      id_number: ['', Validators.required],
-      name: ['', Validators.required],
+      id: ['', Validators.required],
+      first_name: ['', Validators.required],
+      last_name: ['', Validators.required],
       password: ['', Validators.required],
       roles: [[]]
     });
@@ -166,14 +167,16 @@ export class UsersComponent implements OnInit {
     
     this.selectedUser = user;
     this.form.patchValue({
-      id_number: user.id_number,
-      name: user.name,
+      id: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
       roles: user.roles
     });
 
     this.inputEditFields = [
-      { label: 'Nombres completos', type: 'text', placeholder: user.name, formControlName: 'name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Cédula', type: 'text', value: user.id_number, formControlName: 'id_number', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Nombres', type: 'text', placeholder: user.first_name, formControlName: 'first_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Apellidos', type: 'text', placeholder: user.last_name, formControlName: 'last_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Cédula', type: 'text', value: user.id, formControlName: 'id', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Contraseña', placeholder: 'Contraseña', type: 'password', formControlName: 'password', required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: user.roles, formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
     ];
@@ -183,7 +186,7 @@ export class UsersComponent implements OnInit {
   onDeleteConfirm() {
     if (this.selectedUser) {
       this.isLoading = true;
-      this.userService.deleteUser({ id_number: this.selectedUser.id_number })
+      this.userService.deleteUser({ id: this.selectedUser.id })
         .subscribe({
           next: () => {
             this.loadUsers();
@@ -210,8 +213,9 @@ export class UsersComponent implements OnInit {
       const roles = Array.isArray(currentRoles) ? currentRoles : [currentRoles];
       
       const formData = {
-        id_number: this.selectedUser.id_number,
-        name: this.selectedUser.name,
+        id: this.selectedUser.id,
+        first_name: this.selectedUser.first_name,
+        last_name: this.selectedUser.last_name,
         roles: roles
       };
 
@@ -245,8 +249,9 @@ export class UsersComponent implements OnInit {
 
   onNewUserClick() {
     this.inputNewUserFields = [
-      { label: 'Nombres completos', type: 'text', placeholder: '', formControlName: 'name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id_number', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Nombres', type: 'text', placeholder: '', formControlName: 'first_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Apellidos', type: 'text', placeholder: '', formControlName: 'last_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
     ];
@@ -260,22 +265,25 @@ export class UsersComponent implements OnInit {
   onNewUserConfirm() {
     this.isLoading = true;
     interface FormData {
-      id_number: string;
-      name: string;
+      id: string;
+      first_name: string;
+      last_name: string;
       password: string;
       roles: string | string[];
     }
 
     const formData: FormData = {
-      id_number: this.form.get('id_number')?.value || '',
-      name: this.form.get('name')?.value || '',
+      id: this.form.get('id')?.value || '',
+      first_name: this.form.get('first_name')?.value || '',
+      last_name: this.form.get('last_name')?.value || '',
       password: this.form.get('password')?.value || '',
       roles: this.form.get('roles')?.value || []
     };
 
     const newUser = {
-      id_number: formData.id_number,
-      name: formData.name,
+      id: formData.id,
+      first_name: formData.first_name,
+      last_name: formData.last_name,
       password: formData.password,
       roles: Array.isArray(formData.roles) ? formData.roles : formData.roles ? [formData.roles] : []
     };
@@ -289,8 +297,9 @@ export class UsersComponent implements OnInit {
           this.form.reset();
 
           this.inputNewUserFields = [
-            { label: 'Nombres completos', type: 'text', placeholder: '', formControlName: 'name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-            { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id_number', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+            { label: 'Nombres', type: 'text', placeholder: '', formControlName: 'first_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+            { label: 'Apellidos', type: 'text', placeholder: '', formControlName: 'last_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+            { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
             { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
             { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
           ];

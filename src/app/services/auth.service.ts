@@ -13,9 +13,9 @@ export interface MenuItem {
 }
 
 export interface User {
-  id: number;
-  id_number: string;
-  name: string;
+  id: string;
+  first_name: string;
+  last_name: string;
   roles: string[];
 }
 
@@ -61,7 +61,7 @@ export class AuthService {
 
   login(idNumber: string, password: string, role: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, {
-      id_number: idNumber,
+      id: idNumber,
       password,
       role
     }).pipe(

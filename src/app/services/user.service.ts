@@ -5,15 +5,19 @@ import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
 export interface User {
-  id_number: string;
-  name: string;
+  id: string;
+  first_name: string;
+  last_name: string;
+  full_name: string;
   profile_photo_url: string;
   roles: string[];
 }
 
 export interface Client {
-  id_number: string;
-  name: string;
+  id: string;
+  first_name: string;
+  last_name: string;
+  full_name: string;
   email: string;
   phone: string;
   profile_photo_url: string;
@@ -33,26 +37,28 @@ export interface UserListResponse {
 }
 
 export interface CreateUserRequest {
-  id_number: string;
-  name: string;
+  id: string;
+  first_name: string;
+  last_name: string;
   password: string;
   roles: string[];
 }
 
 export interface UpdateUserRequest {
-  id_number: string;
-  name?: string;
+  id: string;
+  first_name?: string;
+  last_name?: string;
   password?: string;
   roles?: string[];
 }
 
 export interface UpdatePasswordRequest {
-  id_number: string;
+  id: string;
   password: string;
 }
 
 export interface DeleteUserRequest {
-  id_number: string;
+  id: string;
 }
 
 export interface ClientListResponse {
@@ -143,7 +149,7 @@ export class UserService {
     });
   }
 
-  createClient(client: { id_number: string; name: string; email: string; phone: string }): Observable<{ message: string; client: Client }> {
+  createClient(client: { id: string; first_name: string; last_name: string; email: string; phone: string }): Observable<{ message: string; client: Client }> {
     return this.http.post<{ message: string; client: Client }>(
       this.clientsApiUrl,
       client,
@@ -151,20 +157,20 @@ export class UserService {
     );
   }
 
-  deleteClient(id_number: string): Observable<{ message: string }> {
+  deleteClient(id: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(
       this.clientsApiUrl,
       { 
-        body: { id_number },
+        body: { id },
         headers: this.getHeaders()
       }
     );
   }
 
-  updateClient(id_number: string, email: string, phone: string): Observable<{ message: string; client: Client }> {
+  updateClient(id: string, email: string, phone: string): Observable<{ message: string; client: Client }> {
     return this.http.put<{ message: string; client: Client }>(
       this.clientsApiUrl,
-      { id_number, email, phone },
+      { id, email, phone },
       { headers: this.getHeaders() }
     );
   }
