@@ -81,14 +81,14 @@ export class ClientsComponent implements OnInit {
         label: 'Correo',
         headerAlign: 'left',
         cellAlign: 'left',
-        cellStyle: (item: Client) => item.email.includes('@') ? 'success' : 'warning'
+        cellStyle: (item: Client) => item?.email ? (item.email.includes('@') ? 'success' : 'warning') : 'default'
       }
     ],
     showActions: true,
     currentPage: 1,
     pageSize: 10,
     totalItems: 0,
-    rowStyle: (item: Client) => item.roles.includes('admin') ? 'emphasis' : 'default'
+    rowStyle: (item: Client) => item?.roles ? (item.roles.includes('admin') ? 'emphasis' : 'default') : 'default'
   };
 
   constructor(
