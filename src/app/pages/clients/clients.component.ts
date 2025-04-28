@@ -11,7 +11,7 @@ import { InputFieldConfig } from '../../interfaces/Input-field-config.interface'
 import { ButtonConfig } from '../../interfaces/button-config.interface';
 import { ActionType } from '../../shared/constants/action-types.constants';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { NotificationService } from '../../services/notification.service';
 @Component({
   selector: 'app-clients',
   standalone: true,
@@ -94,7 +94,8 @@ export class ClientsComponent implements OnInit {
   constructor(
     private userService: UserService,
     private actionButtonService: ActionButtonService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.form = this.fb.group({
       id_number: ['', Validators.required],
@@ -146,7 +147,7 @@ export class ClientsComponent implements OnInit {
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('Error loading clients:', error);
+          this.notificationService.error('Error al cargar los clientes');
           this.isLoading = false;
         }
       });
@@ -190,8 +191,10 @@ export class ClientsComponent implements OnInit {
             this.loadClients();
             this.showDeleteModal = false;
             this.selectedUser = null;
+            this.notificationService.success('Cliente eliminado correctamente');
           },
           error: (error) => {
+            this.notificationService.error('Error al eliminar el cliente');
             this.isLoading = false;
             this.showDeleteModal = false;
             this.selectedUser = null;
@@ -213,8 +216,10 @@ export class ClientsComponent implements OnInit {
             this.showEditModal = false;
             this.selectedUser = null;
             this.isLoading = false;
+            this.notificationService.success('Cliente actualizado correctamente');
           },
           error: (error) => {
+            this.notificationService.error('Error al actualizar el cliente ' + error.error.message);
             this.isLoading = false;
           }
         });
@@ -269,9 +274,14 @@ export class ClientsComponent implements OnInit {
             { label: 'Teléfono', type: 'text', placeholder: '', formControlName: 'phone', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
             { label: 'Correo', placeholder: 'Correo', type: 'email' , formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
           ];
+          this.notificationService.success('Cliente creado correctamente');
         },
         error: (error) => {
           this.isLoading = false;
+          this.form.reset();
+          this.inputNewClientFields = [];
+          this.showNewClientModal = false;
+          this.notificationService.error('Error al crear el cliente ' + error.error.message);
         }
       });
   }

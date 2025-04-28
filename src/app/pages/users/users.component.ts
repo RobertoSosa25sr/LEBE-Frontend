@@ -11,7 +11,7 @@ import { InputFieldConfig } from '../../interfaces/Input-field-config.interface'
 import { ButtonConfig } from '../../interfaces/button-config.interface';
 import { ROLES } from '../../shared/constants/roles.constants';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { NotificationService } from '../../services/notification.service';
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -87,7 +87,8 @@ export class UsersComponent implements OnInit {
   constructor(
     private userService: UserService,
     private actionButtonService: ActionButtonService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.form = this.fb.group({
       id_number: ['', Validators.required],
@@ -138,7 +139,7 @@ export class UsersComponent implements OnInit {
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('Error loading users:', error);
+          this.notificationService.error('Error al cargar los usuarios');
           this.isLoading = false;
         }
       });
@@ -188,11 +189,13 @@ export class UsersComponent implements OnInit {
             this.loadUsers();
             this.showDeleteModal = false;
             this.selectedUser = null;
+            this.notificationService.success('Usuario eliminado correctamente');  
           },
           error: (error) => {
             this.isLoading = false;
             this.showDeleteModal = false;
             this.selectedUser = null;
+            this.notificationService.error('Error al eliminar el usuario');
           }
         });
     }
@@ -219,10 +222,10 @@ export class UsersComponent implements OnInit {
             this.showEditModal = false;
             this.selectedUser = null;
             this.isLoading = false;
-            // Don't reset the form here to prevent double updates
+            this.notificationService.success('Usuario actualizado correctamente');
           },
           error: (error) => {
-            console.error('Error updating user:', error);
+            this.notificationService.error('Error al actualizar el usuario' + error.error.message);
             this.isLoading = false;
           }
         });
@@ -291,9 +294,14 @@ export class UsersComponent implements OnInit {
             { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
             { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
           ];
+          this.notificationService.success('Usuario creado correctamente');
         },
         error: (error) => {
           this.isLoading = false;
+          this.form.reset();
+          this.inputNewUserFields = [];
+          this.showNewUserModal = false;
+          this.notificationService.error('Error al crear el usuario ' + error.error.message);
         }
       });
   }
