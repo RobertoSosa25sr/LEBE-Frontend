@@ -30,13 +30,13 @@
     <div class="form-actions">
       <app-button 
         [buttonConfig]="submitButtonConfig"
-        (click)="handleSubmit()"
-      ></app-button>
+        (action)="handleSubmit()">
+      </app-button>
       <app-button 
-        *ngIf="cancelButtonConfig.label !== ''"
+        *ngIf="showCancelButton"
         [buttonConfig]="cancelButtonConfig"
-        (click)="handleCancel()"
-      ></app-button>
+        (action)="handleCancel()">
+      </app-button>
     </div>
   </form>
 </div>

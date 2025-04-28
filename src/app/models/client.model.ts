@@ -21,7 +21,6 @@ export interface CreateClientRequest {
   last_name: string;
   email: string;
   phone: string;
-  password: string;
 }
 
 export interface UpdateClientRequest {
@@ -29,5 +28,4 @@ export interface UpdateClientRequest {
   last_name?: string;
   email?: string;
   phone?: string;
-  password?: string;
 } 

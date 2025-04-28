@@ -103,7 +103,6 @@ export class ClientsComponent implements OnInit {
       last_name: ['', Validators.required],
       email: ['', Validators.required],
       phone: ['', Validators.required],
-      password: ['', Validators.required]
     });
   }
 

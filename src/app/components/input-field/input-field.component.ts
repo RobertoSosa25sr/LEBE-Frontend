@@ -1,5 +1,5 @@
 import { Component, Input, forwardRef, EventEmitter, Output, HostListener } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -32,17 +32,25 @@ export class InputFieldComponent implements ControlValueAccessor {
   @Input() selectedOption?: string | string[] = '';
   @Input() formControlName: string = '';
   @Input() nullable: boolean = false;
+  @Input() formControl?: FormControl;
   @Output() optionChange = new EventEmitter<string | string[]>();
   onChange: any = () => {};
   onTouch: any = () => {};
   isDropdownOpen: boolean = false;
 
   writeValue(value: any): void {
-    this.value = value;
     if (this.type === 'dropdown-select') {
-      this.selectedOption = Array.isArray(value) ? value : [value].filter(Boolean);
+      // Handle both single and multi-select dropdowns
+      if (value === null || value === undefined) {
+        this.value = [];
+        this.selectedOption = [];
+      } else {
+        this.value = Array.isArray(value) ? value : [value].filter(Boolean);
+        this.selectedOption = this.value;
+      }
     } else {
-      this.selectedOption = value || '';
+      this.value = value || '';
+      this.selectedOption = this.value;
     }
   }
 
@@ -58,11 +66,12 @@ export class InputFieldComponent implements ControlValueAccessor {
     const target = event.target as HTMLInputElement;
     this.value = target.value;
     this.onChange(this.value);
+    this.onTouch();
   }
 
   onOptionChange(option: string): void {
     if (this.type === 'dropdown-select') {
-      let currentSelection = Array.isArray(this.selectedOption) ? this.selectedOption : [];
+      let currentSelection = Array.isArray(this.selectedOption) ? [...this.selectedOption] : [];
       const index = currentSelection.indexOf(option);
       
       if (index === -1) {
@@ -74,18 +83,36 @@ export class InputFieldComponent implements ControlValueAccessor {
       this.selectedOption = currentSelection;
       this.value = currentSelection;
       this.onChange(currentSelection);
+      this.onTouch();
       this.optionChange.emit(currentSelection);
+      
+      // Update form control if it exists
+      if (this.formControl) {
+        this.formControl.setValue(currentSelection);
+        this.formControl.markAsDirty();
+        this.formControl.markAsTouched();
+      }
     } else {
       this.selectedOption = option;
       this.value = option;
       this.onChange(option);
+      this.onTouch();
       this.optionChange.emit(option);
       this.isDropdownOpen = false;
+      
+      // Update form control if it exists
+      if (this.formControl) {
+        this.formControl.setValue(option);
+        this.formControl.markAsDirty();
+        this.formControl.markAsTouched();
+      }
     }
   }
 
   toggleDropdown(): void {
-    this.isDropdownOpen = !this.isDropdownOpen;
+    if (!this.readonly) {
+      this.isDropdownOpen = !this.isDropdownOpen;
+    }
   }
 
   getSelectedOption(): string {
@@ -107,7 +134,6 @@ export class InputFieldComponent implements ControlValueAccessor {
     const target = event.target as HTMLElement;
     const dropdownElement = target.closest('.dropdown-selector');
     
-    // Only close if clicking outside the dropdown button
     if (!dropdownElement) {
       this.isDropdownOpen = false;
     }
@@ -118,7 +144,6 @@ export class InputFieldComponent implements ControlValueAccessor {
     const target = event.target as HTMLElement;
     const optionsContainer = target.closest('.options-container');
     
-    // Close dropdown when mouse leaves the options container
     if (optionsContainer) {
       this.isDropdownOpen = false;
     }

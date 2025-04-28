@@ -41,12 +41,6 @@ export class LoginComponent implements OnInit {
     type: 'primary'
   };
 
-  cancelButtonConfig: ButtonConfig = {
-    label: 'Cancelar',
-    size: 'large',
-    fullWidth: true,
-    type: 'secondary'
-  };
 
   constructor(
     private fb: FormBuilder,
@@ -94,7 +88,4 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  handleCancel() {
-    this.router.navigate(['/']);
-  }
 }
