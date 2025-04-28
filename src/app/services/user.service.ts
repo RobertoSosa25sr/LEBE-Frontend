@@ -15,6 +15,7 @@ export interface Client {
   id_number: string;
   name: string;
   email: string;
+  phone: string;
   profile_photo_url: string;
   roles: string[];
 }
@@ -142,7 +143,7 @@ export class UserService {
     });
   }
 
-  createClient(client: { id_number: string; name: string; email: string }): Observable<{ message: string; client: Client }> {
+  createClient(client: { id_number: string; name: string; email: string; phone: string }): Observable<{ message: string; client: Client }> {
     return this.http.post<{ message: string; client: Client }>(
       this.clientsApiUrl,
       client,
@@ -160,10 +161,10 @@ export class UserService {
     );
   }
 
-  updateClientEmail(id_number: string, email: string): Observable<{ message: string; client: Client }> {
+  updateClient(id_number: string, email: string, phone: string): Observable<{ message: string; client: Client }> {
     return this.http.put<{ message: string; client: Client }>(
       this.clientsApiUrl,
-      { id_number, email },
+      { id_number, email, phone },
       { headers: this.getHeaders() }
     );
   }

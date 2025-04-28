@@ -71,6 +71,12 @@ export class ClientsComponent implements OnInit {
         cellAlign: 'left'
       },
       { 
+        key: 'phone',
+        label: 'Teléfono',
+        headerAlign: 'left',
+        cellAlign: 'left'
+      },
+      { 
         key: 'email',
         label: 'Correo',
         headerAlign: 'left',
@@ -94,6 +100,7 @@ export class ClientsComponent implements OnInit {
       id_number: ['', Validators.required],
       name: ['', Validators.required],
       email: ['', Validators.required],
+      phone: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
@@ -168,6 +175,7 @@ export class ClientsComponent implements OnInit {
     this.inputEditFields = [
       { label: 'Nombres completos', type: 'text', value: client.name, formControlName: 'name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
       { label: 'Cédula', type: 'text', value: client.id_number, formControlName: 'id_number', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Teléfono', placeholder: 'Teléfono', type: 'text', value: client.phone, formControlName: 'phone', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Correo', placeholder: 'Correo', type: 'email', value: client.email, formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
     ];
     this.showEditModal = true;
@@ -196,8 +204,9 @@ export class ClientsComponent implements OnInit {
     if (this.selectedUser) {
       this.isLoading = true;
       const newEmail = this.form.get('email')?.value;
+      const newPhone = this.form.get('phone')?.value;
       
-      this.userService.updateClientEmail(this.selectedUser.id_number, newEmail)
+      this.userService.updateClient(this.selectedUser.id_number, newEmail, newPhone)
         .subscribe({
           next: () => {
             this.loadClients();
@@ -227,6 +236,7 @@ export class ClientsComponent implements OnInit {
     this.inputNewClientFields = [
       { label: 'Nombres completos', type: 'text', placeholder: '', formControlName: 'name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
       { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id_number', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Teléfono', type: 'text', placeholder: '', formControlName: 'phone', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Correo', placeholder: 'Correo', type: 'email' , formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
     ];
     this.showNewClientModal = true;
@@ -241,7 +251,8 @@ export class ClientsComponent implements OnInit {
     const formData = {
       id_number: this.form.get('id_number')?.value || '',
       name: this.form.get('name')?.value || '',
-      email: this.form.get('email')?.value || ''
+      email: this.form.get('email')?.value || '',
+      phone: this.form.get('phone')?.value || ''
     };
 
     this.userService.createClient(formData)
@@ -255,6 +266,7 @@ export class ClientsComponent implements OnInit {
           this.inputNewClientFields = [
             { label: 'Nombres completos', type: 'text', placeholder: '', formControlName: 'name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
             { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id_number', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+            { label: 'Teléfono', type: 'text', placeholder: '', formControlName: 'phone', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
             { label: 'Correo', placeholder: 'Correo', type: 'email' , formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
           ];
         },
