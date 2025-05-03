@@ -125,6 +125,17 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   }
 
   handleSubmit() {
+    this.submitButtonConfig = {
+      ...this.submitButtonConfig,
+      disabled: true
+    };
+    this.cancelButtonConfig = {
+      ...this.cancelButtonConfig,
+      disabled: true
+    };
+    for (const field of this.inputFields) {
+      field.readonly = true;
+    }
     if (this.inputFields.length > 0 && !this.form.valid) {
       this.showFormErrors();
       return;
