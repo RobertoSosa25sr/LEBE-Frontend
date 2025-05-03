@@ -25,6 +25,12 @@ export interface LoginResponse {
   token: string;
 }
 
+export interface LoginRequest {
+  id: string;
+  password: string;
+  role: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -59,21 +65,17 @@ export class AuthService {
     return !!this.getToken();
   }
 
-  login(idNumber: string, password: string, role: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, {
-      id: idNumber,
-      password,
-      role
-    }).pipe(
+  login(credentials: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
         this.tokenSubject.next(response.token);
         this.currentUserSubject.next(response.user);
         this.menuItemsSubject.next(response.menu_items);
-        this.selectedRoleSubject.next(role);
+        this.selectedRoleSubject.next(credentials.role);
         
         localStorage.setItem('token', response.token);
         localStorage.setItem('menuItems', JSON.stringify(response.menu_items));
-        localStorage.setItem('selectedRole', role);
+        localStorage.setItem('selectedRole', credentials.role);
         localStorage.setItem('currentUser', JSON.stringify(response.user));
       })
     );

@@ -19,8 +19,17 @@ export class ModalComponent {
   @Input() cancelLabel: string = 'Cancelar';
   @Input() initialValues: any = {};
   @Input() form: FormGroup = new FormGroup({});
+  @Input() apiService: any;
+  @Input() apiMethod: string = '';
+  @Input() apiServiceParams: any[] = [];
+  @Input() successMessage: string = 'Operación exitosa';
+  @Input() successRedirect: string = '';
+  @Input() apiErrorMessage: string = 'Error al realizar la operación';
+  @Input() show: boolean = true;
   @Output() confirm = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
+  @Output() success = new EventEmitter<any>();
+  @Output() error = new EventEmitter<any>();
 
   submitButtonConfig: ButtonConfig;
   cancelButtonConfig: ButtonConfig;
@@ -51,5 +60,14 @@ export class ModalComponent {
 
   handleCancel() {
     this.cancel.emit();
+  }
+
+  handleSuccess(response: any) {
+    this.show = false;
+    this.success.emit(response);
+  }
+
+  handleError(error: any) {
+    this.error.emit(error);
   }
 } 

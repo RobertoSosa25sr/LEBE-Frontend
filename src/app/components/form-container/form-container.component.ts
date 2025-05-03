@@ -40,6 +40,7 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   };
   @Input() apiService: any;
   @Input() apiMethod: string = '';
+  @Input() apiServiceParams: any[] = [];
   @Input() successMessage: string = 'Operación exitosa';
   @Input() successRedirect: string = '';
   @Input() apiErrorMessage: string = 'Error al realizar la operación';
@@ -63,6 +64,9 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   ngOnInit() {
     this.initializeForm();
     this.groupInputFields();
+    console.log('apiServiceParams',this.apiServiceParams);
+    console.log('apiService',this.apiService);
+    console.log('apiMethod',this.apiMethod);
   }
 
   private initializeForm() {
@@ -144,7 +148,8 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
       this.showFormErrors();
       return;
     }
-
+    console.log('apiService',this.apiService);
+    console.log('apiMethod',this.apiMethod);
     if (this.apiService && this.apiMethod) {
       this.handleApiCall();
     } else {
@@ -154,7 +159,15 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
 
   private handleApiCall() {
     const formData = this.form.value;
-    const apiCall$ = this.apiService[this.apiMethod](...Object.values(formData));
+    let apiCall$: Observable<any>;
+
+    if (this.apiServiceParams && this.apiServiceParams.length > 0) {
+      // If we have service params, they should be the first arguments
+      apiCall$ = this.apiService[this.apiMethod](...this.apiServiceParams, formData);
+    } else {
+      // For all methods, pass the form data as a single object
+      apiCall$ = this.apiService[this.apiMethod](formData);
+    }
 
     if (apiCall$ instanceof Observable) {
       apiCall$.subscribe({

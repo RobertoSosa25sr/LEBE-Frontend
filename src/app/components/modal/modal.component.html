@@ -1,4 +1,4 @@
-<div class="modal-overlay">
+<div class="modal-overlay" *ngIf="show">
   <div class="modal-content">
     <app-form-container
       [title]="title"
@@ -6,8 +6,16 @@
       [submitButtonConfig]="submitButtonConfig"
       [cancelButtonConfig]="cancelButtonConfig"
       [form]="form"
+      [apiService]="apiService"
+      [apiMethod]="apiMethod"
+      [apiServiceParams]="apiServiceParams"
+      [successMessage]="successMessage"
+      [successRedirect]="successRedirect"
+      [apiErrorMessage]="apiErrorMessage"
       (onSubmit)="handleSubmit($event)"
       (onCancel)="handleCancel()"
+      (onSuccess)="handleSuccess($event)"
+      (onError)="handleError($event)"
     ></app-form-container>
   </div>
 </div> 

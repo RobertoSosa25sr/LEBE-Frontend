@@ -47,6 +47,7 @@ export class UsersComponent implements OnInit {
   inputEditFields: InputFieldConfig[] = [];
   inputNewUserFields: InputFieldConfig[] = [];
   form: FormGroup;
+  userService: UserService;
 
   buttonNewUserConfig: ButtonConfig = {
     label: 'Nuevo',
@@ -88,11 +89,12 @@ export class UsersComponent implements OnInit {
   };
 
   constructor(
-    private userService: UserService,
+    userService: UserService,
     private actionButtonService: ActionButtonService,
     private fb: FormBuilder,
     private notificationService: NotificationService
   ) {
+    this.userService = userService;
     this.form = this.fb.group({
       id: ['', Validators.required],
       first_name: ['', Validators.required],
@@ -186,60 +188,6 @@ export class UsersComponent implements OnInit {
     this.showEditModal = true;
   }
 
-  onDeleteConfirm() {
-    if (this.selectedUser) {
-      this.isLoading = true;
-      this.userService.deleteUser(this.selectedUser.id)
-        .subscribe({
-          next: () => {
-            this.loadUsers();
-            this.showDeleteModal = false;
-            this.selectedUser = null;
-            this.notificationService.success('Usuario eliminado correctamente');  
-          },
-          error: (error) => {
-            this.isLoading = false;
-            this.showDeleteModal = false;
-            this.selectedUser = null;
-            this.notificationService.error('Error al eliminar el usuario');
-          }
-        });
-    }
-  }
-
-  onEditConfirm() {
-    if (this.selectedUser) {
-      this.isLoading = true;
-      const currentRoles = this.form.get('roles')?.value || [];
-      
-      // Ensure roles is always an array
-      const roles = Array.isArray(currentRoles) ? currentRoles : [currentRoles];
-      
-      const formData = {
-        id: this.selectedUser.id,
-        first_name: this.selectedUser.first_name,
-        last_name: this.selectedUser.last_name,
-        roles: roles
-      };
-
-      this.userService.updateUser(this.selectedUser.id, formData)
-        .subscribe({
-          next: () => {
-            this.loadUsers();
-            this.showEditModal = false;
-            this.selectedUser = null;
-            this.isLoading = false;
-            this.notificationService.success('Usuario actualizado correctamente');
-          },
-          error: (error) => {
-            this.notificationService.error('Error al actualizar el usuario' + error.error.message);
-            this.isLoading = false;
-          }
-        });
-    }
-  }
-  
-
   onDeleteCancel() {
     this.showDeleteModal = false;
     this.selectedUser = null;
@@ -263,50 +211,5 @@ export class UsersComponent implements OnInit {
 
   onNewUserCancel() {
     this.showNewUserModal = false;
-  }
-
-  onNewUserConfirm() {
-    this.isLoading = true;
-    interface FormData {
-      id: string;
-      first_name: string;
-      last_name: string;
-      password: string;
-      roles: string | string[];
-    }
-
-    const formData: FormData = {
-      id: this.form.get('id')?.value || '',
-      first_name: this.form.get('first_name')?.value || '',
-      last_name: this.form.get('last_name')?.value || '',
-      password: this.form.get('password')?.value || '',
-      roles: this.form.get('roles')?.value || []
-    };
-
-    const newUser: CreateUserRequest = {
-      id: formData.id,
-      first_name: formData.first_name,
-      last_name: formData.last_name,
-      email: `${formData.first_name.toLowerCase()}.${formData.last_name.toLowerCase()}@example.com`,
-      password: formData.password,
-      roles: Array.isArray(formData.roles) ? formData.roles : [formData.roles]
-    };
-
-    this.userService.createUser(newUser)
-      .subscribe({
-        next: (response) => {
-          this.loadUsers();
-          this.showNewUserModal = false;
-          this.isLoading = false;
-          this.form.reset();
-          this.notificationService.success('Usuario creado correctamente');
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.form.reset();
-          this.showNewUserModal = false;
-          this.notificationService.error('Error al crear el usuario: ' + error.error.message);
-        }
-      });
   }
 } 

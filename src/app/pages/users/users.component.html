@@ -31,32 +31,44 @@
   </div>
 </div>
 
-<app-modal 
-  *ngIf="showDeleteModal"
-  title="¿Estás seguro de que deseas eliminar este usuario?"
-  confirmLabel="Eliminar"
-  cancelLabel="Cancelar"
-  (confirm)="onDeleteConfirm()"
-  (cancel)="onDeleteCancel()">
-</app-modal> 
+  <!-- Delete Modal -->
+  <app-modal
+    *ngIf="showDeleteModal"
+    title="¿Estás seguro de eliminar este usuario?"
+    [apiService]="userService"
+    apiMethod="deleteUser"
+    [apiServiceParams]="[selectedUser?.id]"
+    successMessage="Usuario eliminado correctamente"
+    apiErrorMessage="Error al eliminar el usuario"
+    (success)="loadUsers()"
+    (cancel)="onDeleteCancel()"
+  ></app-modal>
 
-<app-modal 
-  *ngIf="showEditModal"
-  title="Editar usuario"
-  [inputFields]="inputEditFields"
-  confirmLabel="Guardar"
-  cancelLabel="Cancelar"
-  (confirm)="onEditConfirm()"
-  (cancel)="onEditCancel()">
-</app-modal>
+  <!-- Edit Modal -->
+  <app-modal
+    *ngIf="showEditModal"
+    title="Editar Usuario"
+    [inputFields]="inputEditFields"
+    [form]="form"
+    [apiService]="userService"
+    apiMethod="updateUser"
+    [apiServiceParams]="[selectedUser?.id]"
+    successMessage="Usuario actualizado correctamente"
+    apiErrorMessage="Error al actualizar el usuario"
+    (success)="loadUsers()"
+    (cancel)="onEditCancel()"
+  ></app-modal>
 
-<app-modal 
-  *ngIf="showNewUserModal"
-  title="Nuevo usuario"
-  [inputFields]="inputNewUserFields"
-  [form]="form"
-  confirmLabel="Guardar"
-  cancelLabel="Cancelar"
-  (confirm)="onNewUserConfirm()"
-  (cancel)="onNewUserCancel()">
-</app-modal>
+  <!-- New User Modal -->
+  <app-modal
+    *ngIf="showNewUserModal"
+    title="Nuevo Usuario"
+    [inputFields]="inputNewUserFields"
+    [form]="form"
+    [apiService]="userService"
+    apiMethod="createUser"
+    successMessage="Usuario creado correctamente"
+    apiErrorMessage="Error al crear el usuario"
+    (success)="loadUsers()"
+    (cancel)="onNewUserCancel()"
+  ></app-modal>
