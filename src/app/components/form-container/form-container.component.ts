@@ -6,6 +6,9 @@ import { InputFieldComponent } from '../input-field/input-field.component';
 import { ButtonComponent } from '../button/button.component';
 import { ButtonConfig } from '../../interfaces/button-config.interface';
 import { ActionType } from '../../shared/constants/action-types.constants';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-form-container',
@@ -35,15 +38,27 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
     backgroundColor: '',
     disabled: false
   };
+  @Input() apiService: any;
+  @Input() apiMethod: string = '';
+  @Input() successMessage: string = 'Operación exitosa';
+  @Input() successRedirect: string = '';
+  @Input() apiErrorMessage: string = 'Error al realizar la operación';
   @Output() onSubmit = new EventEmitter<any>();
   @Output() onCancel = new EventEmitter<void>();
+  @Output() onSuccess = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
   errorMessage: string | null = null;
   isErrorVisible = false;
   initialFormValues: any = {};
 
   groupedInputFields: { row: number; columns: InputFieldConfig[] }[] = [];
 
-  constructor(private cdr: ChangeDetectorRef, private fb: FormBuilder) {}
+  constructor(
+    private cdr: ChangeDetectorRef, 
+    private fb: FormBuilder,
+    private router: Router,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit() {
     this.initializeForm();
@@ -51,7 +66,6 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   }
 
   private initializeForm() {
-    // Create form controls if they don't exist
     if (Object.keys(this.form.controls).length === 0 && this.inputFields.length > 0) {
       const formControls: { [key: string]: FormControl } = {};
       this.inputFields.forEach(field => {
@@ -64,27 +78,22 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
       this.form = this.fb.group(formControls);
     }
 
-    // Initialize form tracking only if there are input fields
     if (this.inputFields.length > 0) {
       this.initializeFormTracking();
     }
   }
 
   private initializeFormTracking() {
-    // Store initial form values
     this.initialFormValues = { ...this.form.value };
     
-    // Subscribe to form value changes
     this.form.valueChanges.subscribe(() => {
       this.updateSubmitButtonState();
     });
 
-    // Initial state of submit button
     this.updateSubmitButtonState();
   }
 
   private updateSubmitButtonState() {
-    // If there are no input fields, keep the button enabled
     if (this.inputFields.length === 0) {
       this.submitButtonConfig = {
         ...this.submitButtonConfig,
@@ -93,7 +102,6 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
       return;
     }
 
-    // If there are input fields, enable the button if there are any changes
     const hasChanges = this.hasFormChanges();
     this.submitButtonConfig = {
       ...this.submitButtonConfig,
@@ -104,22 +112,18 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   private hasFormChanges(): boolean {
     const currentValues = this.form.value;
     
-    // Compare each field value with its initial value
     return Object.keys(currentValues).some(key => {
       const currentValue = currentValues[key];
       const initialValue = this.initialFormValues[key];
-
-      // Handle arrays (like in dropdowns)
+      
       if (Array.isArray(currentValue) && Array.isArray(initialValue)) {
         return JSON.stringify(currentValue.sort()) !== JSON.stringify(initialValue.sort());
       }
 
-      // Handle objects (like in complex inputs)
       if (typeof currentValue === 'object' && currentValue !== null) {
         return JSON.stringify(currentValue) !== JSON.stringify(initialValue);
       }
 
-      // Handle other types (strings, numbers, etc.)
       return currentValue !== initialValue;
     });
   }
@@ -140,7 +144,50 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
       this.showFormErrors();
       return;
     }
-    this.onSubmit.emit(this.form.value);
+
+    if (this.apiService && this.apiMethod) {
+      this.handleApiCall();
+    } else {
+      this.onSubmit.emit(this.form.value);
+    }
+  }
+
+  private handleApiCall() {
+    const formData = this.form.value;
+    const apiCall$ = this.apiService[this.apiMethod](...Object.values(formData));
+
+    if (apiCall$ instanceof Observable) {
+      apiCall$.subscribe({
+        next: (response) => {
+          if (this.successMessage) {
+            this.notificationService.success(this.successMessage);
+          }
+          if (this.successRedirect) {
+            this.router.navigate([this.successRedirect]);
+          }
+          this.onSuccess.emit(response);
+        },
+        error: (error) => {
+          this.notificationService.error(error.error.message || this.apiErrorMessage);
+          this.onError.emit(error);
+          this.resetFormState();
+        }
+      });
+    }
+  }
+
+  private resetFormState() {
+    this.submitButtonConfig = {
+      ...this.submitButtonConfig,
+      disabled: false
+    };
+    this.cancelButtonConfig = {
+      ...this.cancelButtonConfig,
+      disabled: false
+    };
+    for (const field of this.inputFields) {
+      field.readonly = false;
+    }
   }
 
   private showFormErrors() {
@@ -171,20 +218,15 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   }
 
   private cleanForm() {
-    // Reset form values
     this.form.reset();
-    
-    // Reset initial values
     this.initialFormValues = {};
     
-    // Reset input fields values
     this.inputFields.forEach(field => {
       if (field.formControlName) {
         field.value = field.type === 'dropdown-select' ? [] : '';
       }
     });
 
-    // Update button state
     this.updateSubmitButtonState();
   }
 

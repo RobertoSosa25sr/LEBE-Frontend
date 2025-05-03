@@ -1,5 +1,4 @@
 <div class="login-page page">
-
   <div class="logo-wrapper">
     <app-logo size="large"></app-logo>
   </div>
@@ -8,6 +7,10 @@
     [inputFields]="inputFields"
     [submitButtonConfig]="submitButtonConfig"
     [showCancelButton]="false"
-    (onSubmit)="handleSubmit()"
+    [apiService]="authService"
+    apiMethod="login"
+    successRedirect="/home"
+    apiErrorMessage="Error al iniciar sesión"
+    successMessage="Inicio de sesión exitoso"
   ></app-form-container>
 </div>

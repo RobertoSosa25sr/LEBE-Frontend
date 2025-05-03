@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { FormContainerComponent } from '../../components/form-container/form-container.component';
 import { LogoComponent } from '../../components/logo/logo.component';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
 import { ButtonConfig } from '../../interfaces/button-config.interface';
 import { ROLES } from '../../shared/constants/roles.constants';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -22,8 +22,8 @@ import { ROLES } from '../../shared/constants/roles.constants';
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  isLoading = false;
   selectedRole = '';
+  authService: AuthService;
 
   inputFields: InputFieldConfig[] = [
     { type: 'text', placeholder: 'Cédula', formControlName: 'id', required: true, variant: 'primary', size: 'large'},
@@ -41,12 +41,11 @@ export class LoginComponent implements OnInit {
     type: 'primary'
   };
 
-
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
+    authService: AuthService
   ) {
+    this.authService = authService;
     this.loginForm = this.fb.group({
       id: ['', [Validators.required]],
       password: ['', [Validators.required]],
@@ -58,34 +57,6 @@ export class LoginComponent implements OnInit {
     this.loginForm.get('role')?.valueChanges.subscribe(role => {
       this.selectedRole = role;
     });
-  }
-
-  handleSubmit() {
-    console.log(this.loginForm.value);
-    if (this.loginForm.valid) {
-      this.isLoading = true;
-      this.submitButtonConfig = {
-        ...this.submitButtonConfig,
-        loading: true,
-        disabled: true
-      };
-      
-      const { id, password, role } = this.loginForm.value;
-      
-      this.authService.login(id, password, role).subscribe({
-        next: () => {
-          this.router.navigate(['/home']);
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.submitButtonConfig = {
-            ...this.submitButtonConfig,
-            loading: false,
-            disabled: false
-          };
-        }
-      });
-    }
   }
 
 }
