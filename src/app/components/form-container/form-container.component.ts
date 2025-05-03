@@ -51,6 +51,7 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   errorMessage: string | null = null;
   isErrorVisible = false;
   initialFormValues: any = {};
+  originalFieldConfigs: { [key: string]: boolean } = {};
 
   groupedInputFields: { row: number; columns: InputFieldConfig[] }[] = [];
 
@@ -64,6 +65,7 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
   ngOnInit() {
     this.initializeForm();
     this.groupInputFields();
+    this.storeOriginalFieldConfigs();
     console.log('apiServiceParams',this.apiServiceParams);
     console.log('apiService',this.apiService);
     console.log('apiMethod',this.apiMethod);
@@ -198,9 +200,12 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
       ...this.cancelButtonConfig,
       disabled: false
     };
-    for (const field of this.inputFields) {
-      field.readonly = false;
-    }
+    // Restore original readonly states
+    this.inputFields.forEach(field => {
+      if (field.formControlName) {
+        field.readonly = this.originalFieldConfigs[field.formControlName];
+      }
+    });
   }
 
   private showFormErrors() {
@@ -282,6 +287,14 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
           currentColumns = [];
           currentRow++;
         }
+      }
+    });
+  }
+
+  private storeOriginalFieldConfigs() {
+    this.inputFields.forEach(field => {
+      if (field.formControlName) {
+        this.originalFieldConfigs[field.formControlName] = field.readonly || false;
       }
     });
   }
