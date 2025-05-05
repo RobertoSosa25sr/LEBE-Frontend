@@ -5,7 +5,8 @@ import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
-import { UserService, Client } from '../../services/user.service';
+import { Client } from '../../models/client.model';
+import { ClientService } from '../../services/client.service';
 import { ActionButtonService } from '../../services/action-button.service';
 import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
 import { ButtonConfig } from '../../interfaces/button-config.interface';
@@ -88,11 +89,10 @@ export class ClientsComponent implements OnInit {
     currentPage: 1,
     pageSize: 10,
     totalItems: 0,
-    rowStyle: (item: Client) => item?.roles ? (item.roles.includes('admin') ? 'emphasis' : 'default') : 'default'
   };
 
   constructor(
-    private userService: UserService,
+    private clientService: ClientService,
     private actionButtonService: ActionButtonService,
     private fb: FormBuilder,
     private notificationService: NotificationService
@@ -127,7 +127,7 @@ export class ClientsComponent implements OnInit {
 
   loadClients() {
     this.isLoading = true;
-    this.userService.getClients(this.currentPage, this.perPage, this.searchTerm)
+    this.clientService.getClients(this.currentPage, this.perPage, this.searchTerm)
       .subscribe({
         next: (response) => {
           this.clients = response.clients;
@@ -195,7 +195,7 @@ export class ClientsComponent implements OnInit {
   onDeleteConfirm() {
     if (this.selectedUser) {
       this.isLoading = true;
-      this.userService.deleteClient(this.selectedUser.id)
+      this.clientService.deleteClient(this.selectedUser.id)
         .subscribe({
           next: () => {
             this.loadClients();
@@ -219,7 +219,7 @@ export class ClientsComponent implements OnInit {
       const formData = this.form.getRawValue();
       console.log("Form data:", formData);
       
-      this.userService.updateClient(this.selectedUser.id, formData.email, formData.phone)
+      this.clientService.updateClient(this.selectedUser.id, formData.email, formData.phone)
         .subscribe({
           next: () => {
             this.loadClients();
@@ -272,7 +272,7 @@ export class ClientsComponent implements OnInit {
       phone: this.form.get('phone')?.value || ''
     };
 
-    this.userService.createClient(formData)
+    this.clientService.createClient(formData)
       .subscribe({
         next: (response) => {
           this.loadClients();

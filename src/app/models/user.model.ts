@@ -11,6 +11,18 @@ export interface User {
   updated_at?: string;
 }
 
+export interface UserListResponse {
+  users: User[];
+  pagination: {
+    total: number;
+    per_page: number;
+    current_page: number;
+    last_page: number;
+    from: number;
+    to: number;
+  };
+}
+
 export interface UserResponse extends User {
   created_at: string;
   updated_at: string;
@@ -32,3 +44,8 @@ export interface UpdateUserRequest {
   phone?: string;
   password?: string;
 } 
+
+export interface DeleteUserRequest {
+  id: string;
+}
+

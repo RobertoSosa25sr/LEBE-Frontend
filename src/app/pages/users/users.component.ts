@@ -12,9 +12,9 @@ import { InputFieldConfig } from '../../interfaces/Input-field-config.interface'
 import { ButtonConfig } from '../../interfaces/button-config.interface';
 import { ROLES } from '../../shared/constants/roles.constants';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NotificationService } from '../../services/notification.service';
 import { ApiResponse, PaginatedResponse } from '../../models/api-response.model';
 import { CreateUserRequest } from '../../models/user.model';
+import { ActionType } from '../../shared/constants/action-types.constants';
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -92,14 +92,13 @@ export class UsersComponent implements OnInit {
     userService: UserService,
     private actionButtonService: ActionButtonService,
     private fb: FormBuilder,
-    private notificationService: NotificationService
   ) {
     this.userService = userService;
     this.form = this.fb.group({
       id: ['', Validators.required],
-      first_name: ['', Validators.required],
-      last_name: ['', Validators.required],
-      password: ['', Validators.required],
+      first_name: [''],
+      last_name: [''],
+      password: [''],
       roles: [[]]
     });
   }
@@ -107,13 +106,13 @@ export class UsersComponent implements OnInit {
   ngOnInit(): void {
     this.loadUsers();
     this.actionButtons = this.actionButtonService.getTableActions('user').map(button => {
-      if (button.icon === 'delete') {
+      if (button.icon === ActionType.DELETE) {
         return {
           ...button,
           action: (user: User) => this.onDeleteClick(user)
         };
       }
-      if (button.icon === 'update') {
+      if (button.icon === ActionType.UPDATE) {
         return {
           ...button,
           action: (user: User) => this.onEditClick(user)
@@ -127,11 +126,11 @@ export class UsersComponent implements OnInit {
     this.isLoading = true;
     this.userService.getUsers(this.currentPage, this.perPage, this.searchTerm)
       .subscribe({
-        next: (response: ApiResponse<PaginatedResponse<UserResponse>>) => {
+        next: (response) => {
           this.users = response.data?.data || [];
           this.total = response.data?.total || 0;
           this.currentPage = response.data?.page || 1;
-          this.lastPage = response.data?.last_page || 1;
+          this.lastPage = response.data?.totalPages || 1;
           this.from = response.data?.from || 0;
           this.to = response.data?.to || 0;
           
@@ -145,7 +144,6 @@ export class UsersComponent implements OnInit {
           this.isLoading = false;
         },
         error: (error) => {
-          this.notificationService.error('Error al cargar los usuarios');
           this.isLoading = false;
         }
       });
@@ -163,7 +161,11 @@ export class UsersComponent implements OnInit {
   }
 
   onDeleteClick(user: User) {
+    if (!user) return;
     this.selectedUser = user;
+    this.form.patchValue({
+      id: user.id,
+    });
     this.showDeleteModal = true;
   }
 
