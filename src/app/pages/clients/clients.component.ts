@@ -51,7 +51,6 @@ export class ClientsComponent implements OnInit {
     size: 'medium',
     backgroundColor: 'green',
     type: 'secondary',
-    //icon: ActionType.CREATE
   };
 
   tableConfig: TableConfig<Client> = {
@@ -97,6 +96,7 @@ export class ClientsComponent implements OnInit {
     private fb: FormBuilder,
     private notificationService: NotificationService
   ) {
+    this.clientService = clientService;
     this.form = this.fb.group({
       id: ['', Validators.required],
       first_name: ['', Validators.required],
@@ -108,21 +108,7 @@ export class ClientsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadClients();
-    this.actionButtons = this.actionButtonService.getTableActions('client').map(button => {
-      if (button.icon === ActionType.DELETE) {
-        return {
-          ...button,
-          action: (client: Client) => this.onDeleteClick(client)
-        };
-      }
-      if (button.icon === ActionType.UPDATE) {
-        return {
-          ...button,
-          action: (client: Client) => this.onEditClick(client)
-        };
-      }
-      return button;
-    });
+    this.actionButtons = this.actionButtonService.getTableActions('client');
   }
 
   loadClients() {
@@ -162,89 +148,6 @@ export class ClientsComponent implements OnInit {
   onPageChange(page: number) {
     this.currentPage = page;
     this.loadClients();
-  }
-
-  onDeleteClick(user: Client) {
-    this.selectedUser = user;
-    this.showDeleteModal = true;
-  }
-
-  onEditClick(client: Client) {
-    if (!client) return;
-    
-    this.selectedUser = client;
-    this.form.reset();
-    this.form.patchValue({
-      id: client.id,
-      first_name: client.first_name,
-      last_name: client.last_name,
-      email: client.email,
-      phone: client.phone
-    });
-
-    this.inputEditFields = [
-      { label: 'Nombres', type: 'text', value: client.first_name, formControlName: 'first_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Apellidos', type: 'text', value: client.last_name, formControlName: 'last_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Cédula', type: 'text', value: client.id, formControlName: 'id', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Teléfono', placeholder: 'Teléfono', type: 'text', value: client.phone, formControlName: 'phone', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Correo', placeholder: 'Correo', type: 'email', value: client.email, formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
-    ];
-    this.showEditModal = true;
-  }
-
-  onDeleteConfirm() {
-    if (this.selectedUser) {
-      this.isLoading = true;
-      this.clientService.deleteClient(this.selectedUser.id)
-        .subscribe({
-          next: () => {
-            this.loadClients();
-            this.showDeleteModal = false;
-            this.selectedUser = null;
-            this.notificationService.success('Cliente eliminado correctamente');
-          },
-          error: (error) => {
-            this.notificationService.error('Error al eliminar el cliente');
-            this.isLoading = false;
-            this.showDeleteModal = false;
-            this.selectedUser = null;
-          }
-        });
-    }
-  }
-
-  onEditConfirm() {
-    if (this.selectedUser) {
-      this.isLoading = true;
-      const formData = this.form.getRawValue();
-      console.log("Form data:", formData);
-      
-      this.clientService.updateClient(this.selectedUser.id, formData.email, formData.phone)
-        .subscribe({
-          next: () => {
-            this.loadClients();
-            this.showEditModal = false;
-            this.selectedUser = null;
-            this.isLoading = false;
-            this.notificationService.success('Cliente actualizado correctamente');
-          },
-          error: (error) => {
-            this.notificationService.error('Error al actualizar el cliente ' + error.error.message);
-            this.isLoading = false;
-          }
-        });
-    }
-  }
-  
-
-  onDeleteCancel() {
-    this.showDeleteModal = false;
-    this.selectedUser = null;
-  }
-
-  onEditCancel() {
-    this.showEditModal = false;
-    this.selectedUser = null;
   }
 
   onNewClientClick() {
@@ -297,5 +200,98 @@ export class ClientsComponent implements OnInit {
           this.notificationService.error('Error al crear el cliente ' + error.error.message);
         }
       });
+  }
+
+  onDeleteClick(user: Client) {
+    this.selectedUser = user;
+    this.showDeleteModal = true;
+  }
+
+  onDeleteCancel() {
+    this.showDeleteModal = false;
+    this.selectedUser = null;
+  }
+
+  onDeleteConfirm() {
+    if (this.selectedUser) {
+      this.isLoading = true;
+      this.clientService.deleteClient(this.selectedUser.id)
+        .subscribe({
+          next: () => {
+            this.loadClients();
+            this.showDeleteModal = false;
+            this.selectedUser = null;
+            this.notificationService.success('Cliente eliminado correctamente');
+          },
+          error: (error) => {
+            this.notificationService.error('Error al eliminar el cliente');
+            this.isLoading = false;
+            this.showDeleteModal = false;
+            this.selectedUser = null;
+          }
+        });
+    }
+  }
+
+  onEditClick(client: Client) {
+    if (!client) return;
+    
+    this.selectedUser = client;
+    this.form.reset();
+    this.form.patchValue({
+      id: client.id,
+      first_name: client.first_name,
+      last_name: client.last_name,
+      email: client.email,
+      phone: client.phone
+    });
+
+    this.inputEditFields = [
+      { label: 'Nombres', type: 'text', value: client.first_name, formControlName: 'first_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Apellidos', type: 'text', value: client.last_name, formControlName: 'last_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Cédula', type: 'text', value: client.id, formControlName: 'id', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Teléfono', placeholder: 'Teléfono', type: 'text', value: client.phone, formControlName: 'phone', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Correo', placeholder: 'Correo', type: 'email', value: client.email, formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
+    ];
+    this.showEditModal = true;
+  }
+
+  onEditCancel() {
+    this.showEditModal = false;
+    this.selectedUser = null;
+  }
+
+  onEditConfirm() {
+    if (this.selectedUser) {
+      this.isLoading = true;
+      const formData = this.form.getRawValue();
+      
+      this.clientService.updateClient(this.selectedUser.id, formData.email, formData.phone)
+        .subscribe({
+          next: () => {
+            this.loadClients();
+            this.showEditModal = false;
+            this.selectedUser = null;
+            this.isLoading = false;
+            this.notificationService.success('Cliente actualizado correctamente');
+          },
+          error: (error) => {
+            this.notificationService.error('Error al actualizar el cliente ' + error.error.message);
+            this.isLoading = false;
+          }
+        });
+    }
+  }
+
+
+  onTableAction(event: { type: string; item: Client }) {
+    switch(event.type) {
+      case ActionType.DELETE:
+        this.onDeleteClick(event.item);
+        break;
+      case ActionType.UPDATE:
+        this.onEditClick(event.item);
+        break;
+    }
   }
 } 

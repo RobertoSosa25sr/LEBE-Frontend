@@ -5,16 +5,15 @@ import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
+import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
-import { User, UserResponse } from '../../models/user.model';
 import { ActionButtonService } from '../../services/action-button.service';
 import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
 import { ButtonConfig } from '../../interfaces/button-config.interface';
-import { ROLES } from '../../shared/constants/roles.constants';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ApiResponse, PaginatedResponse } from '../../models/api-response.model';
-import { CreateUserRequest } from '../../models/user.model';
 import { ActionType } from '../../shared/constants/action-types.constants';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NotificationService } from '../../services/notification.service';
+import { ROLES } from '../../shared/constants/roles.constants';
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -47,7 +46,6 @@ export class UsersComponent implements OnInit {
   inputEditFields: InputFieldConfig[] = [];
   inputNewUserFields: InputFieldConfig[] = [];
   form: FormGroup;
-  userService: UserService;
 
   buttonNewUserConfig: ButtonConfig = {
     label: 'Nuevo',
@@ -89,9 +87,10 @@ export class UsersComponent implements OnInit {
   };
 
   constructor(
-    userService: UserService,
+    private userService: UserService,
     private actionButtonService: ActionButtonService,
     private fb: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.userService = userService;
     this.form = this.fb.group({
@@ -105,21 +104,7 @@ export class UsersComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUsers();
-    this.actionButtons = this.actionButtonService.getTableActions('user').map(button => {
-      if (button.icon === ActionType.DELETE) {
-        return {
-          ...button,
-          action: (user: User) => this.onDeleteClick(user)
-        };
-      }
-      if (button.icon === ActionType.UPDATE) {
-        return {
-          ...button,
-          action: (user: User) => this.onEditClick(user)
-        };
-      }
-      return button;
-    });
+    this.actionButtons = this.actionButtonService.getTableActions('user');
   }
 
   loadUsers() {
@@ -144,6 +129,7 @@ export class UsersComponent implements OnInit {
           this.isLoading = false;
         },
         error: (error) => {
+          this.notificationService.error('Error al cargar los usuarios');
           this.isLoading = false;
         }
       });
@@ -160,19 +146,94 @@ export class UsersComponent implements OnInit {
     this.loadUsers();
   }
 
+  onNewUserClick() {
+    this.inputNewUserFields = [
+      { label: 'Nombres', type: 'text', placeholder: '', formControlName: 'first_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Apellidos', type: 'text', placeholder: '', formControlName: 'last_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
+    ];
+    this.showNewUserModal = true;
+  }
+
+  onNewUserCancel() {
+    this.showNewUserModal = false;
+  }
+
+  onNewUserConfirm() {
+    this.isLoading = true;
+    const formData = {
+      id: this.form.get('id')?.value || '',
+      first_name: this.form.get('first_name')?.value || '',
+      last_name: this.form.get('last_name')?.value || '',
+      password: this.form.get('password')?.value || '',
+      roles: this.form.get('roles')?.value || []
+    }
+
+    this.userService.createUser(formData)
+      .subscribe({
+        next: (response) => {
+          this.loadUsers();
+          this.showNewUserModal = false;
+          this.isLoading = false;
+          this.form.reset();
+
+          this.inputNewUserFields = [
+            { label: 'Nombres', type: 'text', placeholder: '', formControlName: 'first_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+            { label: 'Apellidos', type: 'text', placeholder: '', formControlName: 'last_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+            { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+            { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+            { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
+          ];
+          this.notificationService.success('Usuario creado correctamente');
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.form.reset();
+          this.inputNewUserFields = [];
+          this.showNewUserModal = false;
+          this.notificationService.error('Error al crear el usuario');
+        }
+      });
+  }
+
   onDeleteClick(user: User) {
-    if (!user) return;
     this.selectedUser = user;
-    this.form.patchValue({
-      id: user.id,
-    });
     this.showDeleteModal = true;
+  }
+
+  onDeleteCancel() {
+    this.showDeleteModal = false;
+    this.selectedUser = null;
+  }
+
+  onDeleteConfirm() {
+    if (this.selectedUser) {
+      this.isLoading = true;
+      this.userService.deleteUser(this.selectedUser.id)
+        .subscribe({
+          next: () => {
+            this.loadUsers();
+            this.showDeleteModal = false;
+            this.selectedUser = null;
+            this.notificationService.success('Usuario eliminado correctamente');
+          },
+          error: (error) => {
+            this.notificationService.error('Error al eliminar el usuario');
+            this.isLoading = false;
+            this.showDeleteModal = false;
+            this.selectedUser = null;
+          }
+        });
+    }
   }
 
   onEditClick(user: User) {
     if (!user) return;
     
     this.selectedUser = user;
+    this.form.reset();
     this.form.patchValue({
       id: user.id,
       first_name: user.first_name,
@@ -190,28 +251,43 @@ export class UsersComponent implements OnInit {
     this.showEditModal = true;
   }
 
-  onDeleteCancel() {
-    this.showDeleteModal = false;
-    this.selectedUser = null;
-  }
-
   onEditCancel() {
     this.showEditModal = false;
     this.selectedUser = null;
   }
 
-  onNewUserClick() {
-    this.inputNewUserFields = [
-      { label: 'Nombres', type: 'text', placeholder: '', formControlName: 'first_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Apellidos', type: 'text', placeholder: '', formControlName: 'last_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
-    ];
-    this.showNewUserModal = true;
+  onEditConfirm() {
+    if (this.selectedUser) {
+      this.isLoading = true;
+      const formData = this.form.getRawValue();
+      
+      this.userService.updateUser(this.selectedUser.id, formData)
+        .subscribe({
+          next: () => {
+            this.loadUsers();
+            this.showEditModal = false;
+            this.selectedUser = null;
+            this.isLoading = false;
+            this.notificationService.success('Usuario actualizado correctamente');
+          },
+          error: (error) => {
+            this.notificationService.error('Error al actualizar el usuario');
+            this.isLoading = false;
+          }
+        });
+    }
   }
 
-  onNewUserCancel() {
-    this.showNewUserModal = false;
+  onTableAction(event: { type: string; item: User }) {
+    switch(event.type) {
+      case ActionType.DELETE:
+        this.onDeleteClick(event.item);
+        break;
+      case ActionType.UPDATE:
+        this.onEditClick(event.item);
+        break;
+    }
   }
+
 } 
+

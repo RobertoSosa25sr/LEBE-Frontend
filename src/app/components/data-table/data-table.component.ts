@@ -41,7 +41,8 @@ export class DataTableComponent<T> {
   @Input() config: TableConfig<T> = { columns: [], keyField: 'id' as keyof T };
   @Input() actionButtons: ButtonConfig[] = [];
   @Output() pageChange = new EventEmitter<number>();
-  @Output() search = new EventEmitter<string>(); 
+  @Output() search = new EventEmitter<string>();
+  @Output() action = new EventEmitter<{ type: string; item: T }>();
 
   currentPage = 1;
   itemsPerPage = 10;
@@ -98,9 +99,7 @@ export class DataTableComponent<T> {
   }
 
   handleAction(button: ButtonConfig, item: T): void {
-    if (button.action) {
-      button.action(item);
-    }
+    this.action.emit({ type: button.icon || '', item });
   }
 
   getRowStyle(item: T): RowStyle {

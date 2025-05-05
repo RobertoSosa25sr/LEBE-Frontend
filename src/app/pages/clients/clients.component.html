@@ -18,7 +18,9 @@
         [data]="clients"
         [config]="tableConfig"
         [actionButtons]="actionButtons"
-        (pageChange)="onPageChange($event)">
+        (pageChange)="onPageChange($event)"
+        (search)="onSearch($event)"
+        (action)="onTableAction($event)">
       </app-data-table>
     </div>
 
