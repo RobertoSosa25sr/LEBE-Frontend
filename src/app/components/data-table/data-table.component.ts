@@ -8,13 +8,14 @@ export type RowStyle = 'default' | 'disabled' | 'emphasis' | 'warning' | 'succes
 export type CellStyle = 'default' | 'disabled' | 'emphasis' | 'warning' | 'success';
 
 export interface ColumnConfig<T> {
-  key: keyof T;
+  key: keyof T | string;
   label: string;
   headerAlign?: TextAlignment;
   cellAlign?: TextAlignment;
   showPhoto?: boolean;
   photoField?: keyof T;
   cellStyle?: (item: T) => CellStyle;
+  cellValue?: (item: any) => string | number;
   headerClass?: string;
 }
 
@@ -80,7 +81,10 @@ export class DataTableComponent<T> {
     this.search.emit(term);
   }
 
-  getValue(item: T, key: keyof T): unknown {
+  getValue(item: T, key: keyof T | string): unknown {
+    if (typeof key === 'string') {
+      return (item as any)[key];
+    }
     return item[key];
   }
 

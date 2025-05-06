@@ -9,7 +9,7 @@ import { ActionType, ACTION_ICONS, ACTION_COLORS } from '../shared/constants/act
 export class ActionButtonService {
     constructor(private authService: AuthService) {}
 
-    getTableActions(entityType: 'user' | 'case' | 'client'): ButtonConfig[] {
+    getTableActions(entityType: 'user' | 'case' | 'client' | 'appointment'): ButtonConfig[] {
         const baseActions: ButtonConfig[] = [];
         const menuItems = this.authService.getMenuItems();
         
@@ -26,6 +26,8 @@ export class ActionButtonService {
                     return item.route === '/cases';
                 case 'client':
                     return item.route === '/clients';
+                case 'appointment':
+                    return item.route === '/appointments';
                 default:
                     return false;
             }
@@ -41,7 +43,6 @@ export class ActionButtonService {
         if (menuItem.actions.includes('update')) {
             baseActions.push({
                 icon: ActionType.UPDATE,
-                action: (item: any) => this.editItem(entityType, item),
                 tooltip: `Editar ${entityType}`,
                 type: 'outline',
                 size: 'small'
@@ -51,7 +52,6 @@ export class ActionButtonService {
         if (menuItem.actions.includes('delete')) {
             baseActions.push({
                 icon: ActionType.DELETE,
-                action: (item: any) => this.deleteItem(entityType, item),
                 tooltip: `Eliminar ${entityType}`,
                 type: 'outline',
                 size: 'small'
@@ -60,57 +60,5 @@ export class ActionButtonService {
 
         console.log(`Actions for ${entityType}:`, baseActions);
         return baseActions;
-    }
-
-    private editItem(entityType: string, item: any): void {
-        switch (entityType) {
-            case 'user':
-                this.editUser(item);
-                break;
-            case 'client':
-                this.editClient(item);
-                break;
-            case 'case':
-                this.editCase(item);
-                break;
-        }
-    }
-
-    private deleteItem(entityType: string, item: any): void {
-        switch (entityType) {
-            case 'user':
-                this.deleteUser(item);
-                break;
-            case 'client':
-                this.deleteClient(item);
-                break;
-            case 'case':
-                this.deleteCase(item);
-                break;
-        }
-    }
-
-    private deleteUser(user: any): void {
-        console.log('Delete user:', user);
-    }
-
-    private editUser(user: any): void {
-        console.log('Edit user:', user);
-    }
-
-    private deleteClient(client: any): void {
-        console.log('Delete client:', client);
-    }
-
-    private editClient(client: any): void {
-        console.log('Edit client:', client);
-    }
-
-    private deleteCase(caseItem: any): void {
-        console.log('Delete case:', caseItem);
-    }
-
-    private editCase(caseItem: any): void {
-        console.log('Edit case:', caseItem);
     }
 } 

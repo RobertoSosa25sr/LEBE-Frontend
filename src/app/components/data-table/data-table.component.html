@@ -42,7 +42,12 @@
               </div>
             </ng-container>
             <ng-container *ngIf="!column.showPhoto">
-              {{ getValue(item, column.key) }}
+              <ng-container *ngIf="column.cellValue; else defaultCell">
+                {{ column.cellValue(item) }}
+              </ng-container>
+              <ng-template #defaultCell>
+                {{ getValue(item, column.key) }}
+              </ng-template>
             </ng-container>
           </td>
         </ng-container>

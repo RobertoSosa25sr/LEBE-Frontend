@@ -1,44 +1,61 @@
+import { Client } from "./client.model";
+import { User } from "./user.model";
+import { Case } from "./case.model";
+
 export interface Appointment {
-  id: number;
-  ticket_number: string;
+  id: number; 
+  ticket_number: number;
+  responsible_id: string;
+  client_id: string;
+  case_id: string;
   subject: string;
   start_datetime: string;
   duration_hours: number;
   duration_minutes: number;
-  status: 'pendiente' | 'en progreso' | 'cancelada' | 'reagendada';
+  status: string;
   result: string;
-  client_id: number;
-  responsible_id: number;
-  case_id: number;
+  created_at: string;
+  updated_at: string;
   client: Client;
   responsible: User;
   case: Case;
+}
+
+export interface AppointmentListResponse {
+  appointments: Appointment[];
+  pagination: {
+    total: number;
+    per_page: number;
+    current_page: number;
+    last_page: number;
+    from: number;
+    to: number;
+  };
+}
+
+export interface AppointmentResponse extends Appointment {
   created_at: string;
   updated_at: string;
 }
 
-export interface Client {
-  id: number;
-  first_name: string;
-  last_name: string;
-  full_name: string;
-  email: string;
-  phone: string;
-  profile_photo_url: string;
-}
-
-export interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  full_name: string;
-  email: string;
-  profile_photo_url: string;
-}
-
-export interface Case {
-  id: number;
-  title: string;
-  description: string;
+export interface CreateAppointmentRequest {
+  responsible_id: string;
+  client_id: string;
+  case_id: string;
+  subject: string;
+  start_datetime: string;
+  duration_hours: number;
+  duration_minutes: number;
   status: string;
+  result: string;
+}
+
+export interface UpdateAppointmentRequest {
+  subject: string;
+  start_datetime: string;
+  duration_hours: number;
+  duration_minutes: number;
+  status: string;
+  result: string;
 } 
+

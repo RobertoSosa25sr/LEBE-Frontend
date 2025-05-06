@@ -1,0 +1,65 @@
+<div class="appointments-container">
+  <div class="appointments-header">
+    <div class="header-actions">
+      <app-search-bar 
+        placeholder="Buscar citas..."
+        (search)="onSearch($event)">
+      </app-search-bar>
+      <app-button 
+        [buttonConfig]="buttonNewAppointmentConfig"
+        (click)="onNewAppointmentClick()">
+      </app-button>
+    </div>
+  </div>
+
+  <div class="appointments-content">
+    <div *ngIf="!isLoading; else loading">
+      <app-data-table
+        [data]="appointments"
+        [config]="tableConfig"
+        [actionButtons]="actionButtons"
+        (pageChange)="onPageChange($event)"
+        (search)="onSearch($event)"
+        (action)="onTableAction($event)">
+      </app-data-table>
+    </div>
+
+    <ng-template #loading>
+      <div class="loading-container">
+        <span class="material-icons loading-icon">refresh</span>
+        <p>Cargando citas...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<app-modal 
+  *ngIf="showDeleteModal"
+  title="¿Estás seguro de que deseas eliminar esta cita?"
+  confirmLabel="Eliminar"
+  cancelLabel="Cancelar"
+  (confirm)="onDeleteConfirm()"
+  (cancel)="onDeleteCancel()">
+</app-modal> 
+
+<app-modal 
+  *ngIf="showEditModal"
+  title="Editar cita"
+  [inputFields]="inputEditFields"
+  [form]="form"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  (confirm)="onEditConfirm()"
+  (cancel)="onEditCancel()">
+</app-modal>
+
+<app-modal 
+  *ngIf="showNewAppointmentModal"
+  title="Nueva cita"
+  [inputFields]="inputNewAppointmentFields"
+  [form]="form"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  (confirm)="onNewAppointmentConfirm()"
+  (cancel)="onNewAppointmentCancel()">
+</app-modal>
