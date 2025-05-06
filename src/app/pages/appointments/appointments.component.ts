@@ -65,7 +65,7 @@ export class AppointmentsComponent implements OnInit {
         cellAlign: 'left'
       },
       {
-        key: 'responsible',
+        key: 'responsible_id',
         label: 'Responsable',
         headerAlign: 'left',
         cellAlign: 'left',
@@ -82,10 +82,20 @@ export class AppointmentsComponent implements OnInit {
         label: 'Fecha y hora',
         headerAlign: 'left',
         cellAlign: 'left',
-        cellValue: (item: any) => new Date(item.start_datetime).toLocaleString()
+        cellValue: (item: any) => {
+          const date = new Date(item.start_datetime);
+          const options: Intl.DateTimeFormatOptions = { 
+            day: 'numeric', 
+            month: 'long',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true 
+          };
+          return date.toLocaleDateString('es-ES', options);
+        }
       },
       { 
-        key: 'client',
+        key: 'client_id',
         label: 'Cliente',
         headerAlign: 'left',
         cellAlign: 'left',
@@ -265,6 +275,9 @@ export class AppointmentsComponent implements OnInit {
     this.form.reset();
     this.form.patchValue({
       id: appointment.id,
+      responsible_id: appointment.responsible_id,
+      client_id: appointment.client_id,
+      case_id: appointment.case_id,
       subject: appointment.subject,
       start_datetime: appointment.start_datetime,
       duration_hours: appointment.duration_hours,
