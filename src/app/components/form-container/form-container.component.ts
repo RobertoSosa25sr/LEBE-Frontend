@@ -66,9 +66,6 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
     this.initializeForm();
     this.groupInputFields();
     this.storeOriginalFieldConfigs();
-    console.log('apiServiceParams',this.apiServiceParams);
-    console.log('apiService',this.apiService);
-    console.log('apiMethod',this.apiMethod);
   }
 
   private initializeForm() {
@@ -150,9 +147,7 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
       this.showFormErrors();
       return;
     }
-    console.log('apiService',this.apiService);
-    console.log('apiMethod',this.apiMethod);
-    if (this.apiService && this.apiMethod) {
+      if (this.apiService && this.apiMethod) {
       this.handleApiCall();
     } else {
       this.onSubmit.emit(this.form.value);

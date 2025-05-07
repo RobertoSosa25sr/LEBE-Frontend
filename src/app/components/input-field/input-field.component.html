@@ -3,12 +3,16 @@
     <span class="label-text">{{ label }}</span>
     <span *ngIf="required" class="required-indicator">*</span>
   </label>
-  <input *ngIf="type !== 'dropdown' && type !== 'dropdown-select' && type !== 'text-area'" [disabled]="readonly" [value]="value"
-    [placeholder]="placeholder" [type]="type" (input)="onInput($event)" (blur)="onTouch()" class="input-field"
-    [class.input-field-primary]="variant === 'primary'" [class.input-field-secondary]="variant === 'secondary'"
-    [class.input-field-tertiary]="variant === 'tertiary'" [class.input-field-small]="size === 'small'"
-    [class.input-field-medium]="size === 'medium'" [class.input-field-large]="size === 'large'"
-    [class.input-field-full]="width === 'full'" [class.input-field-50]="width === '50%'" />
+  <div class="input-wrapper" [class.input-wrapper-search]="type === 'search'">
+    <input *ngIf="type !== 'dropdown' && type !== 'dropdown-select' && type !== 'text-area'" [disabled]="readonly"
+      [placeholder]="placeholder" [type]="type" (input)="onInput($event)" (blur)="onTouch()" class="input-field"
+      [class.input-field-primary]="variant === 'primary'" [class.input-field-secondary]="variant === 'secondary'"
+      [class.input-field-tertiary]="variant === 'tertiary'" [class.input-field-small]="size === 'small'"
+      [class.input-field-medium]="size === 'medium'" [class.input-field-large]="size === 'large'"
+      [class.input-field-full]="width === 'full'" [class.input-field-50]="width === '50%'" />
+    <span *ngIf="type === 'search'" class="material-icons search-icon">search</span>
+  </div>
+
 
   <textarea *ngIf="type === 'text-area'" [disabled]="readonly" [value]="value"
     [placeholder]="placeholder" (input)="onInput($event)" (blur)="onTouch()" class="input-field text-area"
