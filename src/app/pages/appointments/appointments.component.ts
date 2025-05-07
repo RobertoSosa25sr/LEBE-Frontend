@@ -186,8 +186,8 @@ export class AppointmentsComponent implements OnInit {
 
   onNewAppointmentClick() {
     this.inputNewAppointmentFields = [
-      {label: 'Responsable', type: 'text', placeholder: '', formControlName: 'responsible', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      {label: 'Cliente', type: 'text', placeholder: '', formControlName: 'client', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      {label: 'Responsable', type: 'search', placeholder: 'Responsable', formControlName: 'responsible_id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      {label: 'Cliente', type: 'search', placeholder: 'Cliente', formControlName: 'client_id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       {label: 'Fecha y hora', type: 'datetime-local', placeholder: '', formControlName: 'start_datetime', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       {label: 'Duración', type: 'time', placeholder: '', formControlName: 'duration', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       {label: 'Asunto', type: 'text', placeholder: '', formControlName: 'subject', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
@@ -295,7 +295,7 @@ export class AppointmentsComponent implements OnInit {
       { label: 'Asunto', type: 'text', value: appointment.subject, formControlName: 'subject', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
       { label: 'Fecha y hora', type: 'datetime-local', value: formattedStartDate, formControlName: 'start_datetime', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Duración', type: 'time', value: formattedDuration, formControlName: 'duration', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Resultado', type: 'text', value: appointment.result, formControlName: 'result', required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'}
+      { label: 'Resultado', type: 'text-area', value: appointment.result, formControlName: 'result', required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'}
     ];
     this.showEditModal = true;
   }

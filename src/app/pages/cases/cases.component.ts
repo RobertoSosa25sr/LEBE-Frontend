@@ -15,6 +15,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NotificationService } from '../../services/notification.service';
 import { ROLES } from '../../shared/constants/roles.constants';
 import { User } from '../../models/user.model';
+import { CASE_STATUS } from '../../shared/constants/case-status.constants';
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -255,7 +256,7 @@ export class CasesComponent implements OnInit {
     this.inputEditFields = [
       { label: 'Encargado', type: 'text', placeholder: caseData.manager_id, formControlName: 'manager_id', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Cliente', type: 'text', placeholder: caseData.client_id, formControlName: 'client_id', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Estado', type: 'text', value: caseData.status, formControlName: 'status', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Estado', type: 'dropdown', value: caseData.status, formControlName: 'status', readonly: false, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%', options: Object.values(CASE_STATUS)},
 
     ];
     this.showEditModal = true;

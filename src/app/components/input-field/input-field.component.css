@@ -8,6 +8,35 @@
   position: relative;
 }
 
+/* Text area specific styles */
+.input-field.text-area {
+  text-align: left;
+  resize: vertical;
+  min-height: 100px;
+  padding: 0.75rem;
+  line-height: 1.5;
+  font-weight: normal;
+  font-family: inherit;
+}
+
+.input-field.text-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.input-field.text-area::-webkit-scrollbar-track {
+  background: var(--color-secondary-dark);
+  border-radius: 4px;
+}
+
+.input-field.text-area::-webkit-scrollbar-thumb {
+  background-color: var(--color-accent-dark);
+  border-radius: 3px;
+}
+
+.input-field.text-area::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-gray-dark);
+}
+
 .input-field-primary {
   border: 2px solid var(--color-accent-light);
   background-color: var(--color-background-dark);
