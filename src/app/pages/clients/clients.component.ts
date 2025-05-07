@@ -32,7 +32,7 @@ export class ClientsComponent implements OnInit {
   showDeleteModal = false;
   showEditModal = false;
   showNewClientModal = false;
-  selectedUser: Client | null = null;
+  selectedClient: Client | null = null;
   isLoading = false;
   currentPage = 1;
   perPage = 10;
@@ -202,32 +202,32 @@ export class ClientsComponent implements OnInit {
       });
   }
 
-  onDeleteClick(user: Client) {
-    this.selectedUser = user;
+  onDeleteClick(client: Client) {
+    this.selectedClient = client;
     this.showDeleteModal = true;
   }
 
   onDeleteCancel() {
     this.showDeleteModal = false;
-    this.selectedUser = null;
+    this.selectedClient = null;
   }
 
   onDeleteConfirm() {
-    if (this.selectedUser) {
+    if (this.selectedClient) {
       this.isLoading = true;
-      this.clientService.deleteClient(this.selectedUser.id)
+      this.clientService.deleteClient(this.selectedClient.id)
         .subscribe({
           next: () => {
             this.loadClients();
             this.showDeleteModal = false;
-            this.selectedUser = null;
+            this.selectedClient = null;
             this.notificationService.success('Cliente eliminado correctamente');
           },
           error: (error) => {
             this.notificationService.error('Error al eliminar el cliente');
             this.isLoading = false;
             this.showDeleteModal = false;
-            this.selectedUser = null;
+            this.selectedClient = null;
           }
         });
     }
@@ -236,7 +236,7 @@ export class ClientsComponent implements OnInit {
   onEditClick(client: Client) {
     if (!client) return;
     
-    this.selectedUser = client;
+    this.selectedClient = client;
     this.form.reset();
     this.form.patchValue({
       id: client.id,
@@ -247,31 +247,31 @@ export class ClientsComponent implements OnInit {
     });
 
     this.inputEditFields = [
-      { label: 'Nombres', type: 'text', value: client.first_name, formControlName: 'first_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Apellidos', type: 'text', value: client.last_name, formControlName: 'last_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Cédula', type: 'text', value: client.id, formControlName: 'id', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Teléfono', placeholder: 'Teléfono', type: 'text', value: client.phone, formControlName: 'phone', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Correo', placeholder: 'Correo', type: 'email', value: client.email, formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
+      { label: 'Nombres', type: 'text', placeholder: client.first_name, formControlName: 'first_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Apellidos', type: 'text', placeholder: client.last_name, formControlName: 'last_name', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Cédula', type: 'text', placeholder: client.id, formControlName: 'id', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Teléfono', type: 'text', placeholder: "Teléfono", value: client.phone, formControlName: 'phone', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Correo', type: 'email', placeholder: "Correo", value: client.email, formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
     ];
     this.showEditModal = true;
   }
 
   onEditCancel() {
     this.showEditModal = false;
-    this.selectedUser = null;
+    this.selectedClient = null;
   }
 
   onEditConfirm() {
-    if (this.selectedUser) {
+    if (this.selectedClient) {
       this.isLoading = true;
       const formData = this.form.getRawValue();
       
-      this.clientService.updateClient(this.selectedUser.id, formData.email, formData.phone)
+      this.clientService.updateClient(this.selectedClient.id, formData.email, formData.phone)
         .subscribe({
           next: () => {
             this.loadClients();
             this.showEditModal = false;
-            this.selectedUser = null;
+            this.selectedClient = null;
             this.isLoading = false;
             this.notificationService.success('Cliente actualizado correctamente');
           },

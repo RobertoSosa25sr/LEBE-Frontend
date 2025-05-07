@@ -5,7 +5,7 @@
   </label>
   <div class="input-wrapper" [class.input-wrapper-search]="type === 'search'">
     <input *ngIf="type !== 'dropdown' && type !== 'dropdown-select' && type !== 'text-area'" [disabled]="readonly"
-      [placeholder]="placeholder" [type]="type" (input)="onInput($event)" (blur)="onTouch()" class="input-field"
+      [placeholder]="placeholder" [type]="type" (input)="onInput($event)" (blur)="onTouch()" [value]="value" class="input-field"
       [class.input-field-primary]="variant === 'primary'" [class.input-field-secondary]="variant === 'secondary'"
       [class.input-field-tertiary]="variant === 'tertiary'" [class.input-field-small]="size === 'small'"
       [class.input-field-medium]="size === 'medium'" [class.input-field-large]="size === 'large'"
