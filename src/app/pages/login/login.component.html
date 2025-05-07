@@ -1,16 +1,10 @@
 <div class="login-page page">
-  <div class="logo-wrapper">
-    <app-logo size="large"></app-logo>
+  <div class="logo-container">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsDsqNUlsbW8cQx2erW7vWX-w2E_j-lxADUA&s" alt="LEBE"
+      class="logo-image">
   </div>
-  <app-form-container class="form-container"
-    [form]="loginForm"
-    [inputFields]="inputFields"
-    [submitButtonConfig]="submitButtonConfig"
-    [showCancelButton]="false"
-    [apiService]="authService"
-    apiMethod="login"
-    successRedirect="/home"
-    apiErrorMessage="Error al iniciar sesión"
-    successMessage="Inicio de sesión exitoso"
-  ></app-form-container>
+  <app-form-container class="form-container" [form]="loginForm" [inputFields]="inputFields"
+    [submitButtonConfig]="submitButtonConfig" [showCancelButton]="false" [apiService]="authService" apiMethod="login"
+    successRedirect="/home" apiErrorMessage="Error al iniciar sesión"
+    successMessage="Inicio de sesión exitoso"></app-form-container>
 </div>

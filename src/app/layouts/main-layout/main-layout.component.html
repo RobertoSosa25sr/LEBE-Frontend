@@ -3,12 +3,13 @@
   <div class="content-wrapper" [class.collapsed]="isMenuCollapsed">
     <div class="title-bar">
       <h1>{{ currentTitle }}</h1>
-      <div class="logo-wrapper">
-        <app-logo size="small" position="right"></app-logo>
+      <div class="logo-container">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsDsqNUlsbW8cQx2erW7vWX-w2E_j-lxADUA&s"
+          alt="LEBE" class="logo-image" [class.scrolled]="isScrolled">
       </div>
     </div>
-    <main class="main-content">
+    <main #mainContent class="main-content">
       <router-outlet></router-outlet>
     </main>
   </div>
-</div> 
+</div>

@@ -37,13 +37,26 @@
   font-weight: bold;
 }
 
-.logo-wrapper {
+.logo-container {
   position: absolute;
   right: 0;
   top: 0;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+}
 
+.logo-image {
+  object-fit: contain;
+  transition: all 0.3s ease;
+  border-radius: 0px 0px 0px 50%;
+  width: 5rem;
+  height: 5rem;
+}
+
+.logo-image.scrolled {
+  width: 3.5rem;
+  height: 3.5rem;
 }
 
 .main-content {
@@ -72,6 +85,18 @@
 
 .main-content::-webkit-scrollbar-thumb:hover {
   background: var(--color-neutral-gray-dark);
+}
+
+@media (min-width: 768px) {
+  .logo-image {
+    width: 135px;
+    height: 135px;
+  }
+  
+  .logo-image.scrolled {
+    width: 80px;
+    height: 80px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -117,7 +142,7 @@
     width: 100%;
   }
 
-  .logo-wrapper {
+  .logo-container {
     display: none;
   }
 }

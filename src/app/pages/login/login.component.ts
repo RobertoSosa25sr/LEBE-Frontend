@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { FormContainerComponent } from '../../components/form-container/form-container.component';
-import { LogoComponent } from '../../components/logo/logo.component';
 import { AuthService } from '../../services/auth.service';
 import { InputFieldConfig } from '../../interfaces/Input-field-config.interface';
 import { ButtonConfig } from '../../interfaces/button-config.interface';
@@ -15,7 +14,6 @@ import { ROLES } from '../../shared/constants/roles.constants';
     CommonModule,
     ReactiveFormsModule,
     FormContainerComponent,
-    LogoComponent,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
