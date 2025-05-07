@@ -43,7 +43,7 @@
             </ng-container>
             <ng-container *ngIf="!column.showPhoto">
               <ng-container *ngIf="column.cellValue; else defaultCell">
-                {{ column.cellValue(item) }}
+                <span [innerHTML]="column.cellValue(item)"></span>
               </ng-container>
               <ng-template #defaultCell>
                 {{ getValue(item, column.key) }}
