@@ -48,6 +48,24 @@ export class InputFieldComponent implements ControlValueAccessor {
         this.value = Array.isArray(value) ? value : [value].filter(Boolean);
         this.selectedOption = this.value;
       }
+    } else if (this.type === 'datetime-local' && value) {
+      const date = new Date(value);
+      this.value = date.toISOString().slice(0, 16);
+      this.selectedOption = this.value;
+    } else if (this.type === 'time' && value) {
+      if (typeof value === 'string') {
+
+        const timeParts = value.split(':');
+        if (timeParts.length >= 2) {
+          this.value = `${timeParts[0]}:${timeParts[1]}`;
+        } else {
+          this.value = value;
+        }
+      } else {
+        const time = new Date(value);
+        this.value = time.toISOString().slice(11, 16);
+      }
+      this.selectedOption = this.value;
     } else {
       this.value = value || '';
       this.selectedOption = this.value;
@@ -65,7 +83,17 @@ export class InputFieldComponent implements ControlValueAccessor {
   onInput(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.value = target.value;
-    this.onChange(this.value);
+    
+    if (this.type === 'datetime-local' && this.value) {
+      const date = new Date(this.value);
+      this.onChange(date);
+    } else if (this.type === 'time' && this.value) {
+      const [hours, minutes] = this.value.split(':');
+      this.onChange(`${hours}:${minutes}:00`);
+    } else {
+      this.onChange(this.value);
+    }
+    
     this.onTouch();
   }
 

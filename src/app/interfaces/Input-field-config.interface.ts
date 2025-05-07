@@ -1,6 +1,6 @@
 export interface InputFieldConfig {
     label?: string;
-    type: 'text' | 'password' | 'email' | 'number' | 'dropdown' | 'dropdown-select';
+    type: 'text' | 'password' | 'email' | 'number' | 'dropdown' | 'dropdown-select' | 'datetime-local' | 'time';
     placeholder?: string;
     value?: string | string[];
     options?: string[];

@@ -10,8 +10,7 @@ export interface Appointment {
   case_id: string;
   subject: string;
   start_datetime: string;
-  duration_hours: number;
-  duration_minutes: number;
+  duration: string;
   status: string;
   result: string;
   created_at: string;
@@ -44,8 +43,7 @@ export interface CreateAppointmentRequest {
   case_id: string;
   subject: string;
   start_datetime: string;
-  duration_hours: number;
-  duration_minutes: number;
+  duration: string;
   status: string;
   result: string;
 }
@@ -53,8 +51,7 @@ export interface CreateAppointmentRequest {
 export interface UpdateAppointmentRequest {
   subject: string;
   start_datetime: string;
-  duration_hours: number;
-  duration_minutes: number;
+  duration: string;
   status: string;
   result: string;
 } 

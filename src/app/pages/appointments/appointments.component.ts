@@ -128,16 +128,15 @@ export class AppointmentsComponent implements OnInit {
   ) {
     this.appointmentService = appointmentService;
     this.form = this.fb.group({
-      id:['', Validators.required],
-      responsible_id:[''],
-      client_id:[''],
-      case_id:[''],
-      subject:[''],
-      start_datetime:[''],
-      duration_hours:[''],
-      duration_minutes:[''],
-      status:[''],
-      result:['']
+      id: ['', Validators.required],
+      responsible_id: [''],
+      client_id: [''],
+      case_id: [''],
+      subject: [''],
+      start_datetime: [''],
+      duration: [''],
+      status: [''],
+      result: ['']
     });
   }
 
@@ -189,12 +188,11 @@ export class AppointmentsComponent implements OnInit {
     this.inputNewAppointmentFields = [
       {label: 'Responsable', type: 'text', placeholder: '', formControlName: 'responsible', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       {label: 'Cliente', type: 'text', placeholder: '', formControlName: 'client', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      {label: 'Fecha y hora', type: 'datetime-local', placeholder: '', formControlName: 'start_datetime', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      {label: 'Duración', type: 'time', placeholder: '', formControlName: 'duration', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      {label: 'Asunto', type: 'text', placeholder: '', formControlName: 'subject', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       {label: 'Caso', type: 'text', placeholder: '', formControlName: 'case_id', required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Fecha y hora', type: 'text', placeholder: '', formControlName: 'start_datetime', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Asunto', type: 'text', placeholder: '', formControlName: 'subject', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Duración (horas)', type: 'number', placeholder: 'Horas', formControlName: 'duration_hours', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Duración (minutos)', type: 'number', placeholder: 'Minutos', formControlName: 'duration_minutes', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Resultado', type: 'text', placeholder: 'Resultado', formControlName: 'result', required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'}
+      {label: 'Resultado', type: 'text', placeholder: 'Resultado', formControlName: 'result', required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'}
     ];
     this.showNewAppointmentModal = true;
   }
@@ -212,8 +210,7 @@ export class AppointmentsComponent implements OnInit {
       case_id: this.form.get('case_id')?.value || '',
       subject: this.form.get('subject')?.value || '',
       start_datetime: this.form.get('start_datetime')?.value || '',
-      duration_hours: this.form.get('duration_hours')?.value || '',
-      duration_minutes: this.form.get('duration_minutes')?.value || '',
+      duration: this.form.get('duration')?.value || '',
       status: this.form.get('status')?.value || '',
       result: this.form.get('result')?.value || ''
     }
@@ -273,26 +270,32 @@ export class AppointmentsComponent implements OnInit {
     
     this.selectedAppointment = appointment;
     this.form.reset();
+    
+    const startDate = new Date(appointment.start_datetime);
+    const formattedStartDate = startDate.toISOString().slice(0, 16);
+    
+    const [hours, minutes] = appointment.duration.split(':');
+    const formattedDuration = `${hours}:${minutes}`;
+    
     this.form.patchValue({
       id: appointment.id,
       responsible_id: appointment.responsible_id,
       client_id: appointment.client_id,
       case_id: appointment.case_id,
       subject: appointment.subject,
-      start_datetime: appointment.start_datetime,
-      duration_hours: appointment.duration_hours,
-      duration_minutes: appointment.duration_minutes,
+      start_datetime: formattedStartDate,
+      duration: formattedDuration,
       status: appointment.status,
       result: appointment.result
     });
 
     this.inputEditFields = [
-      {label: 'Responsable', type: 'text', placeholder: '', formControlName: 'responsible_id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Fecha y hora', type: 'text', placeholder: '', formControlName: 'start_datetime', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Asunto', type: 'text', placeholder: '', formControlName: 'subject', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Duración (horas)', type: 'number', placeholder: 'Horas', formControlName: 'duration_hours', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Duración (minutos)', type: 'number', placeholder: 'Minutos', formControlName: 'duration_minutes', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Resultado', type: 'text', placeholder: 'Resultado', formControlName: 'result', required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'}
+      {label: 'Responsable', type: 'text', value: appointment.responsible_id, formControlName: 'responsible_id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      {label: 'Cliente', type: 'text', value: appointment.client_id, formControlName: 'client_id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Asunto', type: 'text', value: appointment.subject, formControlName: 'subject', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Fecha y hora', type: 'datetime-local', value: formattedStartDate, formControlName: 'start_datetime', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Duración', type: 'time', value: formattedDuration, formControlName: 'duration', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Resultado', type: 'text', value: appointment.result, formControlName: 'result', required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'}
     ];
     this.showEditModal = true;
   }

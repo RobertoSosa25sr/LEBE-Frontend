@@ -253,8 +253,8 @@ export class CasesComponent implements OnInit {
     });
 
     this.inputEditFields = [
-      { label: 'Encargado', type: 'text', placeholder: caseData.manager_id, formControlName: 'manager_id', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Cliente', type: 'text', placeholder: caseData.client_id, formControlName: 'client_id', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { label: 'Encargado', type: 'text', placeholder: caseData.manager_id, formControlName: 'manager_id', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      { label: 'Cliente', type: 'text', placeholder: caseData.client_id, formControlName: 'client_id', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       { label: 'Estado', type: 'text', value: caseData.status, formControlName: 'status', readonly: true, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
 
     ];
