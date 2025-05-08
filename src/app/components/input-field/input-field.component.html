@@ -3,40 +3,42 @@
     <span class="label-text">{{ label }}</span>
     <span *ngIf="required" class="required-indicator">*</span>
   </label>
-  <div class="input-wrapper" [class.input-wrapper-search]="type === 'search'">
-    <input *ngIf="type !== 'dropdown' && type !== 'dropdown-select' && type !== 'text-area'" [disabled]="readonly"
-      [placeholder]="placeholder" [type]="type" (input)="onInput($event)" (blur)="onTouch()" [value]="value" class="input-field"
-      [class.input-field-primary]="variant === 'primary'" [class.input-field-secondary]="variant === 'secondary'"
-      [class.input-field-tertiary]="variant === 'tertiary'" [class.input-field-small]="size === 'small'"
-      [class.input-field-medium]="size === 'medium'" [class.input-field-large]="size === 'large'"
-      [class.input-field-full]="width === 'full'" [class.input-field-50]="width === '50%'" />
-    <span *ngIf="type === 'search'" class="material-icons search-icon">search</span>
-  </div>
 
+  <input
+    *ngIf="type !== 'dropdown' && type !== 'dropdown-select' && type !== 'text-area' && type !== 'search' && type !== 'search-select'"
+    [disabled]="readonly" [placeholder]="placeholder" [type]="type" (input)="onInput($event)" (blur)="onTouch()"
+    [value]="value" class="input-field" [class.input-field-primary]="variant === 'primary'"
+    [class.input-field-secondary]="variant === 'secondary'" [class.input-field-tertiary]="variant === 'tertiary'"
+    [class.input-field-small]="size === 'small'" [class.input-field-medium]="size === 'medium'"
+    [class.input-field-large]="size === 'large'" [class.input-field-full]="width === 'full'"
+    [class.input-field-50]="width === '50%'" />
 
-  <textarea *ngIf="type === 'text-area'" [disabled]="readonly" [value]="value"
-    [placeholder]="placeholder" (input)="onInput($event)" (blur)="onTouch()" class="input-field text-area"
+  <textarea *ngIf="type === 'text-area'" [disabled]="readonly" [value]="value" [placeholder]="placeholder"
+    (input)="onInput($event)" (blur)="onTouch()" class="input-field text-area"
     [class.input-field-primary]="variant === 'primary'" [class.input-field-secondary]="variant === 'secondary'"
     [class.input-field-tertiary]="variant === 'tertiary'" [class.input-field-small]="size === 'small'"
     [class.input-field-medium]="size === 'medium'" [class.input-field-large]="size === 'large'"
-    [class.input-field-full]="width === 'full'" [class.input-field-50]="width === '50%'"
-    rows="4"></textarea>
+    [class.input-field-full]="width === 'full'" [class.input-field-50]="width === '50%'" rows="4"></textarea>
 
-  <div *ngIf="(type === 'dropdown' || type === 'dropdown-select') && options" class="dropdown-selector" [class.dropdown-selector-disabled]="readonly"
+  <div
+    *ngIf="(type === 'dropdown' || type === 'dropdown-select' || type === 'search' || type === 'search-select') && options"
+    class="dropdown-selector" [class.dropdown-selector-disabled]="readonly"
     [class.dropdown-selector-primary]="variant === 'primary'"
     [class.dropdown-selector-secondary]="variant === 'secondary'"
     [class.dropdown-selector-tertiary]="variant === 'tertiary'" [class.dropdown-selector-small]="size === 'small'"
     [class.dropdown-selector-medium]="size === 'medium'" [class.dropdown-selector-large]="size === 'large'">
     <div class="dropdown-button" (click)="toggleDropdown()" [class.dropdown-button-open]="isDropdownOpen">
       <span class="selected-option">{{ getSelectedOption() }}</span>
-      <span class="dropdown-arrow">▼</span>
+      <span *ngIf="type !== 'search'" class="dropdown-arrow">▼</span>
+      <span *ngIf="type === 'search'" class="material-icons search-icon">search</span>
     </div>
 
     <div class="options-container" *ngIf="isDropdownOpen && !readonly" (mouseleave)="isDropdownOpen = false">
       <div class="option" *ngFor="let option of options" (click)="onOptionChange(option)"
         [class.selected]="isOptionSelected(option)">
         {{ option }}
-        <input type="checkbox" *ngIf="type === 'dropdown-select'" [checked]="isOptionSelected(option)">
+        <input type="checkbox" *ngIf="type === 'dropdown-select' || type === 'search-select'"
+          [checked]="isOptionSelected(option)">
       </div>
     </div>
   </div>

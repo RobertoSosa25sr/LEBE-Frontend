@@ -6,6 +6,7 @@
   font-weight: bold;
   transition: all 0.2s ease;
   position: relative;
+  box-sizing: border-box;
 }
 
 /* Text area specific styles */
@@ -115,14 +116,21 @@
   font-size: clamp(0.625rem, 0.5417rem + 0.3704vw, 0.875rem);
 }
 
-.input-field-medium:is(input[type="datetime-local"]){
-  padding: 0.3675rem 0;
+.input-field-medium:is(input[type="datetime-local"]),
+.input-field-medium:is(input[type="time"]) {
+  padding: 0.3675rem 0.5rem;
   font-size: clamp(0.625rem, 0.5417rem + 0.3704vw, 0.875rem);
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.input-field-medium:is(input[type="time"]){
-  padding: 0.359rem 0;
-  font-size: clamp(0.625rem, 0.5417rem + 0.3704vw, 0.875rem);
+
+input[type="datetime-local"],
+input[type="time"] {
+  font-family: inherit;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -144,9 +152,10 @@
 
 
 .dropdown-selector {
-  margin-bottom: 1.5rem;
+
   position: relative;
   border-radius: 0.3rem;
+  width: 100%;
 }
 
 .dropdown-selector .options-container{

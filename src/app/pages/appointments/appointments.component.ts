@@ -186,13 +186,12 @@ export class AppointmentsComponent implements OnInit {
 
   onNewAppointmentClick() {
     this.inputNewAppointmentFields = [
-      {label: 'Responsable', type: 'search', placeholder: 'Responsable', formControlName: 'responsible_id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      {label: 'Cliente', type: 'search', placeholder: 'Cliente', formControlName: 'client_id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      {label: 'Responsable', type: 'search', placeholder: 'Responsable', formControlName: 'responsible_id', required: true, options: ['Responsable 1', 'Responsable 2', 'Responsable 3'], nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      {label: 'Cliente', type: 'search', placeholder: 'Cliente', formControlName: 'client_id', required: true, options: ['Cliente 1', 'Cliente 2', 'Cliente 3'], nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      {label: 'Asunto', type: 'text', placeholder: '', formControlName: 'subject', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      {label: 'Caso', type: 'search', placeholder: 'Caso', formControlName: 'case_id', required: false, options: ['Caso 1', 'Caso 2', 'Caso 3'], nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
       {label: 'Fecha y hora', type: 'datetime-local', placeholder: '', formControlName: 'start_datetime', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       {label: 'Duración', type: 'time', placeholder: '', formControlName: 'duration', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      {label: 'Asunto', type: 'text', placeholder: '', formControlName: 'subject', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      {label: 'Caso', type: 'text', placeholder: '', formControlName: 'case_id', required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      {label: 'Resultado', type: 'text', placeholder: 'Resultado', formControlName: 'result', required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'}
     ];
     this.showNewAppointmentModal = true;
   }
