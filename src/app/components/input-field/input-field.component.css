@@ -313,7 +313,7 @@ input[type="time"] {
 
 .dropdown-selector-secondary .options-container{
     background-color: var(--color-background-light);
-    border: 1px solid var(--color-neutral-black);
+    border: 1px solid var(--color-accent-light);
     border-radius: 0.3rem;
     z-index: 1000;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -331,7 +331,7 @@ input[type="time"] {
 }
 
 .dropdown-selector-secondary .option:hover {
-  color: var(--color-accent-dark);
+  color: var(--color-neutral-black);
 }
 
 .dropdown-selector-secondary .option.selected {
@@ -503,3 +503,10 @@ input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none;
   appearance: none;
 }
+
+.no-results {
+    padding: 0.5rem 1rem;
+    color: var(--color-neutral-gray-dark);
+    font-size: clamp(0.6rem, 0.5rem + 0.34vw, 0.8rem);
+}
+

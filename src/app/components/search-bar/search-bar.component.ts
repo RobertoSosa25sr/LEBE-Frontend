@@ -10,6 +10,8 @@ import { CommonModule } from '@angular/common';
 })
 export class SearchBarComponent {
   @Input() placeholder: string = 'Buscar...';
+  @Input() type: 'primary' | 'secondary' = 'primary';
+  @Input() size: 'small' | 'medium' | 'large' = 'medium';
   @Output() search = new EventEmitter<string>();
   searchTerm: string = '';
 

@@ -34,7 +34,7 @@
     </div>
 
     <div class="options-container" *ngIf="isDropdownOpen && !readonly" (mouseleave)="isDropdownOpen = false">
-      <app-search-bar *ngIf="type === 'search'" [placeholder]="placeholder || 'Buscar...'" (search)="onSearch($event)"></app-search-bar>
+      <app-search-bar *ngIf="type === 'search'" type="secondary" size="medium" [placeholder]="placeholder || 'Buscar...'" (search)="onSearch($event)"></app-search-bar>
       <div *ngIf="options && options.length > 0">
         <div class="option" *ngFor="let option of options" (click)="onOptionChange(option)"
           [class.selected]="isOptionSelected(option)">

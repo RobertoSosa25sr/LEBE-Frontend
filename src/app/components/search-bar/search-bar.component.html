@@ -1,4 +1,10 @@
-<div class="search-container">
+<div class="search-container" 
+[class.search-container-primary]="type === 'primary'"
+[class.search-container-secondary]="type === 'secondary'"
+[class.search-container-small]="size === 'small'"
+[class.search-container-medium]="size === 'medium'"
+[class.search-container-large]="size === 'large'">
+  
   <input 
     type="text" 
     [placeholder]="placeholder" 
