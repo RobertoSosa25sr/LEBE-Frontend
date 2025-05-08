@@ -13,4 +13,8 @@ export interface InputFieldConfig {
     selectedOption?: string | string[];
     nullable?: boolean;
     width?: 'full' | '50%';
+    apiService?: any;
+    apiMethod?: string;
+    apiServiceParams?: any[];
+    fieldToShow?: string;
   } 

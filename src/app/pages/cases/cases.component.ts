@@ -5,6 +5,7 @@ import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
+import { InputFieldComponent } from '../../components/input-field/input-field.component';
 import { Case } from '../../models/case.model';
 import { CaseService } from '../../services/case.service';
 import { ActionButtonService } from '../../services/action-button.service';
@@ -14,10 +15,10 @@ import { ActionType } from '../../shared/constants/action-types.constants';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NotificationService } from '../../services/notification.service';
 import { ROLES } from '../../shared/constants/roles.constants';
-import { User } from '../../models/user.model';
 import { CASE_STATUS } from '../../shared/constants/case-status.constants';
+import { UserService } from '../../services/user.service';
 @Component({
-  selector: 'app-users',
+  selector: 'app-cases',
   standalone: true,
   imports: [
     CommonModule, 
@@ -25,7 +26,8 @@ import { CASE_STATUS } from '../../shared/constants/case-status.constants';
     ButtonComponent, 
     ModalComponent,
     DataTableComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    InputFieldComponent
   ],
   templateUrl: './cases.component.html',
   styleUrls: ['./cases.component.css']
@@ -102,11 +104,13 @@ export class CasesComponent implements OnInit {
 
   constructor(
     private caseService: CaseService,
+    private userService: UserService,
     private actionButtonService: ActionButtonService,
     private fb: FormBuilder,
     private notificationService: NotificationService
   ) {
     this.caseService = caseService;
+    this.userService = userService;
     this.form = this.fb.group({
       id: ['', Validators.required],
       manager_id: [''],
@@ -161,11 +165,36 @@ export class CasesComponent implements OnInit {
 
   onNewCaseClick() {
     this.inputNewCaseFields = [
-      { label: 'Nombres', type: 'text', placeholder: '', formControlName: 'first_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Apellidos', type: 'text', placeholder: '', formControlName: 'last_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
+      { 
+        label: 'Cliente', 
+        type: 'search', 
+        placeholder: 'Buscar cliente...', 
+        formControlName: 'client_id', 
+        required: true, 
+        apiService: this.userService, 
+        apiMethod: 'getUsers', 
+        apiServiceParams: [], 
+        fieldToShow: 'full_name', 
+        nullable: false, 
+        variant: 'secondary', 
+        size: 'medium', 
+        width: 'full'
+      },
+      { 
+        label: 'Encargado', 
+        type: 'search', 
+        placeholder: 'Buscar encargado...', 
+        formControlName: 'manager_id', 
+        required: true, 
+        apiService: this.userService, 
+        apiMethod: 'getUsers', 
+        apiServiceParams: [], 
+        fieldToShow: 'full_name', 
+        nullable: false, 
+        variant: 'secondary', 
+        size: 'medium', 
+        width: 'full'
+      }
     ];
     this.showNewCaseModal = true;
   }

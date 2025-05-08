@@ -21,7 +21,7 @@
     [class.input-field-full]="width === 'full'" [class.input-field-50]="width === '50%'" rows="4"></textarea>
 
   <div
-    *ngIf="(type === 'dropdown' || type === 'dropdown-select' || type === 'search' || type === 'search-select') && options"
+    *ngIf="(type === 'dropdown' || type === 'dropdown-select' || type === 'search' || type === 'search-select')"
     class="dropdown-selector" [class.dropdown-selector-disabled]="readonly"
     [class.dropdown-selector-primary]="variant === 'primary'"
     [class.dropdown-selector-secondary]="variant === 'secondary'"
@@ -34,11 +34,17 @@
     </div>
 
     <div class="options-container" *ngIf="isDropdownOpen && !readonly" (mouseleave)="isDropdownOpen = false">
-      <div class="option" *ngFor="let option of options" (click)="onOptionChange(option)"
-        [class.selected]="isOptionSelected(option)">
-        {{ option }}
-        <input type="checkbox" *ngIf="type === 'dropdown-select' || type === 'search-select'"
-          [checked]="isOptionSelected(option)">
+      <app-search-bar *ngIf="type === 'search'" [placeholder]="placeholder || 'Buscar...'" (search)="onSearch($event)"></app-search-bar>
+      <div *ngIf="options && options.length > 0">
+        <div class="option" *ngFor="let option of options" (click)="onOptionChange(option)"
+          [class.selected]="isOptionSelected(option)">
+          {{ option }}
+          <input type="checkbox" *ngIf="type === 'dropdown-select' || type === 'search-select'"
+            [checked]="isOptionSelected(option)">
+        </div>
+      </div>
+      <div *ngIf="!options || options.length === 0" class="no-results">
+        No se encontraron resultados
       </div>
     </div>
   </div>

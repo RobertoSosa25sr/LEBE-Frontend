@@ -20,6 +20,10 @@
             [required]="getFieldRequired(field)"
             [nullable]="getFieldNullable(field)"
             [width]="field.width"
+            [apiService]="field.apiService"
+            [apiMethod]="field.apiMethod"
+            [apiServiceParams]="field.apiServiceParams"
+            [fieldToShow]="field.fieldToShow"
           ></app-input-field>
         </div>
       </div>

@@ -1,11 +1,11 @@
-import { Component, Input, forwardRef, EventEmitter, Output, HostListener } from '@angular/core';
+import { Component, Input, forwardRef, EventEmitter, Output, HostListener, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
+import { SearchBarComponent } from '../search-bar/search-bar.component';
 @Component({
   selector: 'app-input-field',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SearchBarComponent],
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.css'],
   providers: [
@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
     }
   ]
 })
-export class InputFieldComponent implements ControlValueAccessor {
+export class InputFieldComponent implements ControlValueAccessor, OnInit {
 
   @Input() placeholder?: string = '';
   @Input() type: string = 'text';
@@ -33,10 +33,24 @@ export class InputFieldComponent implements ControlValueAccessor {
   @Input() formControlName: string = '';
   @Input() nullable: boolean = false;
   @Input() formControl?: FormControl;
+  @Input() apiService?: any;
+  @Input() apiMethod?: string = '';
+  @Input() apiServiceParams?: any[] = [];
+  @Input() fieldToShow?: string = '';
   @Output() optionChange = new EventEmitter<string | string[]>();
   onChange: any = () => {};
   onTouch: any = () => {};
   isDropdownOpen: boolean = false;
+  searchResults: any[] = [];
+
+  ngOnInit() {
+    console.log('InputFieldComponent initialized with:', {
+      type: this.type,
+      apiService: this.apiService,
+      apiMethod: this.apiMethod,
+      apiServiceParams: this.apiServiceParams
+    });
+  }
 
   writeValue(value: any): void {
     if (this.type === 'dropdown-select') {
@@ -97,6 +111,62 @@ export class InputFieldComponent implements ControlValueAccessor {
     this.onTouch();
   }
 
+  onSearch(searchTerm: string) {
+    console.log('Search term:', searchTerm);
+    console.log('API Service:', this.apiService);
+    console.log('API Method:', this.apiMethod);
+    console.log('API Service Params:', this.apiServiceParams);
+    
+    if (!this.apiService) {
+      console.error('API Service is not defined');
+      return;
+    }
+
+    if (!this.apiMethod) {
+      console.error('API Method is not defined');
+      return;
+    }
+
+    if (typeof this.apiService[this.apiMethod] !== 'function') {
+      console.error(`Method ${this.apiMethod} does not exist on the API Service`);
+      return;
+    }
+
+    // Keep dropdown open while searching
+    this.isDropdownOpen = true;
+    
+    // Call the API service method with the correct parameters
+    this.apiService[this.apiMethod](
+      1, // page
+      10, // per_page
+      searchTerm // search term
+    ).subscribe({
+      next: (response: any) => {
+        console.log('API Response:', response);
+        if (response.success && response.data?.data) {
+          this.searchResults = response.data.data;
+          console.log('Search Results:', this.searchResults);
+          
+          // Update options based on the fieldToShow property
+          if (this.fieldToShow) {
+            this.options = this.searchResults.map(item => item[this.fieldToShow!]);
+          } else {
+            // Default to showing full_name if available, otherwise fallback to email
+            this.options = this.searchResults.map(item => item.full_name || item.email);
+          }
+          console.log('Options:', this.options);
+        } else {
+          console.warn('Unexpected API response structure:', response);
+          this.options = [];
+        }
+      },
+      error: (error: any) => {
+        console.error('API Error:', error);
+        this.options = [];
+      }
+    });
+  }
+
   onOptionChange(option: string): void {
     if (this.type === 'dropdown-select') {
       let currentSelection = Array.isArray(this.selectedOption) ? [...this.selectedOption] : [];
@@ -121,16 +191,21 @@ export class InputFieldComponent implements ControlValueAccessor {
         this.formControl.markAsTouched();
       }
     } else {
+      // Find the selected item from searchResults
+      const selectedItem = this.searchResults.find(item => 
+        item[this.fieldToShow || 'full_name'] === option
+      );
+      
       this.selectedOption = option;
-      this.value = option;
-      this.onChange(option);
+      this.value = selectedItem?.id || option; // Use the ID as the value
+      this.onChange(this.value);
       this.onTouch();
-      this.optionChange.emit(option);
+      this.optionChange.emit(this.value);
       this.isDropdownOpen = false;
       
       // Update form control if it exists
       if (this.formControl) {
-        this.formControl.setValue(option);
+        this.formControl.setValue(this.value);
         this.formControl.markAsDirty();
         this.formControl.markAsTouched();
       }
@@ -140,6 +215,10 @@ export class InputFieldComponent implements ControlValueAccessor {
   toggleDropdown(): void {
     if (!this.readonly) {
       this.isDropdownOpen = !this.isDropdownOpen;
+      // If opening dropdown and we have an API service, trigger initial search
+      if (this.isDropdownOpen && this.apiService && this.apiMethod) {
+        this.onSearch('');
+      }
     }
   }
 
