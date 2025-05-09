@@ -17,6 +17,7 @@ import { NotificationService } from '../../services/notification.service';
 import { ROLES } from '../../shared/constants/roles.constants';
 import { CASE_STATUS } from '../../shared/constants/case-status.constants';
 import { UserService } from '../../services/user.service';
+import { ClientService } from '../../services/client.service';
 @Component({
   selector: 'app-cases',
   standalone: true,
@@ -105,12 +106,14 @@ export class CasesComponent implements OnInit {
   constructor(
     private caseService: CaseService,
     private userService: UserService,
+    private clientService: ClientService,
     private actionButtonService: ActionButtonService,
     private fb: FormBuilder,
     private notificationService: NotificationService
   ) {
     this.caseService = caseService;
     this.userService = userService;
+    this.clientService = clientService;
     this.form = this.fb.group({
       id: ['', Validators.required],
       manager_id: [''],
@@ -171,9 +174,10 @@ export class CasesComponent implements OnInit {
         placeholder: 'Buscar cliente...', 
         formControlName: 'client_id', 
         required: true, 
-        apiService: this.userService, 
-        apiMethod: 'getUsers', 
-        apiServiceParams: [], 
+        apiService: this.clientService, 
+        apiMethod: 'getClients', 
+        apiServiceParams: [],
+        responseDataKey: 'clients',
         fieldToShow: 'full_name', 
         nullable: false, 
         variant: 'secondary', 
@@ -188,7 +192,8 @@ export class CasesComponent implements OnInit {
         required: true, 
         apiService: this.userService, 
         apiMethod: 'getUsers', 
-        apiServiceParams: [], 
+        apiServiceParams: [{roles: [ROLES.USER]}],
+        responseDataKey: 'users',
         fieldToShow: 'full_name', 
         nullable: false, 
         variant: 'secondary', 

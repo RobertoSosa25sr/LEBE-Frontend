@@ -2,6 +2,8 @@ import { Component, Input, forwardRef, EventEmitter, Output, HostListener, OnIni
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
+import { ApiResponse, PaginatedResponse } from '../../models/api-response.model';
+
 @Component({
   selector: 'app-input-field',
   standalone: true,
@@ -37,6 +39,7 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   @Input() apiMethod?: string = '';
   @Input() apiServiceParams?: any[] = [];
   @Input() fieldToShow?: string = '';
+  @Input() responseDataKey: string = ''; 
   @Output() optionChange = new EventEmitter<string | string[]>();
   onChange: any = () => {};
   onTouch: any = () => {};
@@ -112,10 +115,12 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   }
 
   onSearch(searchTerm: string) {
-    console.log('Search term:', searchTerm);
-    console.log('API Service:', this.apiService);
-    console.log('API Method:', this.apiMethod);
-    console.log('API Service Params:', this.apiServiceParams);
+    console.log('InputField onSearch called with:', {
+      searchTerm,
+      apiService: this.apiService,
+      apiMethod: this.apiMethod,
+      apiServiceParams: this.apiServiceParams
+    });
     
     if (!this.apiService) {
       console.error('API Service is not defined');
@@ -132,26 +137,40 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
       return;
     }
 
-    // Keep dropdown open while searching
     this.isDropdownOpen = true;
     
-    // Call the API service method with the correct parameters
+    console.log('Calling service method with params:', {
+      page: 1,
+      limit: 10,
+      searchTerm,
+      serviceParams: this.apiServiceParams
+    });
+    
     this.apiService[this.apiMethod](
-      1, // page
-      10, // per_page
-      searchTerm // search term
+      1, 
+      10, 
+      searchTerm,
+      this.apiServiceParams
     ).subscribe({
       next: (response: any) => {
         console.log('API Response:', response);
-        if (response.success && response.data?.data) {
-          this.searchResults = response.data.data;
+        let data = response;
+        
+        if (response?.data?.data) {
+          data = response.data.data;
+        } else if (response?.data) {
+          data = response.data;
+        } else if (response?.[this.responseDataKey]) {
+          data = response[this.responseDataKey];
+        }
+
+        if (Array.isArray(data)) {
+          this.searchResults = data;
           console.log('Search Results:', this.searchResults);
           
-          // Update options based on the fieldToShow property
           if (this.fieldToShow) {
             this.options = this.searchResults.map(item => item[this.fieldToShow!]);
           } else {
-            // Default to showing full_name if available, otherwise fallback to email
             this.options = this.searchResults.map(item => item.full_name || item.email);
           }
           console.log('Options:', this.options);

@@ -112,12 +112,12 @@ export class UsersComponent implements OnInit {
     this.userService.getUsers(this.currentPage, this.perPage, this.searchTerm)
       .subscribe({
         next: (response) => {
-          this.users = response.data?.data || [];
-          this.total = response.data?.total || 0;
-          this.currentPage = response.data?.page || 1;
-          this.lastPage = response.data?.totalPages || 1;
-          this.from = response.data?.from || 0;
-          this.to = response.data?.to || 0;
+          this.users = response.users;
+          this.total = response.pagination.total;
+          this.currentPage = response.pagination.current_page;
+          this.lastPage = response.pagination.last_page;
+          this.from = response.pagination.from;
+          this.to = response.pagination.to;
           
           this.tableConfig = {
             ...this.tableConfig,

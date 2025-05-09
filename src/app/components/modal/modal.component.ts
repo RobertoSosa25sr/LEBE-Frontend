@@ -22,6 +22,7 @@ export class ModalComponent {
   @Input() apiService: any;
   @Input() apiMethod: string = '';
   @Input() apiServiceParams: any[] = [];
+  @Input() responseDataKey: string = '';
   @Input() successMessage: string = 'Operación exitosa';
   @Input() successRedirect: string = '';
   @Input() apiErrorMessage: string = 'Error al realizar la operación';
