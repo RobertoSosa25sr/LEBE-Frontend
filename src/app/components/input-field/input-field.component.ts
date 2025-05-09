@@ -72,7 +72,6 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
       this.selectedOption = this.value;
     } else if (this.type === 'time' && value) {
       if (typeof value === 'string') {
-
         const timeParts = value.split(':');
         if (timeParts.length >= 2) {
           this.value = `${timeParts[0]}:${timeParts[1]}`;
@@ -84,6 +83,40 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
         this.value = time.toISOString().slice(11, 16);
       }
       this.selectedOption = this.value;
+    } else if (this.type === 'search' && value) {
+      // For search type, if we have a selectedOption, use that as the display value
+      if (this.selectedOption) {
+        this.value = this.selectedOption;
+      } else {
+        // If no selectedOption, try to fetch the display value
+        if (this.apiService && this.apiMethod) {
+          this.apiService[this.apiMethod](
+            1,
+            1,
+            '',
+            this.apiServiceParams
+          ).subscribe({
+            next: (response: any) => {
+              let data = response;
+              if (response?.data?.data) {
+                data = response.data.data;
+              } else if (response?.data) {
+                data = response.data;
+              } else if (response?.[this.responseDataKey]) {
+                data = response[this.responseDataKey];
+              }
+
+              if (Array.isArray(data)) {
+                const item = data.find((item: any) => item[this.fieldToSend || 'id'] === value);
+                if (item && this.fieldToShow) {
+                  this.value = item[this.fieldToShow];
+                  this.selectedOption = this.value;
+                }
+              }
+            }
+          });
+        }
+      }
     } else {
       this.value = value || '';
       this.selectedOption = this.value;
