@@ -18,4 +18,5 @@ export interface InputFieldConfig {
     apiServiceParams?: any[];
     responseDataKey?: string;
     fieldToShow?: string;
-  } 
+    fieldToSend?: string;
+} 

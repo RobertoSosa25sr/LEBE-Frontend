@@ -1,5 +1,5 @@
 import { Client } from "./client.model";
-
+import { User } from "./user.model";
 export interface Case {
   id: string;
   manager_id: string;
@@ -8,6 +8,7 @@ export interface Case {
   created_at: string;
   updated_at: string;
   client: Client;
+  manager: User;
   }
 
 export interface CaseListResponse {

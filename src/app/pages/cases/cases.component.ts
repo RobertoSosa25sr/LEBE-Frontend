@@ -5,7 +5,6 @@ import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
-import { InputFieldComponent } from '../../components/input-field/input-field.component';
 import { Case } from '../../models/case.model';
 import { CaseService } from '../../services/case.service';
 import { ActionButtonService } from '../../services/action-button.service';
@@ -28,7 +27,6 @@ import { ClientService } from '../../services/client.service';
     ModalComponent,
     DataTableComponent,
     SearchBarComponent,
-    InputFieldComponent
   ],
   templateUrl: './cases.component.html',
   styleUrls: ['./cases.component.css']
@@ -111,14 +109,10 @@ export class CasesComponent implements OnInit {
     private fb: FormBuilder,
     private notificationService: NotificationService
   ) {
-    this.caseService = caseService;
-    this.userService = userService;
-    this.clientService = clientService;
     this.form = this.fb.group({
-      id: ['', Validators.required],
       manager_id: [''],
-      client_id: [''],
-      status: [''],
+      client_id: ['', Validators.required],
+      status: ['']
     });
   }
 
@@ -210,11 +204,10 @@ export class CasesComponent implements OnInit {
 
   onNewCaseConfirm() {
     this.isLoading = true;
+    console.log('Form data:', this.form.getRawValue());
     const formData = {
-      id: this.form.get('id')?.value || '',
       manager_id: this.form.get('manager_id')?.value || '',
       client_id: this.form.get('client_id')?.value || '',
-      status: this.form.get('status')?.value || '',
     }
 
     this.caseService.createCase(formData)
@@ -225,14 +218,7 @@ export class CasesComponent implements OnInit {
           this.isLoading = false;
           this.form.reset();
 
-          this.inputNewCaseFields = [
-            { label: 'Nombres', type: 'text', placeholder: '', formControlName: 'first_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-            { label: 'Apellidos', type: 'text', placeholder: '', formControlName: 'last_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-            { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-            { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-            { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
-          ];
-          this.notificationService.success('Usuario creado correctamente');
+          this.notificationService.success('Caso creado correctamente');
         },
         error: (error) => {
           this.isLoading = false;
@@ -282,16 +268,64 @@ export class CasesComponent implements OnInit {
     this.form.reset();
     this.form.patchValue({
       id: caseData.id,
-      manager_id: caseData.manager_id,
-      client_id: caseData.client_id,
+      manager_id: caseData.manager.id,
+      client_id: caseData.client.id,
       status: caseData.status
     });
 
     this.inputEditFields = [
-      { label: 'Encargado', type: 'text', placeholder: caseData.manager_id, formControlName: 'manager_id', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Cliente', type: 'text', placeholder: caseData.client_id, formControlName: 'client_id', readonly: true, required: false, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Estado', type: 'dropdown', value: caseData.status, formControlName: 'status', readonly: false, required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%', options: Object.values(CASE_STATUS)},
-
+      { 
+        label: 'Cliente', 
+        type: 'search', 
+        placeholder: 'Buscar cliente...', 
+        formControlName: 'client_id', 
+        required: false, 
+        readonly: true, 
+        nullable: false, 
+        variant: 'secondary', 
+        size: 'medium', 
+        width: 'full',
+        apiService: this.clientService,
+        apiMethod: 'getClients',
+        apiServiceParams: [],
+        responseDataKey: 'clients',
+        fieldToShow: 'full_name',
+        fieldToSend: 'id',
+        value: caseData.client.full_name,
+        selectedOption: caseData.client.full_name
+      },
+      { 
+        label: 'Encargado', 
+        type: 'search', 
+        placeholder: 'Buscar encargado...', 
+        formControlName: 'manager_id', 
+        required: true,
+        apiService: this.userService, 
+        apiMethod: 'getUsers', 
+        apiServiceParams: [{roles: [ROLES.USER]}],
+        responseDataKey: 'users',
+        fieldToShow: 'full_name',
+        fieldToSend: 'id',
+        nullable: false, 
+        variant: 'secondary', 
+        size: 'medium', 
+        width: 'full',
+        value: caseData.manager.full_name,
+        selectedOption: caseData.manager.full_name
+      },
+      { 
+        label: 'Estado', 
+        type: 'dropdown', 
+        value: caseData.status, 
+        formControlName: 'status', 
+        readonly: false, 
+        required: true, 
+        nullable: false, 
+        variant: 'secondary', 
+        size: 'medium', 
+        width: 'full', 
+        options: Object.values(CASE_STATUS)
+      }
     ];
     this.showEditModal = true;
   }
@@ -305,7 +339,7 @@ export class CasesComponent implements OnInit {
     if (this.selectedCase) {
       this.isLoading = true;
       const formData = this.form.getRawValue();
-      
+      console.log('Form data:', formData);
       this.caseService.updateCase(this.selectedCase.id, formData)
         .subscribe({
           next: () => {

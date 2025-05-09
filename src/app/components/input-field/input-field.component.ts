@@ -39,6 +39,7 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   @Input() apiMethod?: string = '';
   @Input() apiServiceParams?: any[] = [];
   @Input() fieldToShow?: string = '';
+  @Input() fieldToSend?: string = '';
   @Input() responseDataKey: string = ''; 
   @Output() optionChange = new EventEmitter<string | string[]>();
   onChange: any = () => {};
@@ -216,7 +217,8 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
       );
       
       this.selectedOption = option;
-      this.value = selectedItem?.id || option; // Use the ID as the value
+      // Use fieldToSend if provided, otherwise fallback to id or the option itself
+      this.value = selectedItem ? (selectedItem[this.fieldToSend || 'id'] || selectedItem.id) : option;
       this.onChange(this.value);
       this.onTouch();
       this.optionChange.emit(this.value);
