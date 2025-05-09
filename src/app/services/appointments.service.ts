@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { ApiResponse, PaginatedResponse } from '../models/api-response.model';
 import { map } from 'rxjs/operators';
-import { AppointmentResponse, CreateAppointmentRequest, UpdateAppointmentRequest } from '../models/appointment.model';
+import { AppointmentListResponse, AppointmentResponse, CreateAppointmentRequest, UpdateAppointmentRequest } from '../models/appointment.model';
 
 export interface Appointment {
   id: string;
@@ -36,28 +36,33 @@ export class AppointmentService {
     });
   }
 
-  getAppointments(page: number = 1, limit: number = 10, search: string = ""): Observable<ApiResponse<PaginatedResponse<AppointmentResponse>>> {
-    const params = {
-      search: search,
-      per_page: limit.toString(),
-      page: page.toString()
-    };
-    return this.http.get<{ appointments: AppointmentResponse[], pagination: any }>(this.apiUrl, { headers: this.getHeaders(), params })
-      .pipe(
-        map(response => ({
-          success: true,
-          data: {
-            data: response.appointments,
-            total: response.pagination.total,
-            page: response.pagination.current_page,
-            limit: response.pagination.per_page,
-            totalPages: response.pagination.last_page,
-            last_page: response.pagination.last_page,
-            from: response.pagination.from,
-            to: response.pagination.to
+  getAppointments(page: number = 1, limit: number = 10, search: string = "", serviceParams?: any[]): Observable<AppointmentListResponse> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', limit.toString());
+
+    if (search) {
+      params = params.set('search', search);
+    }
+    
+    if (serviceParams && serviceParams.length > 0) {
+      serviceParams.forEach(param => {
+        Object.entries(param).forEach(([key, value]: [string, any]) => {
+          if (Array.isArray(value)) {
+              value.forEach((val: any) => {
+              params = params.append(`${key}[]`, val);
+            });
+          } else {
+            params = params.set(key, value.toString());
           }
-        }))
-      );
+        });
+      });
+    }
+    
+    return this.http.get<AppointmentListResponse>(this.apiUrl, { 
+      params,
+      headers: this.getHeaders()
+    });
   }
 
   getAppointment(id: number): Observable<ApiResponse<AppointmentResponse>> {

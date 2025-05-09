@@ -126,12 +126,12 @@ export class CasesComponent implements OnInit {
     this.caseService.getCases(this.currentPage, this.perPage, this.searchTerm)
       .subscribe({
         next: (response) => {
-          this.cases = response.data?.data || [];
-          this.total = response.data?.total || 0;
-          this.currentPage = response.data?.page || 1;
-          this.lastPage = response.data?.totalPages || 1;
-          this.from = response.data?.from || 0;
-          this.to = response.data?.to || 0;
+          this.cases = response.cases || [];
+          this.total = response.pagination.total || 0;
+          this.currentPage = response.pagination.current_page || 1;
+          this.lastPage = response.pagination.last_page || 1;
+          this.from = response.pagination.from || 0;
+          this.to = response.pagination.to || 0;
           
           this.tableConfig = {
             ...this.tableConfig,

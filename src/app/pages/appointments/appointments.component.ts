@@ -14,7 +14,9 @@ import { ActionType } from '../../shared/constants/action-types.constants';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NotificationService } from '../../services/notification.service';
 import { ROLES } from '../../shared/constants/roles.constants';
-
+import { ClientService } from '../../services/client.service';
+import { UserService } from '../../services/user.service';
+import { CaseService } from '../../services/case.service';
 @Component({
   selector: 'app-appointments',
   standalone: true,
@@ -123,17 +125,19 @@ export class AppointmentsComponent implements OnInit {
   constructor(
     private appointmentService: AppointmentService,
     private actionButtonService: ActionButtonService,
+    private clientService: ClientService,
+    private userService: UserService,
+    private caseService: CaseService,
     private fb: FormBuilder,
     private notificationService: NotificationService
   ) {
     this.appointmentService = appointmentService;
     this.form = this.fb.group({
-      id: ['', Validators.required],
-      responsible_id: [''],
-      client_id: [''],
+      responsible_id: ['', Validators.required],
+      client_id: ['', Validators.required],
       case_id: [''],
-      subject: [''],
-      start_datetime: [''],
+      subject: ['', Validators.required],
+      start_datetime: ['', Validators.required],
       duration: [''],
       status: [''],
       result: ['']
@@ -150,12 +154,12 @@ export class AppointmentsComponent implements OnInit {
     this.appointmentService.getAppointments(this.currentPage, this.perPage, this.searchTerm)
       .subscribe({
         next: (response) => {
-          this.appointments = response.data?.data || [];
-          this.total = response.data?.total || 0;
-          this.currentPage = response.data?.page || 1;
-          this.lastPage = response.data?.totalPages || 1;
-          this.from = response.data?.from || 0;
-          this.to = response.data?.to || 0;
+          this.appointments = response.appointments || [];
+          this.total = response.pagination.total || 0;
+          this.currentPage = response.pagination.current_page || 1;
+          this.lastPage = response.pagination.last_page || 1;
+          this.from = response.pagination.from || 0;
+          this.to = response.pagination.to || 0;
           
           this.tableConfig = {
             ...this.tableConfig,
@@ -186,13 +190,86 @@ export class AppointmentsComponent implements OnInit {
 
   onNewAppointmentClick() {
     this.inputNewAppointmentFields = [
-      {label: 'Responsable', type: 'search', placeholder: 'Responsable', formControlName: 'responsible_id', required: true, options: ['Responsable 1', 'Responsable 2', 'Responsable 3'], nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      {label: 'Cliente', type: 'search', placeholder: 'Cliente', formControlName: 'client_id', required: true, options: ['Cliente 1', 'Cliente 2', 'Cliente 3'], nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      {label: 'Asunto', type: 'text', placeholder: '', formControlName: 'subject', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      {label: 'Caso', type: 'search', placeholder: 'Caso', formControlName: 'case_id', required: false, options: ['Caso 1', 'Caso 2', 'Caso 3'], nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      { 
+        label: 'Cliente', 
+        type: 'search', 
+        placeholder: 'Buscar cliente...', 
+        formControlName: 'client_id', 
+        required: true, 
+        apiService: this.clientService, 
+        apiMethod: 'getClients', 
+        apiServiceParams: [],
+        responseDataKey: 'clients',
+        fieldToShow: 'full_name',
+        fieldToSend: 'id',
+        nullable: false, 
+        variant: 'secondary', 
+        size: 'medium', 
+        width: 'full'
+      },
+      { 
+        label: 'Responsable', 
+        type: 'search', 
+        placeholder: 'Buscar responsable...', 
+        formControlName: 'responsible_id', 
+        required: true, 
+        apiService: this.userService, 
+        apiMethod: 'getUsers', 
+        apiServiceParams: [{roles: [ROLES.USER]}],
+        responseDataKey: 'users',
+        fieldToShow: 'full_name',
+        fieldToSend: 'id',
+        nullable: false, 
+        variant: 'secondary', 
+        size: 'medium', 
+        width: 'full'
+      },
+      { 
+        label: 'Caso', 
+        type: 'search', 
+        placeholder: 'Buscar caso...', 
+        formControlName: 'case_id', 
+        required: false, 
+        readonly: !this.form.get('client_id')?.value,
+        apiService: this.caseService, 
+        apiMethod: 'getCases', 
+        apiServiceParams: this.form.get('client_id')?.value ? [{client_id: this.form.get('client_id')?.value}] : [],
+        responseDataKey: 'cases',
+        fieldToShow: 'id',
+        fieldToSend: 'id',
+        nullable: false, 
+        variant: 'secondary', 
+        size: 'medium', 
+        width: 'full'
+      },
+      {label: 'Asunto', type: 'text', placeholder: 'Ingrese el asunto', formControlName: 'subject', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
       {label: 'Fecha y hora', type: 'datetime-local', placeholder: '', formControlName: 'start_datetime', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       {label: 'Duración', type: 'time', placeholder: '', formControlName: 'duration', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
     ];
+
+    // Subscribe to client_id changes to update case search
+    this.form.get('client_id')?.valueChanges.subscribe(clientId => {
+      if (clientId) {
+        // Find the case field in inputNewAppointmentFields
+        const caseField = this.inputNewAppointmentFields.find(field => field.formControlName === 'case_id');
+        if (caseField) {
+          caseField.readonly = false;
+          caseField.apiServiceParams = [{client_id: clientId}];
+          // Reset case_id when client changes
+          this.form.get('case_id')?.setValue('');
+        }
+      } else {
+        // Find the case field in inputNewAppointmentFields
+        const caseField = this.inputNewAppointmentFields.find(field => field.formControlName === 'case_id');
+        if (caseField) {
+          caseField.readonly = true;
+          caseField.apiServiceParams = [];
+          // Reset case_id when client is cleared
+          this.form.get('case_id')?.setValue('');
+        }
+      }
+    });
+
     this.showNewAppointmentModal = true;
   }
 
@@ -202,19 +279,24 @@ export class AppointmentsComponent implements OnInit {
 
   onNewAppointmentConfirm() {
     this.isLoading = true;
-    const formData = {
-      id: this.form.get('id')?.value || '',
-      responsible_id: this.form.get('responsible_id')?.value || '',
-      client_id: this.form.get('client_id')?.value || '',
-      case_id: this.form.get('case_id')?.value || '',
-      subject: this.form.get('subject')?.value || '',
-      start_datetime: this.form.get('start_datetime')?.value || '',
-      duration: this.form.get('duration')?.value || '',
-      status: this.form.get('status')?.value || '',
-      result: this.form.get('result')?.value || ''
-    }
+    const formData = this.form.getRawValue();
+    
+    // Format the datetime to match the required format
+    const startDate = new Date(formData.start_datetime);
+    const formattedStartDate = startDate.toISOString().slice(0, 19).replace('T', ' ');
+    
+    // Format duration to HH:mm format
+    const duration = formData.duration;
+    const formattedDuration = duration.split(':').slice(0, 2).join(':');
+    
+    const requestData = {
+      ...formData,
+      start_datetime: formattedStartDate,
+      duration: formattedDuration,
+      status: 'pendiente'
+    };
 
-    this.appointmentService.createAppointment(formData)
+    this.appointmentService.createAppointment(requestData)
       .subscribe({
         next: (response) => {
           this.loadAppointments();
