@@ -19,8 +19,6 @@
   }
 }
 
-
-
 h2 {
   font-size: clamp(0.625rem, 0.5208rem + 0.463vw, 0.9375rem);
   color: var(--color-secondary-dark);
@@ -31,7 +29,6 @@ h2 {
 form {
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 100%;
   gap: 1rem;
 }
@@ -49,6 +46,15 @@ form {
   width: 100%;
   box-sizing: border-box;
   flex-wrap: wrap;
+}
+
+/* Single column layout */
+.form-row.single-column {
+  width: 100%;
+}
+
+.form-row.single-column .form-column {
+  width: 100%;
 }
 
 .form-column {
@@ -74,6 +80,30 @@ form {
 .form-column input[type="time"] {
   width: 100%;
   min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure input field container takes full width */
+.form-column .input-field-container {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ensure input field takes full width of its container */
+.form-column .input-field {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ensure dropdown selector takes full width */
+.form-column .dropdown-selector {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ensure dropdown button takes full width */
+.form-column .dropdown-button {
+  width: 100%;
   box-sizing: border-box;
 }
 

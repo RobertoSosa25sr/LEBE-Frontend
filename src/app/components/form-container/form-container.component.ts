@@ -19,7 +19,7 @@ import { NotificationService } from '../../services/notification.service';
 })
 export class FormContainerComponent implements AfterViewInit, OnInit {
   @Input() title: string = '';
-  @Input() maxWidth: string = 'fit-content';
+  @Input() maxWidth: string = '100%';
   @Input() form: FormGroup = new FormGroup({});
   @Input() submitButtonText: string = 'Submit';
   @Input() cancelButtonText: string = 'Cancel';

@@ -1,8 +1,8 @@
-<div class="form-container" [style.max-width]="maxWidth">
+<div class="form-container">
   <h2>{{ title }}</h2>
   <form [formGroup]="form">
     <div *ngIf="groupedInputFields.length > 0" class="form-fields">
-      <div *ngFor="let row of groupedInputFields" class="form-row">
+      <div *ngFor="let row of groupedInputFields" class="form-row" [class.single-column]="row.columns.length === 1">
         <div *ngFor="let field of row.columns" 
              class="form-column"
              [class.column-1]="row.columns.length === 2 && field === row.columns[0]"
