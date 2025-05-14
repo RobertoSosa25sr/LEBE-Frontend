@@ -307,9 +307,7 @@ export class AppointmentsComponent implements OnInit {
   onEditClick(appointment: Appointment) {
     if (!appointment) return;
     
-    this.selectedAppointment = appointment;
-    this.form.reset();
-    
+    this.selectedAppointment = appointment; 
     this.form.patchValue({
       id: appointment.id,
       responsible_id: appointment.responsible_id,
@@ -380,6 +378,7 @@ export class AppointmentsComponent implements OnInit {
       {label: 'Fecha y hora', type: 'datetime-local', placeholder: '', formControlName: 'start_datetime', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       {label: 'Duración', type: 'time', placeholder: '', formControlName: 'duration', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       {label: 'Estado', type: 'dropdown', placeholder: 'Seleccione el estado', formControlName: 'status', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%', options: Object.values(APPOINTMENT_STATUS)},
+      {label: 'Resultado', type: 'text-area', placeholder: 'Ingrese el resultado', formControlName: 'result', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
     ];
     this.showEditModal = true;
   }

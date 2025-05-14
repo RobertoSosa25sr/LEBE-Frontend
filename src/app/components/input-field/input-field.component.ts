@@ -85,18 +85,18 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
           this.apiService[this.apiMethod](
             1,
             1,
-            '',
+            value,
             this.apiServiceParams
           ).subscribe({
             next: (response: any) => {
               let data = response;
-              if (response?.data?.data) {
-                data = response.data.data;
-              } else if (response?.data) {
-                data = response.data;
-              } else if (response?.[this.responseDataKey]) {
+              if (response?.[this.responseDataKey]) {
                 data = response[this.responseDataKey];
-              }
+                console.log('data from responseDataKey',data);
+              }  if (response?.data) {
+                data = response.data;
+                console.log('data from data',data);
+              } 
 
               if (Array.isArray(data)) {
                 const item = data.find((item: any) => item[this.fieldToSend || 'id'] === value);
@@ -130,7 +130,7 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
     if (this.type === 'datetime-local' && this.value) {
       const date = new Date(this.value);
       if (!isNaN(date.getTime())) {
-        // Format to YYYY-MM-DD HH:mm:ss
+
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
@@ -178,13 +178,11 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
       next: (response: any) => {
         let data = response;
         
-        if (response?.data?.data) {
-          data = response.data.data;
-        } else if (response?.data) {
-          data = response.data;
-        } else if (response?.[this.responseDataKey]) {
+       if (response?.[this.responseDataKey]) {
           data = response[this.responseDataKey];
-        }
+        }  if (response?.data) {
+          data = response.data;
+        } 
 
         if (Array.isArray(data)) {
           this.searchResults = data;

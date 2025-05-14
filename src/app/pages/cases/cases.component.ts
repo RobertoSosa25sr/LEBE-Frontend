@@ -189,6 +189,7 @@ export class CasesComponent implements OnInit {
         apiServiceParams: [{roles: [ROLES.USER]}],
         responseDataKey: 'users',
         fieldToShow: 'full_name', 
+        fieldToSend: 'id',
         nullable: false, 
         variant: 'secondary', 
         size: 'medium', 
