@@ -141,6 +141,8 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
       ...this.cancelButtonConfig,
       disabled: true
     };
+    console.log('1. apiService',this.apiService);
+    console.log('2. apiMethod',this.apiMethod);
     for (const field of this.inputFields) {
       field.readonly = true;
     }

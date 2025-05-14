@@ -36,30 +36,46 @@
 <app-modal 
   *ngIf="showDeleteModal"
   title="¿Estás seguro de que deseas eliminar esta cita?"
+  [apiService]="appointmentService"
+  apiMethod="deleteAppointment"
+  [apiServiceParams]="[selectedAppointment?.id]"
+  successMessage="Cita eliminada correctamente"
   confirmLabel="Eliminar"
   cancelLabel="Cancelar"
-  (confirm)="onDeleteConfirm()"
+  (success)="onDeleteSuccess($event)"
+  (error)="onDeleteError($event)"
   (cancel)="onDeleteCancel()">
 </app-modal> 
 
 <app-modal 
   *ngIf="showEditModal"
   title="Editar cita"
-  [inputFields]="inputEditFields"
-  [form]="form"
+  [apiService]="appointmentService"
+  apiMethod="updateAppointment"
+  [apiServiceParams]="[selectedAppointment?.id, form.getRawValue()]"
+  successMessage="Cita actualizada correctamente"
   confirmLabel="Guardar"
   cancelLabel="Cancelar"
-  (confirm)="onEditConfirm()"
+  [inputFields]="inputEditFields"
+  [form]="form"
+  (success)="onEditSuccess($event)"
+  (error)="onEditError($event)"
   (cancel)="onEditCancel()">
 </app-modal>
 
 <app-modal 
   *ngIf="showNewAppointmentModal"
   title="Nueva cita"
-  [inputFields]="inputNewAppointmentFields"
-  [form]="form"
+
+  [apiService]="appointmentService"
+  apiMethod="createAppointment"
+  [apiServiceParams]="[form.getRawValue()]"
+  successMessage="Cita creada correctamente"
   confirmLabel="Guardar"
   cancelLabel="Cancelar"
-  (confirm)="onNewAppointmentConfirm()"
+  [inputFields]="inputNewAppointmentFields"
+  [form]="form"
+  (success)="onNewAppointmentSuccess($event)"
+  (error)="onNewAppointmentError($event)"
   (cancel)="onNewAppointmentCancel()">
 </app-modal>

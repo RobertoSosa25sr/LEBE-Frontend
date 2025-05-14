@@ -36,8 +36,6 @@ export interface CreateClientRequest {
 }
 
 export interface UpdateClientRequest {
-  first_name?: string;
-  last_name?: string;
   email?: string;
   phone?: string;
 } 

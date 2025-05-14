@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
-import { Case, CaseListResponse, CaseResponse, CreateCaseRequest, UpdateCaseRequest } from '../models/case.model';
-import { ApiResponse, PaginatedResponse } from '../models/api-response.model';
-import { map } from 'rxjs/operators';
-import { UserResponse } from '../models/user.model';
-
+import { CaseListResponse, CaseResponse, CreateCaseRequest, UpdateCaseRequest } from '../models/case.model';
+import { ApiResponse } from '../models/api-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,8 +27,12 @@ export class CaseService {
 
   getCases(page: number = 1, limit: number = 10, search: string = "", serviceParams?: any[]): Observable<CaseListResponse> {
     let params = new HttpParams()
-      .set('search', search)
-      .set('per_page', limit.toString())
+      .set('page', page.toString())
+      .set('per_page', limit.toString());
+
+    if (search) {
+      params = params.set('search', search);
+    }
 
     if (serviceParams && serviceParams.length > 0) {
       serviceParams.forEach(param => {
@@ -46,7 +47,6 @@ export class CaseService {
         });
       });
     }
-
     return this.http.get<CaseListResponse>(this.apiUrl, { 
       headers: this.getHeaders(), 
       params

@@ -102,7 +102,7 @@ export class CasesComponent implements OnInit {
   };
 
   constructor(
-    private caseService: CaseService,
+    public caseService: CaseService,
     private userService: UserService,
     private clientService: ClientService,
     private actionButtonService: ActionButtonService,
@@ -110,7 +110,7 @@ export class CasesComponent implements OnInit {
     private notificationService: NotificationService
   ) {
     this.form = this.fb.group({
-      manager_id: [''],
+      manager_id: ['', Validators.required],
       client_id: ['', Validators.required],
       status: ['']
     });
@@ -198,36 +198,18 @@ export class CasesComponent implements OnInit {
     this.showNewCaseModal = true;
   }
 
-  onNewCaseCancel() {
+  onNewCaseSuccess(response: any) {
     this.showNewCaseModal = false;
+    this.form.reset();
+    this.loadCases();
   }
 
-  onNewCaseConfirm() {
-    this.isLoading = true;
-    console.log('Form data:', this.form.getRawValue());
-    const formData = {
-      manager_id: this.form.get('manager_id')?.value || '',
-      client_id: this.form.get('client_id')?.value || '',
-    }
+  onNewCaseError(error: any) {
+  }
 
-    this.caseService.createCase(formData)
-      .subscribe({
-        next: (response) => {
-          this.loadCases();
-          this.showNewCaseModal = false;
-          this.isLoading = false;
-          this.form.reset();
-
-          this.notificationService.success('Caso creado correctamente');
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.form.reset();
-          this.inputNewCaseFields = [];
-          this.showNewCaseModal = false;
-          this.notificationService.error('Error al crear el caso');
-        }
-      });
+  onNewCaseCancel() {
+    this.showNewCaseModal = false;
+    this.form.reset();
   }
 
   onDeleteClick(caseData: Case) {
@@ -235,37 +217,26 @@ export class CasesComponent implements OnInit {
     this.showDeleteModal = true;
   }
 
-  onDeleteCancel() {
+  onDeleteSuccess(response: any) {
+    this.showDeleteModal = false;
+    this.selectedCase = null;
+    this.loadCases();
+  }
+
+  onDeleteError(error: any) {
     this.showDeleteModal = false;
     this.selectedCase = null;
   }
 
-  onDeleteConfirm() {
-    if (this.selectedCase) {
-      this.isLoading = true;
-      this.caseService.deleteCase(this.selectedCase.id)
-        .subscribe({
-          next: () => {
-            this.loadCases();
-            this.showDeleteModal = false;
-            this.selectedCase = null;
-            this.notificationService.success('Caso eliminado correctamente');
-          },
-          error: (error) => {
-            this.notificationService.error('Error al eliminar el caso');
-            this.isLoading = false;
-            this.showDeleteModal = false;
-            this.selectedCase = null;
-          }
-        });
-    }
+  onDeleteCancel() {
+    this.showDeleteModal = false;
+    this.selectedCase = null;
   }
 
   onEditClick(caseData: Case) {
     if (!caseData) return;
     
     this.selectedCase = caseData;
-    this.form.reset();
     this.form.patchValue({
       id: caseData.id,
       manager_id: caseData.manager.id,
@@ -329,32 +300,21 @@ export class CasesComponent implements OnInit {
     ];
     this.showEditModal = true;
   }
+  
+  onEditSuccess(response: any) {
+    this.showEditModal = false;
+    this.selectedCase = null;
+    this.form.reset();
+    this.loadCases();
+  }
+
+  onEditError(error: any) {
+  }
 
   onEditCancel() {
     this.showEditModal = false;
     this.selectedCase = null;
-  }
-
-  onEditConfirm() {
-    if (this.selectedCase) {
-      this.isLoading = true;
-      const formData = this.form.getRawValue();
-      console.log('Form data:', formData);
-      this.caseService.updateCase(this.selectedCase.id, formData)
-        .subscribe({
-          next: () => {
-            this.loadCases();
-            this.showEditModal = false;
-            this.selectedCase = null;
-            this.isLoading = false;
-            this.notificationService.success('Caso actualizado correctamente');
-          },
-          error: (error) => {
-            this.notificationService.error('Error al actualizar el caso');
-            this.isLoading = false;
-          }
-        });
-    }
+    this.form.reset();
   }
 
   onTableAction(event: { type: string; item: Case }) {

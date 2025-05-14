@@ -87,7 +87,7 @@ export class UsersComponent implements OnInit {
   };
 
   constructor(
-    private userService: UserService,
+    public userService: UserService,
     private actionButtonService: ActionButtonService,
     private fb: FormBuilder,
     private notificationService: NotificationService
@@ -157,45 +157,18 @@ export class UsersComponent implements OnInit {
     this.showNewUserModal = true;
   }
 
-  onNewUserCancel() {
+  onNewUserSuccess(response: any) {
     this.showNewUserModal = false;
+    this.form.reset();
+    this.loadUsers();
   }
 
-  onNewUserConfirm() {
-    this.isLoading = true;
-    const formData = {
-      id: this.form.get('id')?.value || '',
-      first_name: this.form.get('first_name')?.value || '',
-      last_name: this.form.get('last_name')?.value || '',
-      password: this.form.get('password')?.value || '',
-      roles: this.form.get('roles')?.value || []
-    }
+  onNewUserError(error: any) {
+  }
 
-    this.userService.createUser(formData)
-      .subscribe({
-        next: (response) => {
-          this.loadUsers();
-          this.showNewUserModal = false;
-          this.isLoading = false;
-          this.form.reset();
-
-          this.inputNewUserFields = [
-            { label: 'Nombres', type: 'text', placeholder: '', formControlName: 'first_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-            { label: 'Apellidos', type: 'text', placeholder: '', formControlName: 'last_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-            { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-            { label: 'Contraseña', placeholder: 'Contraseña', type: 'password' , formControlName: 'password', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-            { label: 'Rol', placeholder: 'Sin acceso', type: 'dropdown-select', value: '', formControlName: 'roles', options: Object.values(ROLES), required: false, nullable: true, variant: 'secondary', size: 'medium', width: '50%'}
-          ];
-          this.notificationService.success('Usuario creado correctamente');
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.form.reset();
-          this.inputNewUserFields = [];
-          this.showNewUserModal = false;
-          this.notificationService.error('Error al crear el usuario');
-        }
-      });
+  onNewUserCancel() {
+    this.showNewUserModal = false;
+    this.form.reset();
   }
 
   onDeleteClick(user: User) {
@@ -203,30 +176,20 @@ export class UsersComponent implements OnInit {
     this.showDeleteModal = true;
   }
 
-  onDeleteCancel() {
+  onDeleteSuccess(response: any) {
+    this.showDeleteModal = false;
+    this.selectedUser = null;
+    this.loadUsers();
+  }
+
+  onDeleteError(error: any) {
     this.showDeleteModal = false;
     this.selectedUser = null;
   }
 
-  onDeleteConfirm() {
-    if (this.selectedUser) {
-      this.isLoading = true;
-      this.userService.deleteUser(this.selectedUser.id)
-        .subscribe({
-          next: () => {
-            this.loadUsers();
-            this.showDeleteModal = false;
-            this.selectedUser = null;
-            this.notificationService.success('Usuario eliminado correctamente');
-          },
-          error: (error) => {
-            this.notificationService.error('Error al eliminar el usuario');
-            this.isLoading = false;
-            this.showDeleteModal = false;
-            this.selectedUser = null;
-          }
-        });
-    }
+  onDeleteCancel() {
+    this.showDeleteModal = false;
+    this.selectedUser = null;
   }
 
   onEditClick(user: User) {
@@ -251,31 +214,20 @@ export class UsersComponent implements OnInit {
     this.showEditModal = true;
   }
 
+  onEditSuccess(response: any) {
+    this.showEditModal = false;
+    this.selectedUser = null;
+    this.form.reset();
+    this.loadUsers();
+  }
+
+  onEditError(error: any) {
+  }
+
   onEditCancel() {
     this.showEditModal = false;
     this.selectedUser = null;
-  }
-
-  onEditConfirm() {
-    if (this.selectedUser) {
-      this.isLoading = true;
-      const formData = this.form.getRawValue();
-      
-      this.userService.updateUser(this.selectedUser.id, formData)
-        .subscribe({
-          next: () => {
-            this.loadUsers();
-            this.showEditModal = false;
-            this.selectedUser = null;
-            this.isLoading = false;
-            this.notificationService.success('Usuario actualizado correctamente');
-          },
-          error: (error) => {
-            this.notificationService.error('Error al actualizar el usuario');
-            this.isLoading = false;
-          }
-        });
-    }
+    this.form.reset();
   }
 
   onTableAction(event: { type: string; item: User }) {

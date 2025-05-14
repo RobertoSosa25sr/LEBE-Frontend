@@ -1,5 +1,5 @@
-<div class="users-container">
-  <div class="users-header">
+<div class="clients-container">
+  <div class="clients-header">
     <div class="header-actions">
       <app-search-bar 
         placeholder="Buscar usuarios..."
@@ -36,30 +36,44 @@
 <app-modal 
   *ngIf="showDeleteModal"
   title="¿Estás seguro de que deseas eliminar este cliente?"
+  [apiService]="clientService"
+  apiMethod="deleteClient"
+  [apiServiceParams]="[selectedClient?.id]"
+  successMessage="Cliente eliminado correctamente"
   confirmLabel="Eliminar"
   cancelLabel="Cancelar"
-  (confirm)="onDeleteConfirm()"
+  (success)="onDeleteSuccess($event)"
+  (error)="onDeleteError($event)"
   (cancel)="onDeleteCancel()">
 </app-modal> 
 
 <app-modal 
   *ngIf="showEditModal"
   title="Editar cliente"
-  [inputFields]="inputEditFields"
-  [form]="form"
+  [apiService]="clientService"
+  apiMethod="updateClient"
+  [apiServiceParams]="[selectedClient?.id]"
+  successMessage="Cliente actualizado correctamente"
   confirmLabel="Guardar"
   cancelLabel="Cancelar"
-  (confirm)="onEditConfirm()"
+  [inputFields]="inputEditFields"
+  [form]="form"
+  (success)="onEditSuccess($event)"
+  (error)="onEditError($event)"
   (cancel)="onEditCancel()">
 </app-modal>
 
 <app-modal 
   *ngIf="showNewClientModal"
   title="Nuevo cliente"
-  [inputFields]="inputNewClientFields"
-  [form]="form"
+  [apiService]="clientService"
+  apiMethod="createClient"
+  successMessage="Cliente creado correctamente"
   confirmLabel="Guardar"
   cancelLabel="Cancelar"
-  (confirm)="onNewClientConfirm()"
+  [inputFields]="inputNewClientFields"
+  [form]="form"
+  (success)="onNewClientSuccess($event)"
+  (error)="onNewClientError($event)"
   (cancel)="onNewClientCancel()">
 </app-modal>

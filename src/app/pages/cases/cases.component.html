@@ -36,30 +36,45 @@
 <app-modal 
   *ngIf="showDeleteModal"
   title="¿Estás seguro de que deseas eliminar este caso?"
+  [apiService]="caseService"
+  apiMethod="deleteCase"
+  [apiServiceParams]="[selectedCase?.id]"
+  successMessage="Caso eliminado correctamente"
   confirmLabel="Eliminar"
   cancelLabel="Cancelar"
-  (confirm)="onDeleteConfirm()"
+  (success)="onDeleteSuccess($event)"
+  (error)="onDeleteError($event)"
   (cancel)="onDeleteCancel()">
 </app-modal> 
 
 <app-modal 
   *ngIf="showEditModal"
   title="Editar caso"
-  [inputFields]="inputEditFields"
-  [form]="form"
+  [apiService]="caseService"
+  apiMethod="updateCase"
+  [apiServiceParams]="[selectedCase?.id, form.getRawValue()]"
+  successMessage="Caso actualizado correctamente"
   confirmLabel="Guardar"
   cancelLabel="Cancelar"
-  (confirm)="onEditConfirm()"
+  [inputFields]="inputEditFields"
+  [form]="form"
+  (success)="onEditSuccess($event)"
+  (error)="onEditError($event)"
   (cancel)="onEditCancel()">
 </app-modal>
 
 <app-modal 
   *ngIf="showNewCaseModal"
   title="Nuevo caso"
-  [inputFields]="inputNewCaseFields"
-  [form]="form"
+  [apiService]="caseService"
+  apiMethod="createCase"
+  [apiServiceParams]="[form.getRawValue()]"
+  successMessage="Caso creado correctamente"
   confirmLabel="Guardar"
   cancelLabel="Cancelar"
-  (confirm)="onNewCaseConfirm()"
+  [inputFields]="inputNewCaseFields"
+  [form]="form"
+  (success)="onNewCaseSuccess($event)"
+  (error)="onNewCaseError($event)"
   (cancel)="onNewCaseCancel()">
 </app-modal>

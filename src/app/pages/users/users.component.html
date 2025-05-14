@@ -36,30 +36,44 @@
 <app-modal 
   *ngIf="showDeleteModal"
   title="¿Estás seguro de que deseas eliminar este usuario?"
+  [apiService]="userService"
+  apiMethod="deleteUser"
+  [apiServiceParams]="[selectedUser?.id]"
+  successMessage="Usuario eliminado correctamente"
   confirmLabel="Eliminar"
   cancelLabel="Cancelar"
-  (confirm)="onDeleteConfirm()"
+  (success)="onDeleteSuccess($event)"
+  (error)="onDeleteError($event)"
   (cancel)="onDeleteCancel()">
 </app-modal> 
 
 <app-modal 
   *ngIf="showEditModal"
   title="Editar usuario"
-  [inputFields]="inputEditFields"
-  [form]="form"
+  [apiService]="userService"
+  apiMethod="updateUser"
+  [apiServiceParams]="[selectedUser?.id]"
+  successMessage="Usuario actualizado correctamente"
   confirmLabel="Guardar"
   cancelLabel="Cancelar"
-  (confirm)="onEditConfirm()"
+  [inputFields]="inputEditFields"
+  [form]="form"
+  (success)="onEditSuccess($event)"
+  (error)="onEditError($event)"
   (cancel)="onEditCancel()">
 </app-modal>
 
 <app-modal 
   *ngIf="showNewUserModal"
   title="Nuevo usuario"
-  [inputFields]="inputNewUserFields"
-  [form]="form"
+  [apiService]="userService"
+  apiMethod="createUser"
+  successMessage="Usuario creado correctamente"
   confirmLabel="Guardar"
   cancelLabel="Cancelar"
-  (confirm)="onNewUserConfirm()"
+  [inputFields]="inputNewUserFields"
+  [form]="form"
+  (success)="onNewUserSuccess($event)"
+  (error)="onNewUserError($event)"
   (cancel)="onNewUserCancel()">
 </app-modal>

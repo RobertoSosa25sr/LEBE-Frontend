@@ -3,19 +3,8 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
-import { ApiResponse, PaginatedResponse } from '../models/api-response.model';
-import { map } from 'rxjs/operators';
 import { AppointmentListResponse, AppointmentResponse, CreateAppointmentRequest, UpdateAppointmentRequest } from '../models/appointment.model';
-
-export interface Appointment {
-  id: string;
-  subject: string;
-  start_datetime: string;
-  duration_hours: number;
-  duration_minutes: number;
-  status: string;
-  result: string;
-}
+import { ApiResponse } from '../models/api-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -58,15 +47,10 @@ export class AppointmentService {
         });
       });
     }
-    
     return this.http.get<AppointmentListResponse>(this.apiUrl, { 
-      params,
-      headers: this.getHeaders()
+      headers: this.getHeaders(),
+      params
     });
-  }
-
-  getAppointment(id: number): Observable<ApiResponse<AppointmentResponse>> {
-    return this.http.get<ApiResponse<AppointmentResponse>>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
 
   createAppointment(appointment: CreateAppointmentRequest): Observable<ApiResponse<AppointmentResponse>> {
@@ -81,8 +65,7 @@ export class AppointmentService {
   }
 
   deleteAppointment(id: string): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(this.apiUrl, { 
-      body: { id },
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`, { 
       headers: this.getHeaders() 
     });
   }

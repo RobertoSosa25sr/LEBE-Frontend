@@ -123,7 +123,7 @@ export class AppointmentsComponent implements OnInit {
   };
 
   constructor(
-    private appointmentService: AppointmentService,
+    public appointmentService: AppointmentService,
     private actionButtonService: ActionButtonService,
     private clientService: ClientService,
     private userService: UserService,
@@ -247,7 +247,6 @@ export class AppointmentsComponent implements OnInit {
       {label: 'Duración', type: 'time', placeholder: '', formControlName: 'duration', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
     ];
 
-    // Subscribe to client_id changes to update case search
     this.form.get('client_id')?.valueChanges.subscribe(clientId => {
       if (clientId) {
         // Find the case field in inputNewAppointmentFields
@@ -273,46 +272,18 @@ export class AppointmentsComponent implements OnInit {
     this.showNewAppointmentModal = true;
   }
 
-  onNewAppointmentCancel() {
+  onNewAppointmentSuccess(response: any) {
     this.showNewAppointmentModal = false;
+    this.form.reset();
+    this.loadAppointments();
   }
 
-  onNewAppointmentConfirm() {
-    this.isLoading = true;
-    const formData = this.form.getRawValue();
-    
-    // Format the datetime to match the required format
-    const startDate = new Date(formData.start_datetime);
-    const formattedStartDate = startDate.toISOString().slice(0, 19).replace('T', ' ');
-    
-    // Format duration to HH:mm format
-    const duration = formData.duration;
-    const formattedDuration = duration.split(':').slice(0, 2).join(':');
-    
-    const requestData = {
-      ...formData,
-      start_datetime: formattedStartDate,
-      duration: formattedDuration,
-      status: 'pendiente'
-    };
+  onNewAppointmentError(error: any) {
+  }
 
-    this.appointmentService.createAppointment(requestData)
-      .subscribe({
-        next: (response) => {
-          this.loadAppointments();
-          this.showNewAppointmentModal = false;
-          this.isLoading = false;
-          this.form.reset();
-          this.notificationService.success('Cita creada correctamente');
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.form.reset();
-          this.inputNewAppointmentFields = [];
-          this.showNewAppointmentModal = false;
-          this.notificationService.error('Error al crear la cita');
-        }
-      });
+  onNewAppointmentCancel() {
+    this.showNewAppointmentModal = false;
+    this.form.reset();
   }
 
   onDeleteClick(appointment: Appointment) {
@@ -320,30 +291,21 @@ export class AppointmentsComponent implements OnInit {
     this.showDeleteModal = true;
   }
 
-  onDeleteCancel() {
+  onDeleteSuccess(response: any) {
+    this.showDeleteModal = false;
+    this.selectedAppointment = null;
+    this.loadAppointments();
+  }
+
+  
+  onDeleteError(error: any) {
     this.showDeleteModal = false;
     this.selectedAppointment = null;
   }
 
-  onDeleteConfirm() {
-    if (this.selectedAppointment) {
-      this.isLoading = true;
-      this.appointmentService.deleteAppointment(this.selectedAppointment.id.toString())
-        .subscribe({
-          next: () => {
-            this.loadAppointments();
-            this.showDeleteModal = false;
-            this.selectedAppointment = null;
-            this.notificationService.success('Cita eliminada correctamente');
-          },
-          error: (error) => {
-            this.notificationService.error('Error al eliminar la cita');
-            this.isLoading = false;
-            this.showDeleteModal = false;
-            this.selectedAppointment = null;
-          }
-        });
-    }
+  onDeleteCancel() {
+    this.showDeleteModal = false;
+    this.selectedAppointment = null;
   }
 
   onEditClick(appointment: Appointment) {
@@ -369,52 +331,89 @@ export class AppointmentsComponent implements OnInit {
       status: appointment.status,
       result: appointment.result
     });
-
     this.inputEditFields = [
-      {label: 'Responsable', type: 'text', value: appointment.responsible_id, formControlName: 'responsible_id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      {label: 'Cliente', type: 'text', value: appointment.client_id, formControlName: 'client_id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Asunto', type: 'text', value: appointment.subject, formControlName: 'subject', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-      { label: 'Fecha y hora', type: 'datetime-local', value: formattedStartDate, formControlName: 'start_datetime', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Duración', type: 'time', value: formattedDuration, formControlName: 'duration', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-      { label: 'Resultado', type: 'text-area', value: appointment.result, formControlName: 'result', required: false, nullable: false, variant: 'secondary', size: 'medium', width: 'full'}
+      { 
+        label: 'Cliente', 
+        type: 'search', 
+        placeholder: 'Buscar cliente...', 
+        formControlName: 'client_id', 
+        required: true, 
+        apiService: this.clientService, 
+        apiMethod: 'getClients', 
+        apiServiceParams: [],
+        responseDataKey: 'clients',
+        fieldToShow: 'full_name',
+        fieldToSend: 'id',
+        nullable: false, 
+        variant: 'secondary', 
+        size: 'medium', 
+        width: 'full'
+      },
+      { 
+        label: 'Responsable', 
+        type: 'search', 
+        placeholder: 'Buscar responsable...', 
+        formControlName: 'responsible_id', 
+        required: true, 
+        apiService: this.userService, 
+        apiMethod: 'getUsers', 
+        apiServiceParams: [{roles: [ROLES.USER]}],
+        responseDataKey: 'users',
+        fieldToShow: 'full_name',
+        fieldToSend: 'id',
+        nullable: false, 
+        variant: 'secondary', 
+        size: 'medium', 
+        width: 'full'
+      },
+      { 
+        label: 'Caso', 
+        type: 'search', 
+        placeholder: 'Buscar caso...', 
+        formControlName: 'case_id', 
+        required: false, 
+        readonly: !this.form.get('client_id')?.value,
+        apiService: this.caseService, 
+        apiMethod: 'getCases', 
+        apiServiceParams: this.form.get('client_id')?.value ? [{client_id: this.form.get('client_id')?.value}] : [],
+        responseDataKey: 'cases',
+        fieldToShow: 'id',
+        fieldToSend: 'id',
+        nullable: false, 
+        variant: 'secondary', 
+        size: 'medium', 
+        width: 'full'
+      },
+      {label: 'Asunto', type: 'text', placeholder: 'Ingrese el asunto', formControlName: 'subject', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
+      {label: 'Fecha y hora', type: 'datetime-local', placeholder: '', formControlName: 'start_datetime', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      {label: 'Duración', type: 'time', placeholder: '', formControlName: 'duration', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
     ];
     this.showEditModal = true;
+  }
+
+  onEditSuccess(response: any) {
+    this.showEditModal = false;
+    this.selectedAppointment = null;
+    this.form.reset();
+    this.loadAppointments();
+  }
+
+  onEditError(error: any) {
   }
 
   onEditCancel() {
     this.showEditModal = false;
     this.selectedAppointment = null;
-  }
-
-  onEditConfirm() {
-    if (this.selectedAppointment) {
-      this.isLoading = true;
-      const formData = this.form.getRawValue();
-      
-      this.appointmentService.updateAppointment(this.selectedAppointment.id.toString(), formData)
-        .subscribe({
-          next: () => {
-            this.loadAppointments();
-            this.showEditModal = false;
-            this.selectedAppointment = null;
-            this.isLoading = false;
-            this.notificationService.success('Cita actualizada correctamente');
-          },
-          error: (error) => {
-            this.notificationService.error('Error al actualizar la cita');
-            this.isLoading = false;
-          }
-        });
-    }
+    this.form.reset();
   }
 
   onTableAction(event: { type: string; item: Appointment }) {
-    switch(event.type) {
-      case ActionType.DELETE:
-        this.onDeleteClick(event.item);
-        break;
+    switch (event.type) {
       case ActionType.UPDATE:
         this.onEditClick(event.item);
+        break;
+      case ActionType.DELETE:
+        this.onDeleteClick(event.item);
         break;
     }
   }

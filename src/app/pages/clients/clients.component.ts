@@ -91,7 +91,7 @@ export class ClientsComponent implements OnInit {
   };
 
   constructor(
-    private clientService: ClientService,
+    public clientService: ClientService,
     private actionButtonService: ActionButtonService,
     private fb: FormBuilder,
     private notificationService: NotificationService
@@ -165,41 +165,13 @@ export class ClientsComponent implements OnInit {
     this.showNewClientModal = false;
   }
 
-  onNewClientConfirm() {
-    this.isLoading = true;
-    const formData = {
-      id: this.form.get('id')?.value || '',
-      first_name: this.form.get('first_name')?.value || '',
-      last_name: this.form.get('last_name')?.value || '',
-      email: this.form.get('email')?.value || '',
-      phone: this.form.get('phone')?.value || ''
-    };
+  onNewClientSuccess(response: any) {
+    this.showNewClientModal = false;
+    this.form.reset();
+    this.loadClients();
+  }
 
-    this.clientService.createClient(formData)
-      .subscribe({
-        next: (response) => {
-          this.loadClients();
-          this.showNewClientModal = false;
-          this.isLoading = false;
-          this.form.reset();
-
-          this.inputNewClientFields = [
-            { label: 'Nombres', type: 'text', placeholder: '', formControlName: 'first_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-            { label: 'Apellidos', type: 'text', placeholder: '', formControlName: 'last_name', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
-            { label: 'Cédula', type: 'text', placeholder: '', formControlName: 'id', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-            { label: 'Teléfono', type: 'text', placeholder: '', formControlName: 'phone', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
-            { label: 'Correo', placeholder: 'Correo', type: 'email' , formControlName: 'email', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'}
-          ];
-          this.notificationService.success('Cliente creado correctamente');
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.form.reset();
-          this.inputNewClientFields = [];
-          this.showNewClientModal = false;
-          this.notificationService.error('Error al crear el cliente ' + error.error.message);
-        }
-      });
+  onNewClientError(error: any) {
   }
 
   onDeleteClick(client: Client) {
@@ -212,25 +184,13 @@ export class ClientsComponent implements OnInit {
     this.selectedClient = null;
   }
 
-  onDeleteConfirm() {
-    if (this.selectedClient) {
-      this.isLoading = true;
-      this.clientService.deleteClient(this.selectedClient.id)
-        .subscribe({
-          next: () => {
-            this.loadClients();
-            this.showDeleteModal = false;
-            this.selectedClient = null;
-            this.notificationService.success('Cliente eliminado correctamente');
-          },
-          error: (error) => {
-            this.notificationService.error('Error al eliminar el cliente');
-            this.isLoading = false;
-            this.showDeleteModal = false;
-            this.selectedClient = null;
-          }
-        });
-    }
+  onDeleteSuccess(response: any) {
+    this.showDeleteModal = false;
+    this.selectedClient = null;
+    this.loadClients();
+  }
+
+  onDeleteError(error: any) {
   }
 
   onEditClick(client: Client) {
@@ -259,30 +219,18 @@ export class ClientsComponent implements OnInit {
   onEditCancel() {
     this.showEditModal = false;
     this.selectedClient = null;
+    this.form.reset();
   }
 
-  onEditConfirm() {
-    if (this.selectedClient) {
-      this.isLoading = true;
-      const formData = this.form.getRawValue();
-      
-      this.clientService.updateClient(this.selectedClient.id, formData.email, formData.phone)
-        .subscribe({
-          next: () => {
-            this.loadClients();
-            this.showEditModal = false;
-            this.selectedClient = null;
-            this.isLoading = false;
-            this.notificationService.success('Cliente actualizado correctamente');
-          },
-          error: (error) => {
-            this.notificationService.error('Error al actualizar el cliente ' + error.error.message);
-            this.isLoading = false;
-          }
-        });
-    }
+  onEditSuccess(response: any) {
+    this.showEditModal = false;
+    this.selectedClient = null;
+    this.form.reset();
+    this.loadClients();
   }
 
+  onEditError(error: any) {
+  }
 
   onTableAction(event: { type: string; item: Client }) {
     switch(event.type) {
