@@ -54,14 +54,14 @@ export class AppointmentService {
   }
 
   createAppointment(appointment: CreateAppointmentRequest): Observable<ApiResponse<AppointmentResponse>> {
+    console.log('appointment', appointment);
     return this.http.post<ApiResponse<AppointmentResponse>>(this.apiUrl, appointment, { headers: this.getHeaders() });
   }
 
   updateAppointment(id: string, appointment: UpdateAppointmentRequest): Observable<ApiResponse<AppointmentResponse>> {
-    return this.http.put<ApiResponse<AppointmentResponse>>(this.apiUrl, { 
-      id,
-      ...appointment 
-    }, { headers: this.getHeaders() });
+    return this.http.put<ApiResponse<AppointmentResponse>>(`${this.apiUrl}/${id}`, appointment, { 
+      headers: this.getHeaders() 
+    });
   }
 
   deleteAppointment(id: string): Observable<ApiResponse<void>> {

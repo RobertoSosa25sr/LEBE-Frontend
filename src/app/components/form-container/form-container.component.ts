@@ -143,17 +143,22 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
     };
     console.log('1. apiService',this.apiService);
     console.log('2. apiMethod',this.apiMethod);
+    console.log('3. apiServiceParams',this.apiServiceParams);
+    console.log('4. form',this.form.value);
     for (const field of this.inputFields) {
       field.readonly = true;
     }
     if (this.inputFields.length > 0 && !this.form.valid) {
       this.showFormErrors();
+      this.resetFormState();
       return;
     }
       if (this.apiService && this.apiMethod) {
       this.handleApiCall();
     } else {
-      this.onSubmit.emit(this.form.value);
+      this.notificationService.error('Hubo un error al enviar el formulario');
+      return;
+      //this.onSubmit.emit(this.form.value);
     }
   }
 

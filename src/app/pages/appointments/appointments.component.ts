@@ -17,6 +17,7 @@ import { ROLES } from '../../shared/constants/roles.constants';
 import { ClientService } from '../../services/client.service';
 import { UserService } from '../../services/user.service';
 import { CaseService } from '../../services/case.service';
+import { APPOINTMENT_STATUS } from '../../shared/constants/appointment-status.contants';
 @Component({
   selector: 'app-appointments',
   standalone: true,
@@ -86,14 +87,13 @@ export class AppointmentsComponent implements OnInit {
         cellAlign: 'left',
         cellValue: (item: any) => {
           const date = new Date(item.start_datetime);
-          const options: Intl.DateTimeFormatOptions = { 
+          return date.toLocaleDateString('es-ES', { 
             day: 'numeric', 
             month: 'long',
             hour: 'numeric',
             minute: '2-digit',
             hour12: true 
-          };
-          return date.toLocaleDateString('es-ES', options);
+          });
         }
       },
       { 
@@ -249,21 +249,17 @@ export class AppointmentsComponent implements OnInit {
 
     this.form.get('client_id')?.valueChanges.subscribe(clientId => {
       if (clientId) {
-        // Find the case field in inputNewAppointmentFields
         const caseField = this.inputNewAppointmentFields.find(field => field.formControlName === 'case_id');
         if (caseField) {
           caseField.readonly = false;
           caseField.apiServiceParams = [{client_id: clientId}];
-          // Reset case_id when client changes
           this.form.get('case_id')?.setValue('');
         }
       } else {
-        // Find the case field in inputNewAppointmentFields
         const caseField = this.inputNewAppointmentFields.find(field => field.formControlName === 'case_id');
         if (caseField) {
           caseField.readonly = true;
           caseField.apiServiceParams = [];
-          // Reset case_id when client is cleared
           this.form.get('case_id')?.setValue('');
         }
       }
@@ -314,23 +310,18 @@ export class AppointmentsComponent implements OnInit {
     this.selectedAppointment = appointment;
     this.form.reset();
     
-    const startDate = new Date(appointment.start_datetime);
-    const formattedStartDate = startDate.toISOString().slice(0, 16);
-    
-    const [hours, minutes] = appointment.duration.split(':');
-    const formattedDuration = `${hours}:${minutes}`;
-    
     this.form.patchValue({
       id: appointment.id,
       responsible_id: appointment.responsible_id,
       client_id: appointment.client_id,
       case_id: appointment.case_id,
       subject: appointment.subject,
-      start_datetime: formattedStartDate,
-      duration: formattedDuration,
+      start_datetime: appointment.start_datetime,
+      duration: appointment.duration,
       status: appointment.status,
       result: appointment.result
     });
+
     this.inputEditFields = [
       { 
         label: 'Cliente', 
@@ -338,6 +329,7 @@ export class AppointmentsComponent implements OnInit {
         placeholder: 'Buscar cliente...', 
         formControlName: 'client_id', 
         required: true, 
+        readonly: true,
         apiService: this.clientService, 
         apiMethod: 'getClients', 
         apiServiceParams: [],
@@ -387,6 +379,7 @@ export class AppointmentsComponent implements OnInit {
       {label: 'Asunto', type: 'text', placeholder: 'Ingrese el asunto', formControlName: 'subject', required: true, nullable: false, variant: 'secondary', size: 'medium', width: 'full'},
       {label: 'Fecha y hora', type: 'datetime-local', placeholder: '', formControlName: 'start_datetime', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
       {label: 'Duración', type: 'time', placeholder: '', formControlName: 'duration', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%'},
+      {label: 'Estado', type: 'dropdown', placeholder: 'Seleccione el estado', formControlName: 'status', required: true, nullable: false, variant: 'secondary', size: 'medium', width: '50%', options: Object.values(APPOINTMENT_STATUS)},
     ];
     this.showEditModal = true;
   }

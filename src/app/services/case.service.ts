@@ -58,7 +58,6 @@ export class CaseService {
   }
 
   createCase(caseData: CreateCaseRequest): Observable<ApiResponse<CaseResponse>> {
-    console.log('Creating case with data:', caseData);
     return this.http.post<ApiResponse<CaseResponse>>(this.apiUrl, caseData, { headers: this.getHeaders() });
   }
 

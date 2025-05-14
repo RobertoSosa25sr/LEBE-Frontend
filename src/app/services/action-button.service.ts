@@ -38,8 +38,6 @@ export class ActionButtonService {
             return baseActions;
         }
 
-        console.log(`Menu item found for ${entityType}:`, menuItem);
-
         if (menuItem.actions.includes('update')) {
             baseActions.push({
                 icon: ActionType.UPDATE,
@@ -58,7 +56,6 @@ export class ActionButtonService {
             });
         }
 
-        console.log(`Actions for ${entityType}:`, baseActions);
         return baseActions;
     }
 } 

@@ -48,17 +48,11 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   searchResults: any[] = [];
 
   ngOnInit() {
-    console.log('InputFieldComponent initialized with:', {
-      type: this.type,
-      apiService: this.apiService,
-      apiMethod: this.apiMethod,
-      apiServiceParams: this.apiServiceParams
-    });
   }
 
   writeValue(value: any): void {
     if (this.type === 'dropdown-select') {
-      // Handle both single and multi-select dropdowns
+
       if (value === null || value === undefined) {
         this.value = [];
         this.selectedOption = [];
@@ -84,11 +78,9 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
       }
       this.selectedOption = this.value;
     } else if (this.type === 'search' && value) {
-      // For search type, if we have a selectedOption, use that as the display value
       if (this.selectedOption) {
         this.value = this.selectedOption;
       } else {
-        // If no selectedOption, try to fetch the display value
         if (this.apiService && this.apiMethod) {
           this.apiService[this.apiMethod](
             1,
@@ -137,7 +129,18 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
     
     if (this.type === 'datetime-local' && this.value) {
       const date = new Date(this.value);
-      this.onChange(date);
+      if (!isNaN(date.getTime())) {
+        // Format to YYYY-MM-DD HH:mm:ss
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        
+        const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        this.onChange(formattedDate);
+      }
     } else if (this.type === 'time' && this.value) {
       const [hours, minutes] = this.value.split(':');
       this.onChange(`${hours}:${minutes}:00`);
@@ -149,36 +152,22 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   }
 
   onSearch(searchTerm: string) {
-    console.log('InputField onSearch called with:', {
-      searchTerm,
-      apiService: this.apiService,
-      apiMethod: this.apiMethod,
-      apiServiceParams: this.apiServiceParams
-    });
     
     if (!this.apiService) {
-      console.error('API Service is not defined');
       return;
     }
 
     if (!this.apiMethod) {
-      console.error('API Method is not defined');
       return;
     }
 
     if (typeof this.apiService[this.apiMethod] !== 'function') {
-      console.error(`Method ${this.apiMethod} does not exist on the API Service`);
       return;
     }
 
     this.isDropdownOpen = true;
     
-    console.log('Calling service method with params:', {
-      page: 1,
-      limit: 10,
-      searchTerm,
-      serviceParams: this.apiServiceParams
-    });
+    
     
     this.apiService[this.apiMethod](
       1, 
@@ -187,7 +176,6 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
       this.apiServiceParams
     ).subscribe({
       next: (response: any) => {
-        console.log('API Response:', response);
         let data = response;
         
         if (response?.data?.data) {
@@ -200,21 +188,17 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
 
         if (Array.isArray(data)) {
           this.searchResults = data;
-          console.log('Search Results:', this.searchResults);
           
           if (this.fieldToShow) {
             this.options = this.searchResults.map(item => item[this.fieldToShow!]);
           } else {
             this.options = this.searchResults.map(item => item.full_name || item.email);
           }
-          console.log('Options:', this.options);
         } else {
-          console.warn('Unexpected API response structure:', response);
           this.options = [];
         }
       },
       error: (error: any) => {
-        console.error('API Error:', error);
         this.options = [];
       }
     });
@@ -237,27 +221,23 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
       this.onTouch();
       this.optionChange.emit(currentSelection);
       
-      // Update form control if it exists
       if (this.formControl) {
         this.formControl.setValue(currentSelection);
         this.formControl.markAsDirty();
         this.formControl.markAsTouched();
       }
     } else {
-      // Find the selected item from searchResults
       const selectedItem = this.searchResults.find(item => 
         item[this.fieldToShow || 'full_name'] === option
       );
       
       this.selectedOption = option;
-      // Use fieldToSend if provided, otherwise fallback to id or the option itself
       this.value = selectedItem ? (selectedItem[this.fieldToSend || 'id'] || selectedItem.id) : option;
       this.onChange(this.value);
       this.onTouch();
       this.optionChange.emit(this.value);
       this.isDropdownOpen = false;
       
-      // Update form control if it exists
       if (this.formControl) {
         this.formControl.setValue(this.value);
         this.formControl.markAsDirty();
@@ -269,7 +249,6 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   toggleDropdown(): void {
     if (!this.readonly) {
       this.isDropdownOpen = !this.isDropdownOpen;
-      // If opening dropdown and we have an API service, trigger initial search
       if (this.isDropdownOpen && this.apiService && this.apiMethod) {
         this.onSearch('');
       }
