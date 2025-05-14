@@ -1,4 +1,4 @@
-.users-container {
+.clients-container {
   padding: 2rem;
   height: 100%;
   display: flex;
@@ -6,13 +6,13 @@
   gap: 2rem;
 }
 
-.users-header {
+.clients-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.users-header h1 {
+.clients-header h1 {
   margin: 0;
   color: var(--color-text-primary);
   font-size: 1.5rem;
@@ -52,7 +52,7 @@
   font-size: 1.25rem;
 }
 
-.users-content {
+.clients-content {
   flex: 1;
   background-color: var(--color-background-light);
   border-radius: 0.5rem;
@@ -66,14 +66,14 @@ overflow:visible;
   flex-direction: column;
 }
 
-.users-table {
+.clients-table {
   width: 100%;
   border-collapse: collapse;
   background-color: var(--color-neutral-white);
   table-layout: fixed;
 }
 
-.users-table th {
+.clients-table th {
   background-color: var(--color-primary-base);
   font-weight: bold;
   color: var(--color-neutral-black);
@@ -87,11 +87,11 @@ overflow:visible;
   box-sizing: border-box;
 }
 
-.users-table th.actions-header {
+.clients-table th.actions-header {
   text-align: center;
 }
 
-.users-table td {
+.clients-table td {
   padding: 0.5rem;
   text-align: left;
   font-size: clamp(0.5rem, 0.3898rem + 0.678vw, 1rem);
@@ -100,12 +100,12 @@ overflow:visible;
   box-sizing: border-box;
 }
 
-.users-table td.actions-cell {
+.clients-table td.actions-cell {
   text-align: center;
   padding: 0;
 }
 
-.users-table td:last-child {
+.clients-table td:last-child {
   text-align: center;
 }
 
@@ -113,27 +113,27 @@ overflow:visible;
   font-size: clamp(0.75rem, 0.6123rem + 0.8475vw, 1.375rem);
 }
 
-.users-table tbody tr {
+.clients-table tbody tr {
   height: 2rem;
   display: table-row;
 }
 
-.users-table tbody tr:nth-child(odd) {
+.clients-table tbody tr:nth-child(odd) {
   background-color: var(--color-neutral-white);
 }
 
-.users-table tbody tr:nth-child(even) {
+.clients-table tbody tr:nth-child(even) {
   background-color: var(--color-primary-light);
 }
 
-.user-info {
+.client-info {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   height: 100%;
 }
 
-.user-avatar {
+.client-avatar {
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
@@ -281,7 +281,7 @@ overflow:visible;
 }
 
 @media (max-width: 480px) {
-  .user-avatar {
+  .client-avatar {
     display: none;
   }
 }
