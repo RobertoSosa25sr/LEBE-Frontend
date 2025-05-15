@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -81,7 +81,16 @@ export class AuthService {
     );
   }
 
+  private getHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+
   logout() {
+    let response=  this.http.post(`${this.apiUrl}/logout`, {}, {headers: this.getHeaders()});
     this.tokenSubject.next(null);
     this.currentUserSubject.next(null);
     this.menuItemsSubject.next([]);
@@ -91,6 +100,8 @@ export class AuthService {
     localStorage.removeItem('menuItems');
     localStorage.removeItem('selectedRole');
     localStorage.removeItem('currentUser');
+
+    return response;
   }
 
   getToken(): string | null {

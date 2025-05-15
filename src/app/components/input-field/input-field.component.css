@@ -152,29 +152,51 @@ input[type="time"] {
 
 
 .dropdown-selector {
-
   position: relative;
   border-radius: 0.3rem;
   width: 100%;
 }
 
-.dropdown-selector .options-container{
+.dropdown-selector .options-container {
   margin-top: 0.5rem;
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
   width: 100%;
+  max-height: calc(3 * 2.5rem); /* Height for 3 options (assuming each option is 2.5rem tall) */
+  overflow-y: auto;
+  background-color: var(--color-neutral-white);
+  border: 1px solid var(--color-neutral-gray-light);
+  border-radius: 0.3rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown-selector .dropdown-arrow{
   right: 1rem;
 }
 
-.dropdown-selector .option{
+.dropdown-selector .options-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dropdown-selector .options-container::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 2px;
+}
+
+.dropdown-selector .options-container::-webkit-scrollbar-thumb {
+  background-color: var(--color-accent-dark);
+  border-radius: 2px;
+}
+
+.dropdown-selector .option {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 .dropdown-selector-primary{

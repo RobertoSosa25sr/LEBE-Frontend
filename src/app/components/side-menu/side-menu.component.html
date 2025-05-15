@@ -41,6 +41,10 @@
   title="¿Estás seguro de que deseas cerrar sesión?"
   confirmLabel="Confirmar"
   cancelLabel="Cancelar"
-  (confirm)="onLogoutConfirm()"
+  [apiService]="authService"
+  apiMethod="logout"
+  successMessage="Cierre de sesión exitoso"
+  (success)="onLogoutSuccess($event)"
+  (error)="onLogoutError($event)"
   (cancel)="onLogoutCancel()">
 </app-modal> 

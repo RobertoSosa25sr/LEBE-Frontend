@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ModalComponent } from '../modal/modal.component';
+import { NotificationService } from '../../services/notification.service';
 
 interface MenuItem {
   icon: string;
@@ -27,8 +28,9 @@ export class SideMenuComponent implements OnInit {
   currentUser: any;
 
   constructor(
-    private authService: AuthService,
-    private router: Router
+    public authService: AuthService,
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -47,9 +49,13 @@ export class SideMenuComponent implements OnInit {
     this.showLogoutModal = true;
   }
 
-  onLogoutConfirm() {
-    this.authService.logout();
+  onLogoutSuccess(response: any) {
     this.showLogoutModal = false;
+    this.router.navigate(['/login']);
+  }
+
+  onLogoutError(error: any) {
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 
