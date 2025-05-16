@@ -53,8 +53,8 @@ export class CaseService {
     });
   }
 
-  getCase(id: number): Observable<ApiResponse<CaseResponse>> {
-    return this.http.get<ApiResponse<CaseResponse>>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+  getCase(id: string): Observable<CaseListResponse> {
+    return this.http.get<CaseListResponse>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
 
   createCase(caseData: CreateCaseRequest): Observable<ApiResponse<CaseResponse>> {

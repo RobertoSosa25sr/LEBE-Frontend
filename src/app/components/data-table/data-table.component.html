@@ -4,6 +4,7 @@
       <tr>
         <ng-container *ngFor="let column of config.columns">
           <th 
+            [class.truncate]="column.truncate"
             [class]="'header-' + (column.headerAlign || 'left') + ' ' + (column.headerClass || '')"
             [style.text-align]="column.headerAlign || 'left'">
             {{ column.label }}
@@ -26,7 +27,7 @@
       <tr *ngFor="let item of data" [class]="'row-' + getRowStyle(item)">
         <ng-container *ngFor="let column of config.columns">
           <td 
-            [class]="'cell-' + (column.cellAlign || 'left') + ' cell-' + getCellStyle(item, column)"
+            [class]="'cell-' + (column.cellAlign || 'left') + ' cell-' + getCellStyle(item, column) + (column.truncate ? ' truncate' : '')"
             [style.text-align]="column.cellAlign || 'left'">
             <ng-container *ngIf="column.showPhoto">
               <div class="user-info">

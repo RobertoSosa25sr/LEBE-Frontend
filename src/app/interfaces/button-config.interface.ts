@@ -8,7 +8,7 @@ export interface ButtonConfig<T = any> {
     routerLink?: string[];
     action?: (item: T | undefined) => void;
     type?: 'primary' | 'secondary' | 'outline';
-    backgroundColor?: 'purple' | 'green' | 'red' | '';
+    backgroundColor?: 'purple' | 'green' | 'red' | 'light-blue' | '';
     tooltip?: string;
     onlyIcon?: boolean;
 }

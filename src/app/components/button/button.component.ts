@@ -27,11 +27,11 @@ export class ButtonComponent<T = any> {
   @Output() action = new EventEmitter<void>();
 
   getIconClass(): string {
-    return ACTION_ICONS[this.buttonConfig.icon as ActionType] || 'fa-solid fa-question';
+    return ACTION_ICONS[this.buttonConfig.icon as ActionType] || (this.buttonConfig.icon? this.buttonConfig.icon : 'fa-solid fa-question');
   }
 
   getColorClass(): string {
-    return ACTION_COLORS[this.buttonConfig.icon as ActionType] || 'purple';
+    return ACTION_COLORS[this.buttonConfig.icon as ActionType] || (this.buttonConfig.backgroundColor? this.buttonConfig.backgroundColor : 'purple');
   }
 
   onClick() {

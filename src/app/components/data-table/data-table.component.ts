@@ -17,6 +17,8 @@ export interface ColumnConfig<T> {
   cellStyle?: (item: T) => CellStyle;
   cellValue?: (item: any) => string | number;
   headerClass?: string;
+  width?: string;
+  truncate?: boolean;
 }
 
 export interface TableConfig<T> {

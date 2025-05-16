@@ -1,5 +1,5 @@
 <div class="cases-container">
-  <div class="cases-header">
+  <div class="cases-header" *ngIf="!showAppointments">
     <div class="header-actions">
       <app-search-bar 
         placeholder="Buscar casos..."
@@ -8,6 +8,15 @@
       <app-button 
         [buttonConfig]="buttonNewCaseConfig"
         (click)="onNewCaseClick()">
+      </app-button>
+    </div>
+  </div>
+
+  <div class="cases-header" *ngIf="showAppointments">
+    <div class="header-actions">
+      <app-button 
+        [buttonConfig]="buttonBackConfig"
+        (click)="onBackClick()">
       </app-button>
     </div>
   </div>
@@ -21,6 +30,14 @@
         (pageChange)="onPageChange($event)"
         (search)="onSearch($event)"
         (action)="onTableAction($event)">
+      </app-data-table>
+    </div>
+
+    <div *ngIf="showAppointments && !isLoading" class="appointments-section">
+      <app-data-table
+        [data]="appointments"
+        [config]="appointmentsTableConfig"
+        (pageChange)="onPageChange($event)">
       </app-data-table>
     </div>
 

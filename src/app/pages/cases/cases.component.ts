@@ -17,6 +17,7 @@ import { ROLES } from '../../shared/constants/roles.constants';
 import { CASE_STATUS } from '../../shared/constants/case-status.constants';
 import { UserService } from '../../services/user.service';
 import { ClientService } from '../../services/client.service';
+import { Appointment } from '../../models/appointment.model';
 @Component({
   selector: 'app-cases',
   standalone: true,
@@ -33,9 +34,11 @@ import { ClientService } from '../../services/client.service';
 })
 export class CasesComponent implements OnInit {
   cases: Case[] = [];
+  appointments: Appointment[] = [];
   showDeleteModal = false;
   showEditModal = false;
   showNewCaseModal = false;
+  showAppointments = false;
   selectedCase: Case | null = null;
   isLoading = false;
   currentPage = 1;
@@ -57,6 +60,13 @@ export class CasesComponent implements OnInit {
     type: 'secondary'
   };
 
+  buttonBackConfig: ButtonConfig = {
+    size: 'medium',
+    backgroundColor: 'light-blue',
+    type: 'secondary',
+    icon: 'fa fa-arrow-left'
+  };
+
   tableConfig: TableConfig<Case> = {
     keyField: 'id',
     columns: [
@@ -64,7 +74,7 @@ export class CasesComponent implements OnInit {
         key: 'id',
         label: 'Caso',
         headerAlign: 'left',
-        cellAlign: 'left'
+        cellAlign: 'left',
       },
       { 
         key: 'manager_id',
@@ -100,6 +110,39 @@ export class CasesComponent implements OnInit {
     totalItems: 0,
     rowStyle: (item) => item.status.includes('admin') ? 'emphasis' : 'default'
   };
+
+  appointmentsTableConfig: TableConfig<Appointment> = {
+    keyField: 'id',
+    columns: [
+      {
+        key: 'result',
+        label: 'Resultado',
+        headerAlign: 'left',
+        cellAlign: 'left',
+      },
+      { 
+        key: 'start_datetime',
+        label: 'Fecha y hora',
+        headerAlign: 'left',
+        cellAlign: 'left',
+        cellValue: (item: any) => {
+          const date = new Date(item.start_datetime);
+          return date.toLocaleDateString('es-ES', { 
+            day: 'numeric', 
+            month: 'long',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true 
+          });
+        }
+      }
+    ],
+    showActions: false,
+    currentPage: 1,
+    pageSize: 10,
+    totalItems: 0
+  };
+
 
   constructor(
     public caseService: CaseService,
@@ -318,6 +361,46 @@ export class CasesComponent implements OnInit {
     this.form.reset();
   }
 
+  onViewClick(caseData: Case) {
+    this.isLoading = true;
+    this.selectedCase = caseData;
+    this.actionButtons = this.actionButtons.map(button => ({
+      ...button,
+      disabled: true
+    }));
+    this.caseService.getCase(caseData.id)
+      .subscribe({
+        next: (response) => {
+          if (response.cases && response.cases.length > 0) {
+            this.cases = response.cases;
+            const selectedCase = response.cases[0];
+            this.appointments = selectedCase.appointments as Appointment[];
+            
+            this.total = response.pagination.total;
+            this.currentPage = response.pagination.current_page;
+            this.lastPage = response.pagination.last_page;
+            this.from = response.pagination.from;
+            this.to = response.pagination.to;
+            this.showAppointments = true;
+            
+            this.appointmentsTableConfig = {
+              ...this.appointmentsTableConfig,
+              currentPage: this.currentPage,
+              pageSize: this.perPage,
+              totalItems: this.total
+            };
+          }
+          
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.notificationService.error('Error al cargar el caso');
+          this.isLoading = false;
+        }
+      });
+  }
+  
+
   onTableAction(event: { type: string; item: Case }) {
     switch(event.type) {
       case ActionType.DELETE:
@@ -326,7 +409,20 @@ export class CasesComponent implements OnInit {
       case ActionType.UPDATE:
         this.onEditClick(event.item);
         break;
+      case ActionType.READ:
+        this.onViewClick(event.item);
+        break;
     }
+  }
+
+  onBackClick() {
+    this.showAppointments = false;
+    this.selectedCase = null;
+    this.actionButtons = this.actionButtons.map(button => ({
+      ...button,
+      disabled: false
+    }));
+    this.loadCases();
   }
 
 } 

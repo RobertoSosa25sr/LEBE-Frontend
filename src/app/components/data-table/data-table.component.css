@@ -3,13 +3,12 @@
   background-color: var(--color-neutral-white);
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
 .data-table th,
@@ -19,6 +18,13 @@
   font-size: clamp(0.5rem, 0.3898rem + 0.678vw, 1rem);
   vertical-align: middle;
   box-sizing: border-box;
+}
+
+.data-table td.truncate {
+  overflow: hidden;
+  max-width: 10rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .data-table th {
@@ -95,7 +101,6 @@
 
 .actions-header {
   text-align: center !important;
-  width: 5rem;
 }
 
 .data-table th.actions-header {
@@ -216,3 +221,6 @@
   color: var(--color-primary-light);
 } 
 
+.data-table th, .data-table td {
+
+}

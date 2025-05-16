@@ -1,3 +1,4 @@
+import { Appointment } from "./appointment.model";
 import { Client } from "./client.model";
 import { User } from "./user.model";
 export interface Case {
@@ -9,7 +10,8 @@ export interface Case {
   updated_at: string;
   client: Client;
   manager: User;
-  }
+  appointments?: Appointment[];
+}
 
 export interface CaseListResponse {
   cases: Case[];

@@ -23,6 +23,7 @@
   display: flex;
   gap: 1rem;
   align-items: center;
+  justify-content: right;
 }
 
 .search-container {
@@ -57,7 +58,6 @@
   background-color: var(--color-background-light);
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow:hidden;
 }
 
 .table-container {
@@ -285,4 +285,11 @@
     display: none;
   }
 }
+
+.appointments-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e0e0e0;
+}
+
 

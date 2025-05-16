@@ -65,7 +65,7 @@ export class AppointmentsComponent implements OnInit {
         key: 'ticket_number',
         label: '#',
         headerAlign: 'left',
-        cellAlign: 'left'
+        cellAlign: 'left',
       },
       {
         key: 'responsible_id',
@@ -87,14 +87,41 @@ export class AppointmentsComponent implements OnInit {
         cellAlign: 'left',
         cellValue: (item: any) => {
           const date = new Date(item.start_datetime);
-          return date.toLocaleDateString('es-ES', { 
-            day: 'numeric', 
-            month: 'long',
+          const today = new Date();
+          const tomorrow = new Date(today);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          const yesterday = new Date(today);
+          yesterday.setDate(yesterday.getDate() - 1);
+          
+          // Reset time part for date comparison
+          const dateWithoutTime = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+          const todayWithoutTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+          const tomorrowWithoutTime = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
+          const yesterdayWithoutTime = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
+          
+          let dateStr = '';
+          if (dateWithoutTime.getTime() === todayWithoutTime.getTime()) {
+            dateStr = 'Hoy';
+          } else if (dateWithoutTime.getTime() === tomorrowWithoutTime.getTime()) {
+            dateStr = 'Mañana';
+          } else if (dateWithoutTime.getTime() === yesterdayWithoutTime.getTime()) {
+            dateStr = 'Ayer';
+          } else {
+            dateStr = date.toLocaleDateString('es-ES', { 
+              day: 'numeric', 
+              month: 'long'
+            });
+          }
+          
+          // Add time
+          const timeStr = date.toLocaleTimeString('es-ES', {
             hour: 'numeric',
             minute: '2-digit',
-            hour12: true 
+            hour12: false
           });
-        }
+          
+          return `${dateStr}, ${timeStr}`;
+        },
       },
       { 
         key: 'client_id',
@@ -107,13 +134,14 @@ export class AppointmentsComponent implements OnInit {
         key: 'case_id', 
         label: 'Caso',
         headerAlign: 'left',
-        cellAlign: 'left'
+        cellAlign: 'left',
       },
       {
         key: 'result',
         label: 'Resultado',
         headerAlign: 'left',
         cellAlign: 'left',
+        truncate: true
       }
     ],
     showActions: true,

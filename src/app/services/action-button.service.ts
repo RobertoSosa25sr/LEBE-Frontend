@@ -34,7 +34,6 @@ export class ActionButtonService {
         });
 
         if (!menuItem) {
-            console.warn(`No menu item found for ${entityType}`);
             return baseActions;
         }
 
@@ -56,6 +55,14 @@ export class ActionButtonService {
             });
         }
 
+        if (menuItem.actions.includes('read')) {
+            baseActions.push({
+                icon: ActionType.READ,
+                tooltip: `Ver ${entityType}`,
+                type: 'outline',
+                size: 'small'
+            });
+        }
         return baseActions;
     }
 } 
