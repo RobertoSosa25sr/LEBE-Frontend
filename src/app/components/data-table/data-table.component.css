@@ -15,11 +15,17 @@
 .data-table td {
   padding: 0.75rem 1rem;
   text-align: left;
-  font-size: clamp(0.5rem, 0.3898rem + 0.678vw, 1rem);
   vertical-align: middle;
   box-sizing: border-box;
 }
 
+.data-table th {
+  font-size: clamp(0.625rem, 0.5rem + 0.5556vw, 1rem);
+}
+
+.data-table td {
+  font-size: clamp(0.5rem, 0.375rem + 0.5556vw, 0.875rem);
+}
 .data-table td.truncate {
   overflow: hidden;
   max-width: 10rem;
@@ -32,13 +38,12 @@
   font-weight: bold;
   color: var(--color-neutral-white);
   text-transform: uppercase;
-  font-size: clamp(0.625rem, 0.4583rem + 0.7407vw, 1.125rem);
   letter-spacing: 0.05em;
-  height: 3.5rem;
+  height: 2rem;
 }
 
 .data-table tbody tr {
-  height: 2.5rem;
+  height: 2rem;
 }
 
 .data-table tbody tr:nth-child(odd) {
@@ -114,8 +119,8 @@
 
 .actions {
   display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.1rem;
   justify-content: center;
   align-items: center;
   height: 100%;
@@ -220,7 +225,3 @@
   font-size: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);
   color: var(--color-primary-light);
 } 
-
-.data-table th, .data-table td {
-
-}
