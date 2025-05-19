@@ -1,0 +1,32 @@
+<div class="filter-bar" [formGroup]="form">
+    <div class="filters-container">
+        <div class="filter-item" *ngFor="let filter of filterConfig">
+            <app-input-field [type]="filter.type" [placeholder]="filter.placeholder" [label]="filter.label"
+                [formControlName]="getFieldValue(filter)" [variant]="filter.variant" [size]="filter.size"
+                [options]="filter.options" [selectedOption]="filter.selectedOption"
+                [readonly]="getFilterReadonly(filter)" [required]="getFilterRequired(filter)"
+                [nullable]="getFilterNullable(filter)" [showAllOption]="getFilterShowAllOption(filter)"
+                [width]="filter.width" [apiService]="filter.apiService" [apiMethod]="filter.apiMethod"
+                [apiServiceParams]="filter.apiServiceParams" [fieldToShow]="filter.fieldToShow"
+                [fieldToSend]="filter.fieldToSend" [showSelectedOptions]="filter.showSelectedOptions ?? true"
+                [responseDataKey]="filter.responseDataKey || responseDataKey"></app-input-field>
+        </div>
+        <div class="filter-item date-filter" *ngIf="dateFilter">
+            <div class="date-picker">
+                <i class="fas fa-calendar"></i>
+                <input type="date" [(ngModel)]="selectedDate" (change)="onDateSelected()" [ngModelOptions]="{standalone: true}">
+            </div>
+            <button class="date-nav-btn" (click)="navigateDate('left')" [disabled]="isLeftArrowDisabled()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="date-display">
+                <span>{{ currentDateOption }}</span>
+            </div>
+            <button class="date-nav-btn" (click)="navigateDate('right')" [disabled]="isRightArrowDisabled()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+    <app-search-bar type="primary" size="medium" placeholder="Buscar usuarios..." (search)="onSearch($event)">
+    </app-search-bar>
+</div>

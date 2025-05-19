@@ -25,7 +25,7 @@ export class CaseService {
     });
   }
 
-  getCases(page: number = 1, limit: number = 10, search: string = "", serviceParams?: any[]): Observable<CaseListResponse> {
+  getCases(page: number = 1, limit: number = 10, search: string = "", serviceParams?: any[]): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', limit.toString());
@@ -47,8 +47,9 @@ export class CaseService {
         });
       });
     }
-    return this.http.get<CaseListResponse>(this.apiUrl, { 
-      headers: this.getHeaders(), 
+
+    return this.http.get<any>(this.apiUrl, { 
+      headers: this.getHeaders(),
       params
     });
   }

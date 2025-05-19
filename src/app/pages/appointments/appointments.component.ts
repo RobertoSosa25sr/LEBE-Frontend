@@ -5,6 +5,7 @@ import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
+import { FilterBarComponent } from '../../components/filter-bar/filter-bar.component';
 import { Appointment } from '../../models/appointment.model';
 import { AppointmentService } from '../../services/appointments.service';
 import { ActionButtonService } from '../../services/action-button.service';
@@ -27,7 +28,7 @@ import { APPOINTMENT_STATUS } from '../../shared/constants/appointment-status.co
     ButtonComponent, 
     ModalComponent,
     DataTableComponent,
-    SearchBarComponent
+    FilterBarComponent
   ],
   templateUrl: './appointments.component.html',
   styleUrls: ['./appointments.component.css']
@@ -50,6 +51,8 @@ export class AppointmentsComponent implements OnInit {
   inputEditFields: InputFieldConfig[] = [];
   inputNewAppointmentFields: InputFieldConfig[] = [];
   form: FormGroup;
+  filterConfig: InputFieldConfig[] = [];
+  filterParams: any = {};
 
   buttonNewAppointmentConfig: ButtonConfig = {
     label: 'Nuevo',
@@ -173,13 +176,30 @@ export class AppointmentsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.filterParams = {
+      status: [],
+      date_range: 'Hoy'
+    };
+    
     this.loadAppointments();
     this.actionButtons = this.actionButtonService.getTableActions('appointment');
+    this.filterConfig = [
+      {
+        showSelectedOptions: false,
+        showAllOption: true,
+        type: 'dropdown-select',
+        placeholder: 'Estado',
+        formControlName: 'status',
+        options: Object.values(APPOINTMENT_STATUS),
+        variant: 'tertiary',
+        size: 'medium'
+      }
+    ];
   }
 
   loadAppointments() {
     this.isLoading = true;
-    this.appointmentService.getAppointments(this.currentPage, this.perPage, this.searchTerm)
+    this.appointmentService.getAppointments(this.currentPage, this.perPage, this.searchTerm, [this.filterParams])
       .subscribe({
         next: (response) => {
           this.appointments = response.appointments || [];
@@ -436,6 +456,20 @@ export class AppointmentsComponent implements OnInit {
         this.onDeleteClick(event.item);
         break;
     }
+  }
+
+  onFilterChange(filters: any) {
+    // Ensure filters is an object
+    const safeFilters = filters || {};
+    
+    // Handle both status and date filters
+    this.filterParams = {
+      status: safeFilters.status || [],
+      date_range: safeFilters.dateFilter || 'Hoy' // Use 'Hoy' as default if no date filter is selected
+    };
+    
+    this.currentPage = 1;
+    this.loadAppointments();
   }
 
 } 

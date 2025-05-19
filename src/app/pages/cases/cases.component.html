@@ -1,10 +1,11 @@
 <div class="cases-container">
   <div class="cases-header" *ngIf="!showAppointments">
     <div class="header-actions">
-      <app-search-bar 
-        placeholder="Buscar casos..."
-        (search)="onSearch($event)">
-      </app-search-bar>
+      <app-filter-bar 
+        (search)="onSearch($event)" 
+        (filterChange)="onFilterChange($event)"
+        [filterConfig]="filterConfig">
+      </app-filter-bar>
       <app-button 
         [buttonConfig]="buttonNewCaseConfig"
         (click)="onNewCaseClick()">

@@ -12,6 +12,7 @@ export interface InputFieldConfig {
     pattern?: string;
     selectedOption?: string | string[];
     nullable?: boolean;
+    showAllOption?: boolean;
     width?: 'full' | '50%';
     apiService?: any;
     apiMethod?: string;
@@ -19,4 +20,5 @@ export interface InputFieldConfig {
     responseDataKey?: string;
     fieldToShow?: string;
     fieldToSend?: string;
+    showSelectedOptions?: boolean;
 } 

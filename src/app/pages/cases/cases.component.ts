@@ -5,6 +5,7 @@ import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
+import { FilterBarComponent } from '../../components/filter-bar/filter-bar.component';
 import { Case } from '../../models/case.model';
 import { CaseService } from '../../services/case.service';
 import { ActionButtonService } from '../../services/action-button.service';
@@ -28,6 +29,7 @@ import { Appointment } from '../../models/appointment.model';
     ModalComponent,
     DataTableComponent,
     SearchBarComponent,
+    FilterBarComponent
   ],
   templateUrl: './cases.component.html',
   styleUrls: ['./cases.component.css']
@@ -52,6 +54,8 @@ export class CasesComponent implements OnInit {
   inputEditFields: InputFieldConfig[] = [];
   inputNewCaseFields: InputFieldConfig[] = [];
   form: FormGroup;
+  filterConfig: InputFieldConfig[] = [];
+  filterParams: any = {};
 
   buttonNewCaseConfig: ButtonConfig = {
     label: 'Nuevo',
@@ -162,19 +166,37 @@ export class CasesComponent implements OnInit {
   ngOnInit(): void {
     this.loadCases();
     this.actionButtons = this.actionButtonService.getTableActions('case');
+    this.filterConfig = [
+      {
+        showSelectedOptions: false,
+        showAllOption: true,
+        type: 'dropdown-select',
+        placeholder: 'Estado',
+        formControlName: 'status',
+        options: Object.values(CASE_STATUS),
+        variant: 'tertiary',
+        size: 'medium'
+      }
+    ];
+  }
+
+  onFilterChange(filters: any) {
+    this.filterParams = filters;
+    this.currentPage = 1;
+    this.loadCases();
   }
 
   loadCases() {
     this.isLoading = true;
-    this.caseService.getCases(this.currentPage, this.perPage, this.searchTerm)
+    this.caseService.getCases(this.currentPage, this.perPage, this.searchTerm, [this.filterParams])
       .subscribe({
         next: (response) => {
-          this.cases = response.cases || [];
-          this.total = response.pagination.total || 0;
-          this.currentPage = response.pagination.current_page || 1;
-          this.lastPage = response.pagination.last_page || 1;
-          this.from = response.pagination.from || 0;
-          this.to = response.pagination.to || 0;
+          this.cases = response.cases;
+          this.total = response.pagination.total;
+          this.currentPage = response.pagination.current_page;
+          this.lastPage = response.pagination.last_page;
+          this.from = response.pagination.from;
+          this.to = response.pagination.to;
           
           this.tableConfig = {
             ...this.tableConfig,

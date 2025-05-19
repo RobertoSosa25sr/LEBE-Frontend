@@ -27,20 +27,20 @@
     [class.dropdown-selector-secondary]="variant === 'secondary'"
     [class.dropdown-selector-tertiary]="variant === 'tertiary'" [class.dropdown-selector-small]="size === 'small'"
     [class.dropdown-selector-medium]="size === 'medium'" [class.dropdown-selector-large]="size === 'large'">
-    <div class="dropdown-button" (click)="toggleDropdown()" [class.dropdown-button-open]="isDropdownOpen">
+    <div class="dropdown-button" (click)="toggleDropdown()" [class.dropdown-button-open]="isDropdownOpen" [class.has-selection]="selectedOption && selectedOption.length > 0">
       <span class="selected-option">{{ getSelectedOption() }}</span>
       <span *ngIf="type !== 'search'" class="dropdown-arrow">▼</span>
       <span *ngIf="type === 'search'" class="material-icons search-icon">search</span>
     </div>
 
     <div class="options-container" *ngIf="isDropdownOpen && !readonly" (mouseleave)="isDropdownOpen = false">
-      <div class="search-bar-container">
-        <app-search-bar *ngIf="type === 'search'" type="secondary" size="medium" [placeholder]="placeholder || 'Buscar...'" (search)="onSearch($event)"></app-search-bar>
+      <div *ngIf="type === 'search'" class="search-bar-container">
+        <app-search-bar type="secondary" size="medium" [placeholder]="placeholder || 'Buscar...'" (search)="onSearch($event)"></app-search-bar>
       </div>
       <div *ngIf="options && options.length > 0">
         <div class="option" *ngFor="let option of options" (click)="onOptionChange(option)"
           [class.selected]="isOptionSelected(option)">
-          {{ option }}
+          <span class="option-text">{{ option }}</span>
           <input type="checkbox" *ngIf="type === 'dropdown-select' || type === 'search-select'"
             [checked]="isOptionSelected(option)">
         </div>

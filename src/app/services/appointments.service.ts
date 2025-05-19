@@ -25,7 +25,7 @@ export class AppointmentService {
     });
   }
 
-  getAppointments(page: number = 1, limit: number = 10, search: string = "", serviceParams?: any[]): Observable<AppointmentListResponse> {
+  getAppointments(page: number = 1, limit: number = 10, search: string = "", serviceParams?: any[]): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', limit.toString());
@@ -47,7 +47,7 @@ export class AppointmentService {
         });
       });
     }
-    return this.http.get<AppointmentListResponse>(this.apiUrl, { 
+    return this.http.get<any>(this.apiUrl, { 
       headers: this.getHeaders(),
       params
     });

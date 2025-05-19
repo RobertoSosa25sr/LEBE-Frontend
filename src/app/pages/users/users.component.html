@@ -1,10 +1,11 @@
 <div class="users-container">
   <div class="users-header">
     <div class="header-actions">
-      <app-search-bar 
-        placeholder="Buscar usuarios..."
-        (search)="onSearch($event)">
-      </app-search-bar>
+      <app-filter-bar 
+        (search)="onSearch($event)" 
+        (filterChange)="onFilterChange($event)"
+        [filterConfig]="filterConfig">
+      </app-filter-bar>
       <app-button 
         [buttonConfig]="buttonNewUserConfig"
         (click)="onNewUserClick()">

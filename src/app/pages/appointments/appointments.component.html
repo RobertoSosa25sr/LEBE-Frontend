@@ -1,10 +1,12 @@
 <div class="appointments-container">
   <div class="appointments-header">
     <div class="header-actions">
-      <app-search-bar 
-        placeholder="Buscar citas..."
-        (search)="onSearch($event)">
-      </app-search-bar>
+      <app-filter-bar 
+        (search)="onSearch($event)" 
+        (filterChange)="onFilterChange($event)"
+        [filterConfig]="filterConfig"
+        [dateFilter] = "true">
+      </app-filter-bar>
       <app-button 
         [buttonConfig]="buttonNewAppointmentConfig"
         (click)="onNewAppointmentClick()">
@@ -19,7 +21,6 @@
         [config]="tableConfig"
         [actionButtons]="actionButtons"
         (pageChange)="onPageChange($event)"
-        (search)="onSearch($event)"
         (action)="onTableAction($event)">
       </app-data-table>
     </div>

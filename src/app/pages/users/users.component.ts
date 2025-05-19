@@ -14,6 +14,7 @@ import { ActionType } from '../../shared/constants/action-types.constants';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NotificationService } from '../../services/notification.service';
 import { ROLES } from '../../shared/constants/roles.constants';
+import { FilterBarComponent } from '../../components/filter-bar/filter-bar.component';
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -23,7 +24,7 @@ import { ROLES } from '../../shared/constants/roles.constants';
     ButtonComponent, 
     ModalComponent,
     DataTableComponent,
-    SearchBarComponent
+    FilterBarComponent
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
@@ -45,7 +46,9 @@ export class UsersComponent implements OnInit {
   actionButtons: ButtonConfig[] = [];
   inputEditFields: InputFieldConfig[] = [];
   inputNewUserFields: InputFieldConfig[] = [];
+  filterConfig: InputFieldConfig[] = [];
   form: FormGroup;
+  filterParams: any = {};
 
   buttonNewUserConfig: ButtonConfig = {
     label: 'Nuevo',
@@ -105,11 +108,29 @@ export class UsersComponent implements OnInit {
   ngOnInit(): void {
     this.loadUsers();
     this.actionButtons = this.actionButtonService.getTableActions('user');
+    this.filterConfig = [
+      {
+        showSelectedOptions: false,
+        showAllOption: true,
+        type: 'dropdown-select',
+        placeholder: 'Rol',
+        formControlName: 'roles',
+        options: ['Sin acceso', ...Object.values(ROLES)],
+        variant: 'tertiary',
+        size: 'medium'
+      }
+    ];
+  }
+
+  onFilterChange(filters: any) {
+    this.filterParams = filters;
+    this.currentPage = 1;
+    this.loadUsers();
   }
 
   loadUsers() {
     this.isLoading = true;
-    this.userService.getUsers(this.currentPage, this.perPage, this.searchTerm)
+    this.userService.getUsers(this.currentPage, this.perPage, this.searchTerm, [this.filterParams])
       .subscribe({
         next: (response) => {
           this.users = response.users;

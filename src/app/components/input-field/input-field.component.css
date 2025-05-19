@@ -157,6 +157,10 @@ input[type="time"] {
   width: 100%;
 }
 
+.dropdown-selector .dropdown-button .dropdown-arrow{
+  margin-left: 0.5rem;
+}
+
 .dropdown-selector .options-container {
   margin-top: 0.5rem;
   position: absolute;
@@ -368,6 +372,103 @@ input[type="time"] {
   justify-content: center;
   align-items: center;
 }
+
+
+
+
+.dropdown-selector-tertiary {
+  width: 100%;
+  max-width: 100%;
+}
+
+.dropdown-selector-tertiary .dropdown-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-neutral-black);
+  font-weight: normal;
+}
+
+.dropdown-selector-tertiary .dropdown-button:hover {
+  color: var(--color-primary-dark);
+}
+
+.dropdown-selector-tertiary .dropdown-button .selected-option {
+  color: var(--color-neutral-black);
+}
+
+.dropdown-selector-tertiary .dropdown-button.has-selection .selected-option {
+  color: var(--color-primary-dark);
+}
+
+.dropdown-selector-tertiary .options-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 10rem;
+  max-width: 10rem;
+  background-color: var(--color-primary-light);
+  border: none;
+  border-radius: 0.3rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  margin-top: 0.5rem;
+}
+
+.dropdown-selector-tertiary .option {
+  padding: 0.5rem;
+  color: var(--color-neutral-black);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dropdown-selector-tertiary .option-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+  max-width: calc(100% - 2rem);
+  font-size: clamp(0.5rem, 0.4167rem + 0.3704vw, 0.75rem);
+}
+
+.dropdown-selector-tertiary .option input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+}
+
+.dropdown-selector-tertiary .option input[type="checkbox"] {
+  accent-color: var(--color-primary-dark);
+}
+
+.dropdown-selector-tertiary .option:hover {
+  background-color: var(--color-neutral-white);
+  color: var(--color-primary-dark);
+}
+
+.dropdown-selector-tertiary .selected-option {
+  font-size: clamp(0.625rem, 0.5417rem + 0.3704vw, 0.875rem);
+}
+
+.dropdown-selector-tertiary .options-container::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary-dark);
+  border-radius: 2px;
+}
+
+
+
+
+
 
 .dropdown-selector-medium .dropdown-button{
   padding: 0.5rem;

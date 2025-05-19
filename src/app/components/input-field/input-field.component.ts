@@ -34,13 +34,15 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   @Input() selectedOption?: string | string[] = '';
   @Input() formControlName: string = '';
   @Input() nullable: boolean = false;
+  @Input() showAllOption: boolean = false;
   @Input() formControl?: FormControl;
   @Input() apiService?: any;
   @Input() apiMethod?: string = '';
   @Input() apiServiceParams?: any[] = [];
   @Input() fieldToShow?: string = '';
   @Input() fieldToSend?: string = '';
-  @Input() responseDataKey: string = ''; 
+  @Input() responseDataKey: string = '';
+  @Input() showSelectedOptions: boolean = true;
   @Output() optionChange = new EventEmitter<string | string[]>();
   onChange: any = () => {};
   onTouch: any = () => {};
@@ -48,14 +50,23 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   searchResults: any[] = [];
 
   ngOnInit() {
+    if (this.options && this.showAllOption) {
+      this.options = ['Todos', ...this.options];
+      this.selectedOption = ['Todos'];
+      this.value = [];
+      this.onChange(this.value);
+      
+      if (this.formControl) {
+        this.formControl.setValue([]);
+      }
+    }
   }
 
   writeValue(value: any): void {
     if (this.type === 'dropdown-select') {
-
-      if (value === null || value === undefined) {
+      if (this.showAllOption && (!value || (Array.isArray(value) && value.length === 0))) {
         this.value = [];
-        this.selectedOption = [];
+        this.selectedOption = ['Todos'];
       } else {
         this.value = Array.isArray(value) ? value : [value].filter(Boolean);
         this.selectedOption = this.value;
@@ -205,22 +216,33 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   onOptionChange(option: string): void {
     if (this.type === 'dropdown-select') {
       let currentSelection = Array.isArray(this.selectedOption) ? [...this.selectedOption] : [];
-      const index = currentSelection.indexOf(option);
       
-      if (index === -1) {
-        currentSelection.push(option);
+      if (option === 'Todos') {
+        // If "Todos" is selected, clear all other selections
+        currentSelection = ['Todos'];
       } else {
-        currentSelection.splice(index, 1);
+        // If a regular option is selected, remove "Todos" if present
+        currentSelection = currentSelection.filter(opt => opt !== 'Todos');
+        
+        const index = currentSelection.indexOf(option);
+        if (index === -1) {
+          currentSelection.push(option);
+        } else {
+          currentSelection.splice(index, 1);
+        }
       }
       
+      // If "Todos" is selected, don't send any value
+      const valueToSend = currentSelection.includes('Todos') ? [] : currentSelection;
+      
       this.selectedOption = currentSelection;
-      this.value = currentSelection;
-      this.onChange(currentSelection);
+      this.value = valueToSend;
+      this.onChange(valueToSend);
       this.onTouch();
-      this.optionChange.emit(currentSelection);
+      this.optionChange.emit(valueToSend);
       
       if (this.formControl) {
-        this.formControl.setValue(currentSelection);
+        this.formControl.setValue(valueToSend);
         this.formControl.markAsDirty();
         this.formControl.markAsTouched();
       }
@@ -254,6 +276,10 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   }
 
   getSelectedOption(): string {
+    if (!this.showSelectedOptions) {
+      return this.label || this.placeholder || '';
+    }
+    
     if (this.type === 'dropdown-select' && Array.isArray(this.selectedOption)) {
       return this.selectedOption.length > 0 ? this.selectedOption.join(', ') : (this.placeholder || 'Select an option');
     }
