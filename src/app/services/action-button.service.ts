@@ -14,7 +14,6 @@ export class ActionButtonService {
         const menuItems = this.authService.getMenuItems();
         
         if (!menuItems || menuItems.length === 0) {
-            console.warn('No menu items found');
             return baseActions;
         }
 

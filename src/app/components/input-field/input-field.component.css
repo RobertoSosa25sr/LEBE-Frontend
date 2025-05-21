@@ -9,7 +9,6 @@
   box-sizing: border-box;
 }
 
-/* Text area specific styles */
 .input-field.text-area {
   text-align: left;
   resize: vertical;

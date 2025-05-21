@@ -141,10 +141,6 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
       ...this.cancelButtonConfig,
       disabled: true
     };
-    console.log('1. apiService',this.apiService);
-    console.log('2. apiMethod',this.apiMethod);
-    console.log('3. apiServiceParams',this.apiServiceParams);
-    console.log('4. form',this.form.value);
     for (const field of this.inputFields) {
       field.readonly = true;
     }
@@ -158,7 +154,6 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
     } else {
       this.notificationService.error('Hubo un error al enviar el formulario');
       return;
-      //this.onSubmit.emit(this.form.value);
     }
   }
 

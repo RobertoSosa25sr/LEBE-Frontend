@@ -54,7 +54,6 @@ export class AppointmentService {
   }
 
   createAppointment(appointment: CreateAppointmentRequest): Observable<ApiResponse<AppointmentResponse>> {
-    console.log('appointment', appointment);
     return this.http.post<ApiResponse<AppointmentResponse>>(this.apiUrl, appointment, { headers: this.getHeaders() });
   }
 

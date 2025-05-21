@@ -103,10 +103,8 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
               let data = response;
               if (response?.[this.responseDataKey]) {
                 data = response[this.responseDataKey];
-                console.log('data from responseDataKey',data);
               }  if (response?.data) {
                 data = response.data;
-                console.log('data from data',data);
               } 
 
               if (Array.isArray(data)) {
