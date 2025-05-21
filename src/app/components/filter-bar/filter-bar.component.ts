@@ -18,6 +18,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   @Input() filterConfig: InputFieldConfig[] = [];
   @Input() responseDataKey: string = '';
   @Input() dateFilter: boolean = false;
+  @Input() placeholder: string = 'Buscar...';
   @Output() search = new EventEmitter<string>();
   @Output() filterChange = new EventEmitter<any>();
   form: FormGroup;

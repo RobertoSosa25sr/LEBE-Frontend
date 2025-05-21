@@ -4,7 +4,8 @@
       <app-filter-bar 
         (search)="onSearch($event)" 
         (filterChange)="onFilterChange($event)"
-        [filterConfig]="filterConfig">
+        [filterConfig]="filterConfig"
+        placeholder = "Buscar casos...">
       </app-filter-bar>
       <app-button 
         [buttonConfig]="buttonNewCaseConfig"

@@ -27,6 +27,6 @@
             </button>
         </div>
     </div>
-    <app-search-bar type="primary" size="medium" placeholder="Buscar usuarios..." (search)="onSearch($event)">
+    <app-search-bar type="primary" size="medium" [placeholder]="placeholder" (search)="onSearch($event)">
     </app-search-bar>
 </div>
