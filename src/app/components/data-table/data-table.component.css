@@ -224,4 +224,30 @@
 .no-data-message i {
   font-size: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);
   color: var(--color-primary-light);
+}
+
+.stat-icon {
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.stat-icon.info {
+  color: var(--color-status-info) !important;
+}
+
+.stat-icon.danger {
+  color: var(--color-status-danger) !important;
+}
+
+.stat-icon.success {
+  color: var(--color-status-success) !important;
+}
+
+.stat-icon.warning {
+  color: var(--color-status-warning) !important;
+}
+
+.stat-icon.attention {
+  color: var(--color-accent-light) !important;
 } 
+

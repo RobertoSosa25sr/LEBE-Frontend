@@ -69,6 +69,21 @@ export class AppointmentsComponent implements OnInit {
         label: '#',
         headerAlign: 'left',
         cellAlign: 'left',
+        showIcon: true,
+        iconStyle: (item: any) => {
+          switch(item.status) {
+            case APPOINTMENT_STATUS.PENDING:
+              return 'info';
+            case APPOINTMENT_STATUS.CANCELLED:
+              return 'danger';
+            case APPOINTMENT_STATUS.RESCHEDULED:
+              return 'warning';
+            case APPOINTMENT_STATUS.COMPLETED:
+              return 'success';
+            default:
+              return 'attention';
+          }
+        }
       },
       {
         key: 'responsible_id',
@@ -178,7 +193,7 @@ export class AppointmentsComponent implements OnInit {
   ngOnInit(): void {
     this.filterParams = {
       status: [],
-      date_range: 'Hoy'
+      date_range: 'Todos'
     };
     
     this.loadAppointments();
@@ -465,7 +480,7 @@ export class AppointmentsComponent implements OnInit {
     // Handle both status and date filters
     this.filterParams = {
       status: safeFilters.status || [],
-      date_range: safeFilters.dateFilter || 'Hoy' // Use 'Hoy' as default if no date filter is selected
+      date_range: safeFilters.dateFilter || 'Todos' // Use 'Hoy' as default if no date filter is selected
     };
     
     this.currentPage = 1;

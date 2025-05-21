@@ -6,6 +6,7 @@ import { ButtonComponent } from '../button/button.component';
 export type TextAlignment = 'left' | 'center' | 'right';
 export type RowStyle = 'default' | 'disabled' | 'emphasis' | 'warning' | 'success';
 export type CellStyle = 'default' | 'disabled' | 'emphasis' | 'warning' | 'success';
+export type IconStyle = 'info' | 'danger' | 'success' | 'warning' | 'attention';
 
 export interface ColumnConfig<T> {
   key: keyof T | string;
@@ -19,6 +20,8 @@ export interface ColumnConfig<T> {
   headerClass?: string;
   width?: string;
   truncate?: boolean;
+  showIcon?: boolean;
+  iconStyle?: (item: T) => IconStyle;
 }
 
 export interface TableConfig<T> {

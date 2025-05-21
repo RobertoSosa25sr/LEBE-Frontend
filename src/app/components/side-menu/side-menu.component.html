@@ -29,7 +29,7 @@
       <span class="material-icons">logout</span>
       <span class="label" *ngIf="!isCollapsed">Salir</span>
     </button>
-    <button class="bottom-button settings">
+    <button class="bottom-button settings" (click)="onSettingsClick()">
       <span class="material-icons">settings</span>
       <span class="label" *ngIf="!isCollapsed">Configuración</span>
     </button>
@@ -47,4 +47,20 @@
   (success)="onLogoutSuccess($event)"
   (error)="onLogoutError($event)"
   (cancel)="onLogoutCancel()">
+</app-modal>
+
+<app-modal 
+  *ngIf="showPasswordModal"
+  title="Cambiar contraseña"
+  [apiService]="userService"
+  apiMethod="updateUser"
+  [apiServiceParams]="[currentUser?.id]"
+  successMessage="Contraseña actualizada correctamente"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  [inputFields]="inputPasswordFields"
+  [form]="form"
+  (success)="onPasswordUpdateSuccess($event)"
+  (error)="onPasswordUpdateError($event)"
+  (cancel)="onPasswordUpdateCancel()">
 </app-modal> 

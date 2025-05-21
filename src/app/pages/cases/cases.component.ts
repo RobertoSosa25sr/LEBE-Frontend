@@ -28,7 +28,6 @@ import { Appointment } from '../../models/appointment.model';
     ButtonComponent, 
     ModalComponent,
     DataTableComponent,
-    SearchBarComponent,
     FilterBarComponent
   ],
   templateUrl: './cases.component.html',
@@ -98,7 +97,20 @@ export class CasesComponent implements OnInit {
         key: 'status',
         label: 'Estado',
         headerAlign: 'left',
-        cellAlign: 'left'
+        cellAlign: 'left',
+        showIcon: true,
+        iconStyle: (item: any) => {
+          switch(item.status) {
+            case CASE_STATUS.OPEN:
+              return 'success';
+            case CASE_STATUS.CLOSED:
+              return 'danger';
+            case CASE_STATUS.IN_PROGRESS:
+              return 'warning';
+            default:
+              return 'info';
+          }
+        }
       },
       {
         key: 'appointment',

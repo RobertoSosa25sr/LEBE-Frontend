@@ -25,9 +25,9 @@ export class FilterBarComponent implements OnInit, OnDestroy {
 
   dateOptions = {
     past: ['Ayer', 'Semana pasada', 'Mes pasado'],
-    future: ['Mañana', 'Esta semana', 'Siguiente semana', 'Este mes', 'Siguiente mes']
+    future: ['Hoy', 'Mañana', 'Esta semana', 'Siguiente semana', 'Este mes', 'Siguiente mes']
   };
-  currentDateOption: string = 'Hoy';
+  currentDateOption: string = 'Todos';
   currentPastIndex: number = -1;
   currentFutureIndex: number = -1;
   showDatePicker: boolean = false;
@@ -119,11 +119,11 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   navigateDate(direction: 'left' | 'right') {
     if (this.isCustomDate) {
       this.isCustomDate = false;
-      this.currentDateOption = 'Hoy';
+      this.currentDateOption = 'Todos';
       this.currentPastIndex = -1;
       this.currentFutureIndex = -1;
       this.selectedDate = '';
-      this.filterChange.emit({ ...this.form.value, dateFilter: 'Hoy' });
+      this.filterChange.emit({ ...this.form.value, dateFilter: 'Todos' });
       return;
     }
 
@@ -132,7 +132,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
         if (this.currentFutureIndex !== -1) {
           // If we're in future navigation, return to Hoy
           this.currentFutureIndex = -1;
-          this.currentDateOption = 'Hoy';
+          this.currentDateOption = 'Todos';
         } else {
           // If we're at Hoy, start past navigation
           this.currentPastIndex = 0;
@@ -148,7 +148,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
         if (this.currentPastIndex !== -1) {
           // If we're in past navigation, return to Hoy
           this.currentPastIndex = -1;
-          this.currentDateOption = 'Hoy';
+          this.currentDateOption = 'Todos';
         } else {
           // If we're at Hoy, start future navigation
           this.currentFutureIndex = 0;

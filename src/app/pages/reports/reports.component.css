@@ -285,9 +285,6 @@
   }
 }
 
-
-
-
 .summary-toggle {
   display: flex;
   align-items: center;
@@ -307,4 +304,49 @@
   height: 1rem;
   cursor: pointer;
 }
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+:host ::ng-deep .stat-icon {
+  margin-right: 0.5rem;
+}
+
+:host ::ng-deep .stat-icon.success {
+  color: var(--color-status-success);
+}
+
+:host ::ng-deep .stat-icon.danger {
+  color: var(--color-status-danger);
+}
+
+:host ::ng-deep .stat-icon.warning {
+  color: var(--color-status-warning);
+}
+
+:host ::ng-deep .stat-icon.info {
+  color: var(--color-status-info);
+}
+
+:host ::ng-deep .stat-icon.total {
+  color: var(--color-status-info) !important; /* Light blue */
+}
+
+:host ::ng-deep .stat-icon.closed {
+  color: var(--color-status-danger);
+}
+
+:host ::ng-deep .stat-icon.open {
+  color: var(--color-status-success);
+}
+
+:host ::ng-deep .stat-icon.in-progress {
+  color: var(--color-status-warning);
+}
+
+
 

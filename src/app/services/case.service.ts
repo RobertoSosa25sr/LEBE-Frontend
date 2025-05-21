@@ -49,7 +49,7 @@ export class CaseService {
     }
 
     return this.http.get<any>(this.apiUrl, { 
-      headers: this.getHeaders(),
+      headers: this.getHeaders(), 
       params
     });
   }

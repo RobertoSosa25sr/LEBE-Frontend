@@ -9,7 +9,12 @@ export interface Report {
   statistics: {
     total_appointments: number;
     total_clients: number;
-    total_cases: number;
+    total_cases: {
+        total: number,
+        closed: number,
+        open: number,
+        in_progress: number
+    }
   },
 }
 

@@ -1,10 +1,12 @@
 <div class="reports-container">
   <div class="reports-header">
     <div class="header-actions">
-      <app-search-bar 
-        placeholder="Buscar reportes..."
-        (search)="onSearch($event)">
-      </app-search-bar>
+      <app-filter-bar 
+        (search)="onSearch($event)" 
+        (filterChange)="onFilterChange($event)"
+        [filterConfig]="filterConfig"
+        [dateFilter] = "true">
+      </app-filter-bar>
       <div class="summary-toggle">
         <label>
           <input type="checkbox" [(ngModel)]="showSummary" (change)="onSummaryToggle()">

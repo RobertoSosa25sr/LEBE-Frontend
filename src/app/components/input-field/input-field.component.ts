@@ -41,7 +41,7 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   @Input() apiServiceParams?: any[] = [];
   @Input() fieldToShow?: string = '';
   @Input() fieldToSend?: string = '';
-  @Input() responseDataKey: string = '';
+  @Input() responseDataKey: string = ''; 
   @Input() showSelectedOptions: boolean = true;
   @Output() optionChange = new EventEmitter<string | string[]>();
   onChange: any = () => {};
@@ -224,12 +224,12 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
         // If a regular option is selected, remove "Todos" if present
         currentSelection = currentSelection.filter(opt => opt !== 'Todos');
         
-        const index = currentSelection.indexOf(option);
-        if (index === -1) {
-          currentSelection.push(option);
-        } else {
-          currentSelection.splice(index, 1);
-        }
+      const index = currentSelection.indexOf(option);
+      if (index === -1) {
+        currentSelection.push(option);
+      } else {
+        currentSelection.splice(index, 1);
+      }
       }
       
       // If "Todos" is selected, don't send any value

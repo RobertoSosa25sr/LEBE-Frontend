@@ -24,7 +24,7 @@ export class ReportService {
     });
   }
 
-  getReports(page: number = 1, perPage: number = 10, search?: string): Observable<ReportListResponse> {
+  getReports(page: number = 1, perPage: number = 10, search?: string, serviceParams?: any[]): Observable<ReportListResponse> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
@@ -32,6 +32,20 @@ export class ReportService {
     if (search) {
       params = params.set('search', search);
     }
+
+    if (serviceParams && serviceParams.length > 0) {
+      serviceParams.forEach(param => {
+        Object.entries(param).forEach(([key, value]: [string, any]) => {
+          if (Array.isArray(value)) {
+              value.forEach((val: any) => {
+              params = params.append(`${key}[]`, val);
+            });
+          } else {
+            params = params.set(key, value.toString());
+          }
+        });
+      });
+    }  
 
     return this.http.get<ReportListResponse>(this.apiUrl, { 
       params,

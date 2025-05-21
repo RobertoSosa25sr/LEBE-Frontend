@@ -47,6 +47,9 @@
                 <span [innerHTML]="column.cellValue(item)"></span>
               </ng-container>
               <ng-template #defaultCell>
+                <ng-container *ngIf="column.showIcon && column.iconStyle">
+                  <i class="fa-solid fa-square stat-icon" [class]="column.iconStyle(item)"></i>
+                </ng-container>
                 {{ getValue(item, column.key) }}
               </ng-template>
             </ng-container>
