@@ -51,6 +51,7 @@ export class ClientsComponent implements OnInit {
     size: 'medium',
     backgroundColor: 'green',
     type: 'secondary',
+    tooltip: 'Nuevo cliente'
   };
 
   tableConfig: TableConfig<Client> = {

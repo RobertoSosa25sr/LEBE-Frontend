@@ -14,6 +14,7 @@
   [disabled]="buttonConfig.disabled"
   (click)="onClick()"
   [title]="buttonConfig.tooltip"
+  tooltip="buttonConfig.tooltip? buttonConfig.tooltip : buttonConfig.label"
 >
   <span *ngIf="!buttonConfig.loading" class="button-content">
     <i *ngIf="buttonConfig.icon" [class]="getIconClass() + ' ' + getColorClass()"></i>

@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { DataTableComponent, TableConfig } from '../../components/data-table/data-table.component';
-import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
 import { FilterBarComponent } from '../../components/filter-bar/filter-bar.component';
 import { Case } from '../../models/case.model';
 import { CaseService } from '../../services/case.service';
@@ -60,14 +59,16 @@ export class CasesComponent implements OnInit {
     label: 'Nuevo',
     size: 'medium',
     backgroundColor: 'green',
-    type: 'secondary'
+    type: 'secondary',
+    tooltip: 'Nuevo caso'
   };
 
   buttonBackConfig: ButtonConfig = {
     size: 'medium',
     backgroundColor: 'light-blue',
     type: 'secondary',
-    icon: 'fa fa-arrow-left'
+    icon: 'fa fa-arrow-left',
+    tooltip: 'Volver a casos'
   };
 
   tableConfig: TableConfig<Case> = {

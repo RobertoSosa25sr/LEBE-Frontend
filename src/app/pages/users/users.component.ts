@@ -54,7 +54,8 @@ export class UsersComponent implements OnInit {
     label: 'Nuevo',
     size: 'medium',
     backgroundColor: 'green',
-    type: 'secondary'
+    type: 'secondary',
+    tooltip: 'Nuevo usuario'
   };
 
   tableConfig: TableConfig<User> = {

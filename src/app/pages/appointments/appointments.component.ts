@@ -58,7 +58,8 @@ export class AppointmentsComponent implements OnInit {
     label: 'Nuevo',
     size: 'medium',
     backgroundColor: 'green',
-    type: 'secondary'
+    type: 'secondary',
+    tooltip: 'Nueva cita'
   };
 
   tableConfig: TableConfig<Appointment> = {

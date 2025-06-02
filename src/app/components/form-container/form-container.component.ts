@@ -30,13 +30,15 @@ export class FormContainerComponent implements AfterViewInit, OnInit {
     type: 'primary',
     backgroundColor: 'green',
     icon: ActionType.CREATE,
-    disabled: false
+    disabled: false,
+    tooltip: 'Enviar'
   };
   @Input() cancelButtonConfig: ButtonConfig = {
     label: 'Cancel',
     type: 'outline',
     backgroundColor: '',
-    disabled: false
+    disabled: false,
+    tooltip: 'Cancelar'
   };
   @Input() apiService: any;
   @Input() apiMethod: string = '';

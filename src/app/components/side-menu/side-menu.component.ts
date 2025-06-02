@@ -43,8 +43,10 @@ export class SideMenuComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       current_password: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      password_confirmation: ['', [Validators.required]]
+      password: ['', Validators.minLength(8)],
+      password_confirmation: [''],
+      email: [''],
+      phone: ['']
     });
   }
 
@@ -53,39 +55,71 @@ export class SideMenuComponent implements OnInit {
     this.menuItems = this.authService.getMenuItems();
     this.currentUser$ = this.authService.currentUser$;
     this.currentUser = this.authService.getCurrentUser();
+    
+    // Set initial values for email and phone
+    if (this.currentUser) {
+      this.form.patchValue({
+        email: this.currentUser.email,
+        phone: this.currentUser.phone
+      });
+    }
+
     this.inputPasswordFields = [
+      {
+        label: 'Celular',
+        type: 'text',
+        placeholder: '',
+        value: this.currentUser.phone,
+        formControlName: 'phone',
+        required: false,
+        nullable: false,
+        variant: 'secondary',
+        size: 'medium',
+        width: '50%'
+      },
       {
         label: 'Contraseña actual',
         type: 'password',
-        placeholder: 'Ingrese su contraseña actual',
+        placeholder: '',
         formControlName: 'current_password',
         required: true,
         nullable: false,
         variant: 'secondary',
         size: 'medium',
-        width: 'full'
+        width: '50%'
       },
       {
         label: 'Nueva contraseña',
         type: 'password',
-        placeholder: 'Ingrese su nueva contraseña',
+        placeholder: '',
         formControlName: 'password',
-        required: true,
+        required: false,
         nullable: false,
         variant: 'secondary',
         size: 'medium',
-        width: 'full'
+        width: '50%'
       },
       {
         label: 'Confirmar contraseña',
         type: 'password',
-        placeholder: 'Confirme su nueva contraseña',
+        placeholder: '',
         formControlName: 'password_confirmation',
-        required: true,
+        required: false,
         nullable: false,
         variant: 'secondary',
         size: 'medium',
-        width: 'full'
+        width: '50%'
+      },      {
+        label: 'Correo',
+        type: 'text',
+        value: this.currentUser.email,
+        placeholder: '',
+        formControlName: 'email',
+        required: false,
+        nullable: false,
+        variant: 'secondary',
+        size: 'medium',
+        width: '50%'
       }
     ];
   }

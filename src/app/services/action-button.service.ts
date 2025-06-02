@@ -39,7 +39,7 @@ export class ActionButtonService {
         if (menuItem.actions.includes('update')) {
             baseActions.push({
                 icon: ActionType.UPDATE,
-                tooltip: `Editar ${entityType}`,
+                tooltip: `Editar ${this.getEntityName(entityType)}`,
                 type: 'outline',
                 size: 'small'
             });
@@ -48,7 +48,7 @@ export class ActionButtonService {
         if (menuItem.actions.includes('delete')) {
             baseActions.push({
                 icon: ActionType.DELETE,
-                tooltip: `Eliminar ${entityType}`,
+                tooltip: `Eliminar ${this.getEntityName(entityType)}`,
                 type: 'outline',
                 size: 'small'
             });
@@ -57,11 +57,26 @@ export class ActionButtonService {
         if (menuItem.actions.includes('read')) {
             baseActions.push({
                 icon: ActionType.READ,
-                tooltip: `Ver ${entityType}`,
+                tooltip: `Ver ${this.getEntityName(entityType)}`,
                 type: 'outline',
                 size: 'small'
             });
         }
         return baseActions;
+    }
+
+    private getEntityName(entityType: 'user' | 'case' | 'client' | 'appointment'): string {
+        switch (entityType) {
+            case 'user':
+                return 'usuario';
+            case 'case':
+                return 'caso';
+            case 'client':
+                return 'cliente';
+            case 'appointment':
+                return 'cita';
+            default:
+                return entityType;
+        }
     }
 } 
