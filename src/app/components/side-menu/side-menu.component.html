@@ -21,7 +21,7 @@
     <div class="user-icon">
       <span class="material-icons"><i class="fa-thin fa-user"></i></span>
     </div>
-    <span class="user-name" *ngIf="!isCollapsed">Administrator Name</span>
+    <span class="user-name" *ngIf="!isCollapsed">{{ currentUser?.full_name || 'Usuario' }}</span>
   </div>
 
   <div class="bottom-buttons">
@@ -29,15 +29,38 @@
       <span class="material-icons">logout</span>
       <span class="label" *ngIf="!isCollapsed">Salir</span>
     </button>
-    <button class="bottom-button settings">
+    <button class="bottom-button settings" (click)="onSettingsClick()">
       <span class="material-icons">settings</span>
       <span class="label" *ngIf="!isCollapsed">Configuración</span>
     </button>
   </div>
 </div>
 
-<app-confirmation-modal 
+<app-modal 
   *ngIf="showLogoutModal"
-  (confirm)="onLogoutConfirm()"
+  title="¿Estás seguro de que deseas cerrar sesión?"
+  confirmLabel="Confirmar"
+  cancelLabel="Cancelar"
+  [apiService]="authService"
+  apiMethod="logout"
+  successMessage="Cierre de sesión exitoso"
+  (success)="onLogoutSuccess($event)"
+  (error)="onLogoutError($event)"
   (cancel)="onLogoutCancel()">
-</app-confirmation-modal> 
+</app-modal>
+
+<app-modal 
+  *ngIf="showPasswordModal"
+  title="Cambiar contraseña"
+  [apiService]="userService"
+  apiMethod="updateUser"
+  [apiServiceParams]="[currentUser?.id]"
+  successMessage="Contraseña actualizada correctamente"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  [inputFields]="inputPasswordFields"
+  [form]="form"
+  (success)="onPasswordUpdateSuccess($event)"
+  (error)="onPasswordUpdateError($event)"
+  (cancel)="onPasswordUpdateCancel()">
+</app-modal> 

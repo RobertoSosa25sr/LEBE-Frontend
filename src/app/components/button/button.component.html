@@ -1,16 +1,24 @@
 <button
   class="button"
-  [class.primary]="type === 'primary'"
-  [class.secondary]="type === 'secondary'"
-  [class.outline]="type === 'outline'"
-  [class.small]="size === 'small'"
-  [class.medium]="size === 'medium'"
-  [class.large]="size === 'large'"
-  [class.full-width]="fullWidth"
-  [disabled]="disabled || loading"
+  [class.primary]="buttonConfig.type === 'primary'"
+  [class.secondary]="buttonConfig.type === 'secondary'"
+  [class.outline]="buttonConfig.type === 'outline'"
+  [class.purple]="buttonConfig.backgroundColor === 'purple'"
+  [class.green]="buttonConfig.backgroundColor === 'green'"
+  [class.red]="buttonConfig.backgroundColor === 'red'"
+  [class.light-blue]="buttonConfig.backgroundColor === 'light-blue'"
+  [class.small]="buttonConfig.size === 'small'"
+  [class.medium]="buttonConfig.size === 'medium'"
+  [class.large]="buttonConfig.size === 'large'"
+  [class.full-width]="buttonConfig.fullWidth"
+  [disabled]="buttonConfig.disabled"
+  (click)="onClick()"
+  [title]="buttonConfig.tooltip"
+  tooltip="buttonConfig.tooltip? buttonConfig.tooltip : buttonConfig.label"
 >
-  <span *ngIf="!loading" class="button-content">
-    <ng-content></ng-content>
+  <span *ngIf="!buttonConfig.loading" class="button-content">
+    <i *ngIf="buttonConfig.icon" [class]="getIconClass() + ' ' + getColorClass()"></i>
+    <span *ngIf="buttonConfig.label">{{ buttonConfig.label }}</span>
   </span>
-  <span *ngIf="loading" class="loading-spinner"></span>
+  <span *ngIf="buttonConfig.loading" class="loading-spinner"></span>
 </button>

@@ -1,0 +1,82 @@
+<div class="appointments-container">
+  <div class="appointments-header">
+    <div class="header-actions">
+      <app-filter-bar 
+        (search)="onSearch($event)" 
+        (filterChange)="onFilterChange($event)"
+        [filterConfig]="filterConfig"
+        [dateFilter] = "true"
+        placeholder = "Buscar citas...">
+      </app-filter-bar>
+      <app-button 
+        [buttonConfig]="buttonNewAppointmentConfig"
+        (click)="onNewAppointmentClick()">
+      </app-button>
+    </div>
+  </div>
+
+  <div class="appointments-content">
+    <div *ngIf="!isLoading; else loading">
+      <app-data-table
+        [data]="appointments"
+        [config]="tableConfig"
+        [actionButtons]="actionButtons"
+        (pageChange)="onPageChange($event)"
+        (action)="onTableAction($event)">
+      </app-data-table>
+    </div>
+
+    <ng-template #loading>
+      <div class="loading-container">
+        <span class="material-icons loading-icon">refresh</span>
+        <p>Cargando citas...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<app-modal 
+  *ngIf="showDeleteModal"
+  title="¿Estás seguro de que deseas eliminar esta cita?"
+  [apiService]="appointmentService"
+  apiMethod="deleteAppointment"
+  [apiServiceParams]="[selectedAppointment?.id]"
+  successMessage="Cita eliminada correctamente"
+  confirmLabel="Eliminar"
+  cancelLabel="Cancelar"
+  (success)="onDeleteSuccess($event)"
+  (error)="onDeleteError($event)"
+  (cancel)="onDeleteCancel()">
+</app-modal> 
+
+<app-modal 
+  *ngIf="showEditModal"
+  title="Editar cita"
+  [apiService]="appointmentService"
+  apiMethod="updateAppointment"
+  [apiServiceParams]="[selectedAppointment?.id, form.getRawValue()]"
+  successMessage="Cita actualizada correctamente"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  [inputFields]="inputEditFields"
+  [form]="form"
+  (success)="onEditSuccess($event)"
+  (error)="onEditError($event)"
+  (cancel)="onEditCancel()">
+</app-modal>
+
+<app-modal 
+  *ngIf="showNewAppointmentModal"
+  title="Nueva cita"
+  [apiService]="appointmentService"
+  apiMethod="createAppointment"
+  [apiServiceParams]="[form.getRawValue()]"
+  successMessage="Cita creada correctamente"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  [inputFields]="inputNewAppointmentFields"
+  [form]="form"
+  (success)="onNewAppointmentSuccess($event)"
+  (error)="onNewAppointmentError($event)"
+  (cancel)="onNewAppointmentCancel()">
+</app-modal>

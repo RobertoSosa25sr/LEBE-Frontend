@@ -1,0 +1,81 @@
+<div class="users-container">
+  <div class="users-header">
+    <div class="header-actions">
+      <app-filter-bar 
+        (search)="onSearch($event)" 
+        (filterChange)="onFilterChange($event)"
+        [filterConfig]="filterConfig"
+        placeholder = "Buscar usuarios...">
+      </app-filter-bar>
+      <app-button 
+        [buttonConfig]="buttonNewUserConfig"
+        (click)="onNewUserClick()">
+      </app-button>
+    </div>
+  </div>
+
+  <div class="users-content">
+    <div *ngIf="!isLoading; else loading">
+      <app-data-table
+        [data]="users"
+        [config]="tableConfig"
+        [actionButtons]="actionButtons"
+        (pageChange)="onPageChange($event)"
+        (search)="onSearch($event)"
+        (action)="onTableAction($event)">
+      </app-data-table>
+    </div>
+
+    <ng-template #loading>
+      <div class="loading-container">
+        <span class="material-icons loading-icon">refresh</span>
+        <p>Cargando usuarios...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<app-modal 
+  *ngIf="showDeleteModal"
+  title="¿Estás seguro de que deseas eliminar este usuario?"
+  [apiService]="userService"
+  apiMethod="deleteUser"
+  [apiServiceParams]="[selectedUser?.id]"
+  successMessage="Usuario eliminado correctamente"
+  confirmLabel="Eliminar"
+  cancelLabel="Cancelar"
+  (success)="onDeleteSuccess($event)"
+  (error)="onDeleteError($event)"
+  (cancel)="onDeleteCancel()">
+</app-modal> 
+
+<app-modal 
+  *ngIf="showEditModal"
+  title="Editar usuario"
+  [apiService]="userService"
+  apiMethod="updateUser"
+  [apiServiceParams]="[selectedUser?.id]"
+  successMessage="Usuario actualizado correctamente"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  [inputFields]="inputEditFields"
+  [form]="form"
+  (success)="onEditSuccess($event)"
+  (error)="onEditError($event)"
+  (cancel)="onEditCancel()">
+</app-modal>
+
+<app-modal 
+  *ngIf="showNewUserModal"
+  title="Nuevo usuario"
+  [apiService]="userService"
+  apiMethod="createUser"
+  successMessage="Usuario creado correctamente"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  [inputFields]="inputNewUserFields"
+  [form]="form"
+  (success)="onNewUserSuccess($event)"
+  (error)="onNewUserError($event)"
+  (cancel)="onNewUserCancel()">
+</app-modal>

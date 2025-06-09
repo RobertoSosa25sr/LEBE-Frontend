@@ -1,0 +1,9 @@
+<div *ngIf="notification" class="notification" [ngClass]="notificationClass">
+  <div class="notification-content">
+    <span class="material-icons notification-icon">{{ icon }}</span>
+    <p class="notification-message">{{ notification.message }}</p>
+  </div>
+  <button class="notification-close" (click)="onClose()">
+    <span class="material-icons">close</span>
+  </button>
+</div> 

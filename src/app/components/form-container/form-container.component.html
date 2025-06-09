@@ -1,3 +1,48 @@
-<div class="form-container" [style.max-width]="maxWidth">
-    <ng-content></ng-content>
+<div class="form-container">
+  <h2>{{ title }}</h2>
+  <form [formGroup]="form">
+    <div *ngIf="groupedInputFields.length > 0" class="form-fields">
+      <div *ngFor="let row of groupedInputFields" class="form-row" [class.single-column]="row.columns.length === 1">
+        <div *ngFor="let field of row.columns" 
+             class="form-column"
+             [class.column-1]="row.columns.length === 2 && field === row.columns[0]"
+             [class.column-2]="row.columns.length === 2 && field === row.columns[1]">
+          <app-input-field
+            [type]="field.type"
+            [placeholder]="field.placeholder"
+            [label]="field.label"
+            [formControlName]="getFieldValue(field)"
+            [variant]="field.variant"
+            [size]="field.size"
+            [options]="field.options"
+            [selectedOption]="field.selectedOption"
+            [readonly]="getFieldReadonly(field)"
+            [required]="getFieldRequired(field)"
+            [nullable]="getFieldNullable(field)"
+            [width]="field.width"
+            [apiService]="field.apiService"
+            [apiMethod]="field.apiMethod"
+            [apiServiceParams]="field.apiServiceParams"
+            [fieldToShow]="field.fieldToShow"
+            [fieldToSend]="field.fieldToSend"
+            [responseDataKey]="field.responseDataKey || responseDataKey"
+          ></app-input-field>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="inputFields.length > 0" class="error-message" [class.show]="isErrorVisible" [class.hide]="!isErrorVisible && errorMessage">
+      {{ errorMessage }}
+    </div>
+    <div class="form-actions">
+      <app-button 
+        [buttonConfig]="submitButtonConfig"
+        (action)="handleSubmit()">
+      </app-button>
+      <app-button 
+        *ngIf="showCancelButton"
+        [buttonConfig]="cancelButtonConfig"
+        (action)="handleCancel()">
+      </app-button>
+    </div>
+  </form>
 </div>

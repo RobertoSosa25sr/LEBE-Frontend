@@ -1,0 +1,88 @@
+<div class="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <ng-container *ngFor="let column of config.columns">
+          <th 
+            [class.truncate]="column.truncate"
+            [class]="'header-' + (column.headerAlign || 'left') + ' ' + (column.headerClass || '')"
+            [style.text-align]="column.headerAlign || 'left'">
+            {{ column.label }}
+          </th>
+        </ng-container>
+        <th class="actions-header" *ngIf="config.showActions">
+          <i class="fa-solid fa-bars"></i>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="data.length === 0" class="no-data-row">
+        <td [attr.colspan]="config.columns.length + (config.showActions ? 1 : 0)">
+          <div class="no-data-message">
+            <i class="fa-solid fa-database"></i>
+            <span>No se encontraron registros</span>
+          </div>
+        </td>
+      </tr>
+      <tr *ngFor="let item of data" [class]="'row-' + getRowStyle(item)">
+        <ng-container *ngFor="let column of config.columns">
+          <td 
+            [class]="'cell-' + (column.cellAlign || 'left') + ' cell-' + getCellStyle(item, column) + (column.truncate ? ' truncate' : '')"
+            [style.text-align]="column.cellAlign || 'left'">
+            <ng-container *ngIf="column.showPhoto">
+              <div class="user-info">
+                <div class="user-avatar">
+                  <ng-container *ngIf="getValue(item, column.photoField || column.key); else initials">
+                    <img [src]="getValue(item, column.photoField || column.key)" [alt]="getValue(item, column.key)">
+                  </ng-container>
+                  <ng-template #initials>
+                    <div class="initials">{{ getInitials(getValue(item, column.key)?.toString() || '') }}</div>
+                  </ng-template>
+                </div>
+                <span class="user-name">{{ getValue(item, column.key) }}</span>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!column.showPhoto">
+              <ng-container *ngIf="column.cellValue; else defaultCell">
+                <span [innerHTML]="column.cellValue(item)"></span>
+              </ng-container>
+              <ng-template #defaultCell>
+                <ng-container *ngIf="column.showIcon && column.iconStyle">
+                  <i class="fa-solid fa-square stat-icon" [class]="column.iconStyle(item)"></i>
+                </ng-container>
+                {{ getValue(item, column.key) }}
+              </ng-template>
+            </ng-container>
+          </td>
+        </ng-container>
+        <td class="actions-cell" *ngIf="config.showActions">
+          <div class="actions">
+            <app-button
+              *ngFor="let button of actionButtons"
+              [buttonConfig]="getButtonConfig(button, getItemId(item))"
+              (action)="handleAction(button, item)"
+            ></app-button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination" *ngIf="config.totalItems && config.totalItems > (config.pageSize || 10)">
+    <button 
+      class="pagination-button"
+      [disabled]="!config.currentPage || config.currentPage === 1"
+      (click)="onPageChange((config.currentPage || 1) - 1)">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <span class="page-info">
+      Mostrando {{ paginationRange.from }} a {{ paginationRange.to }} de {{ config.totalItems }} registros
+    </span>
+    <button 
+      class="pagination-button"
+      [disabled]="!config.currentPage || config.currentPage === totalPages"
+      (click)="onPageChange((config.currentPage || 1) + 1)">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </div>
+</div> 

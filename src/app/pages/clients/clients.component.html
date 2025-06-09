@@ -1,0 +1,79 @@
+<div class="clients-container">
+  <div class="clients-header">
+    <div class="header-actions">
+      <app-search-bar 
+        placeholder="Buscar clientes..."
+        (search)="onSearch($event)">
+      </app-search-bar>
+      <app-button 
+        [buttonConfig]="buttonNewClientConfig"
+        (click)="onNewClientClick()">
+      </app-button>
+    </div>
+  </div>
+
+  <div class="users-content">
+    <div *ngIf="!isLoading; else loading">
+      <app-data-table
+        [data]="clients"
+        [config]="tableConfig"
+        [actionButtons]="actionButtons"
+        (pageChange)="onPageChange($event)"
+        (search)="onSearch($event)"
+        (action)="onTableAction($event)">
+      </app-data-table>
+    </div>
+
+    <ng-template #loading>
+      <div class="loading-container">
+        <span class="material-icons loading-icon">refresh</span>
+        <p>Cargando clientes...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<app-modal 
+  *ngIf="showDeleteModal"
+  title="¿Estás seguro de que deseas eliminar este cliente?"
+  [apiService]="clientService"
+  apiMethod="deleteClient"
+  [apiServiceParams]="[selectedClient?.id]"
+  successMessage="Cliente eliminado correctamente"
+  confirmLabel="Eliminar"
+  cancelLabel="Cancelar"
+  (success)="onDeleteSuccess($event)"
+  (error)="onDeleteError($event)"
+  (cancel)="onDeleteCancel()">
+</app-modal> 
+
+<app-modal 
+  *ngIf="showEditModal"
+  title="Editar cliente"
+  [apiService]="clientService"
+  apiMethod="updateClient"
+  [apiServiceParams]="[selectedClient?.id]"
+  successMessage="Cliente actualizado correctamente"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  [inputFields]="inputEditFields"
+  [form]="form"
+  (success)="onEditSuccess($event)"
+  (error)="onEditError($event)"
+  (cancel)="onEditCancel()">
+</app-modal>
+
+<app-modal 
+  *ngIf="showNewClientModal"
+  title="Nuevo cliente"
+  [apiService]="clientService"
+  apiMethod="createClient"
+  successMessage="Cliente creado correctamente"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  [inputFields]="inputNewClientFields"
+  [form]="form"
+  (success)="onNewClientSuccess($event)"
+  (error)="onNewClientError($event)"
+  (cancel)="onNewClientCancel()">
+</app-modal>

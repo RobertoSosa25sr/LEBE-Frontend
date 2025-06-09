@@ -1,0 +1,37 @@
+<div class="reports-container">
+  <div class="reports-header">
+    <div class="header-actions">
+      <app-filter-bar 
+        (search)="onSearch($event)" 
+        (filterChange)="onFilterChange($event)"
+        [filterConfig]="filterConfig"
+        [dateFilter] = "true"
+        placeholder = "Buscar reporte...">
+      </app-filter-bar>
+      <div class="summary-toggle">
+        <label>
+          <input type="checkbox" [(ngModel)]="showSummary" (change)="onSummaryToggle()">
+          Resumen
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="reports-content">
+    <div *ngIf="!isLoading; else loading">
+      <app-data-table
+        [data]="reports"
+        [config]="tableConfig"
+        (pageChange)="onPageChange($event)"
+        (search)="onSearch($event)">
+      </app-data-table>
+    </div>
+
+    <ng-template #loading>
+      <div class="loading-container">
+        <span class="material-icons loading-icon">refresh</span>
+        <p>Cargando reportes...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

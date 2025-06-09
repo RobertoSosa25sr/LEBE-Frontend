@@ -1,0 +1,99 @@
+<div class="cases-container">
+  <div class="cases-header" *ngIf="!showAppointments">
+    <div class="header-actions">
+      <app-filter-bar 
+        (search)="onSearch($event)" 
+        (filterChange)="onFilterChange($event)"
+        [filterConfig]="filterConfig"
+        placeholder = "Buscar casos...">
+      </app-filter-bar>
+      <app-button 
+        [buttonConfig]="buttonNewCaseConfig"
+        (click)="onNewCaseClick()">
+      </app-button>
+    </div>
+  </div>
+
+  <div class="cases-header" *ngIf="showAppointments">
+    <div class="header-actions">
+      <app-button 
+        [buttonConfig]="buttonBackConfig"
+        (click)="onBackClick()">
+      </app-button>
+    </div>
+  </div>
+
+  <div class="cases-content">
+    <div *ngIf="!isLoading; else loading">
+      <app-data-table
+        [data]="cases"
+        [config]="tableConfig"
+        [actionButtons]="actionButtons"
+        (pageChange)="onPageChange($event)"
+        (search)="onSearch($event)"
+        (action)="onTableAction($event)">
+      </app-data-table>
+    </div>
+
+    <div *ngIf="showAppointments && !isLoading" class="appointments-section">
+      <app-data-table
+        [data]="appointments"
+        [config]="appointmentsTableConfig"
+        (pageChange)="onPageChange($event)">
+      </app-data-table>
+    </div>
+
+    <ng-template #loading>
+      <div class="loading-container">
+        <span class="material-icons loading-icon">refresh</span>
+        <p>Cargando casos...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<app-modal 
+  *ngIf="showDeleteModal"
+  title="¿Estás seguro de que deseas eliminar este caso?"
+  [apiService]="caseService"
+  apiMethod="deleteCase"
+  [apiServiceParams]="[selectedCase?.id]"
+  successMessage="Caso eliminado correctamente"
+  confirmLabel="Eliminar"
+  cancelLabel="Cancelar"
+  (success)="onDeleteSuccess($event)"
+  (error)="onDeleteError($event)"
+  (cancel)="onDeleteCancel()">
+</app-modal> 
+
+<app-modal 
+  *ngIf="showEditModal"
+  title="Editar caso"
+  [apiService]="caseService"
+  apiMethod="updateCase"
+  [apiServiceParams]="[selectedCase?.id, form.getRawValue()]"
+  successMessage="Caso actualizado correctamente"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  [inputFields]="inputEditFields"
+  [form]="form"
+  (success)="onEditSuccess($event)"
+  (error)="onEditError($event)"
+  (cancel)="onEditCancel()">
+</app-modal>
+
+<app-modal 
+  *ngIf="showNewCaseModal"
+  title="Nuevo caso"
+  [apiService]="caseService"
+  apiMethod="createCase"
+  [apiServiceParams]="[form.getRawValue()]"
+  successMessage="Caso creado correctamente"
+  confirmLabel="Guardar"
+  cancelLabel="Cancelar"
+  [inputFields]="inputNewCaseFields"
+  [form]="form"
+  (success)="onNewCaseSuccess($event)"
+  (error)="onNewCaseError($event)"
+  (cancel)="onNewCaseCancel()">
+</app-modal>
